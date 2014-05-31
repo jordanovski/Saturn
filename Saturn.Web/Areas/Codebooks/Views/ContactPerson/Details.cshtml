@@ -1,0 +1,50 @@
+﻿@model Saturn.Model.Codebooks.ContactPerson
+
+@{
+    ViewBag.Title = "Контакт особи";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ContactPerson</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContactType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DrivingSchool.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrivingSchool.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContactValue)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

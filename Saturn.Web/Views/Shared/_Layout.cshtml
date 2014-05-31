@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Испитен центар</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <!--This bundle was moved by the Telerik VS Extensions for compatibility reasons-->
+    @Scripts.Render("~/bundles/jquery")
+    <link href="@Url.Content("~/Content/kendo/2014.1.318/kendo.common.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2014.1.318/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/kendo/2014.1.318/kendo.metro.min.css")" rel="stylesheet" type="text/css" />
+    <script src="@Url.Content("~/Scripts/kendo/2014.1.318/jquery.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2014.1.318/kendo.web.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo/2014.1.318/kendo.aspnetmvc.min.js")"></script>
+    <script src="@Url.Content("~/Scripts/kendo.modernizr.custom.js")"></script>
+
+</head>
+<body>
+    <div class="navbar navbar-default navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Испитен центар", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Пријави", "Index", "Registration", new { Area = "" }, new { })</li>
+                        <li>@Html.ActionLink("Термини", "Index", "Examination", new { Area = "" }, new { })</li>
+                        <li>@Html.ActionLink("Кандидати", "Index", "Candidates", new { Area = "" }, new { })</li>
+                        <li>@Html.ActionLink("Прегледи", "Index", "Reviews", new { Area = "" }, new { })</li>
+                        <li>@Html.ActionLink("Извештаи", "Index", "Reports", new { Area = "" }, new { })</li>
+                        <li>@Html.ActionLink("Статистика", "Index", "Statistics", new { Area = "" }, new { })</li>
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Шифрарници <b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li>@Html.ActionLink("Автошколи", "Index", "DrivingSchool", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Инструктори", "Index", "Instructor", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Комисија", "Index", "Examiner", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Возила", "Index", "Vehicle", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Категории", "Index", "DrivingCategory", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Ценовник", "Index", "PriceList", new { Area = "Codebooks" }, new { })</li>
+
+                                @if (Request.IsAuthenticated && User.IsInRole("Admin"))
+                                {
+                                    <li class="divider"></li>
+                                    @*<li class="dropdown-header">Nav header</li>*@
+                                    <li>@Html.ActionLink("Корисници", "Index", "UsersAdmin")</li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - Испитен центар</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

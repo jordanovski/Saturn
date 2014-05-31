@@ -1,0 +1,150 @@
+﻿@model Saturn.Model.Candidate
+
+@{
+    ViewBag.Title = "Кандидати";
+}
+
+<h3>Дали сте сигурни дека сакате да го избришете следново?</h3>
+<div>
+    <h5>Кандидат</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.City.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.City.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DrivingCategory.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrivingCategory.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FatherName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FatherName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PersonalCardNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PersonalCardNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IssuedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IssuedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UniqueNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UniqueNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BirthPlace)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BirthPlace)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Profession)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Profession)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExistingDrivingCategory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExistingDrivingCategory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DossierNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DossierNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DossierDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DossierDate)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index")
+        </div>
+    }
+</div>

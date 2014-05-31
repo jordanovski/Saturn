@@ -1,0 +1,82 @@
+﻿@model Saturn.Model.Codebooks.ErrorType
+
+@{
+    ViewBag.Title = "Типови на грешки";
+}
+
+<h3>Промени</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h5>Тип на грешка</h5>
+        <hr />
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(model => model.Id)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Form, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Form)
+                @Html.ValidationMessageFor(model => model.Form)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Question, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Question)
+                @Html.ValidationMessageFor(model => model.Question)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Description)
+                @Html.ValidationMessageFor(model => model.Description)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.PenaltyPoints, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.PenaltyPoints)
+                @Html.ValidationMessageFor(model => model.PenaltyPoints)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DrivingCategory, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.DrivingCategory)
+                @Html.ValidationMessageFor(model => model.DrivingCategory)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.ExamTypeId, "ExamTypeId", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @(Html.Kendo().DropDownListFor(m => m.ExamTypeId)
+                    .BindTo(ViewBag.ExamTypeId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .OptionLabel("Одбери типна испит")
+                    .HtmlAttributes(new { style = "width: 250px" }))
+                @Html.ValidationMessageFor(model => model.ExamTypeId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Сними" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Вратисе назад", "Index")
+</div>

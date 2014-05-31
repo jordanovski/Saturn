@@ -1,0 +1,1264 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.ApplicationInsights</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.LockingCollection`1">
+            <summary>
+            A thread-safe <see ref="ICollection{T}"/> based on reader and writer <see ref="ILock"/> objects.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ISupportSharedLocking">
+            <summary>
+            Represents an object that uses exclusive and shared locking to support thread safety.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ISupportLocking">
+            <summary>
+            Represents an object that uses exclusive locking to support thread safety.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ISupportLocking.Lock">
+            <summary>
+            Acquires an exclusive lock to modify this instance in a thread-safe manner.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will release the lock when disposed.
+            </returns>
+            <exception cref="T:System.Threading.LockRecursionException">
+            <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ISupportLocking.Lock"/> was called after <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ISupportSharedLocking.SharedLock"/>, requiring a lock escalation.
+            Lock escalation is not allowed to prevent deadlocks.
+            </exception>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Only one thread can acquire the modification lock at the any given time. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ISupportSharedLocking.SharedLock">
+            <summary>
+            Acquires a shared lock to access this instance.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will release the lock when disposed.
+            </returns>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Multiple threads can acquire the access lock at the same time. 
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ILock">
+            <summary>
+            Represents a lock that can be used to synchronize access a single instance from multiple threads.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TransmissionQueue">
+            <summary>
+            Implements fault-tolerant transmission of telemetry to Application Insights. 
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionQueue">
+            <summary>
+            Represents fault-tolerant transmission of telemetry to Application Insights.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITransmissionQueue.Enqueue(Microsoft.ApplicationInsights.ObjectModel.ITransmission)">
+            <summary>
+            Adds the specified <paramref name="transmission"/> to the queue.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="transmission"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.Dispose">
+            <summary>
+            Releases resources used by this <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> instance.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.Enqueue(Microsoft.ApplicationInsights.ObjectModel.ITransmission)">
+            <summary>
+            Adds the specified <paramref name="transmission"/> to the queue.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.GetEnumerator">
+            <summary>
+            Returns a thread-safe, locking enumerator that iterates through <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> items in the queue.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.Lock">
+            <summary>
+            Acquires an exclusive lock to modify this <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> instance in a thread-safe manner.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns a thread-safe, locking enumerator that iterates through <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> items in the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.PauseDuration">
+            <summary>
+            Gets or sets a value that determines amount of time the <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> will 
+            wait before attempting to resend an <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> after a network error is detected.
+            </summary>
+            <seealso cref="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.IsPaused"/>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.IsPaused">
+            <summary>
+            Gets or sets a value indicating whether this <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> is paused.
+            </summary>
+            <remarks>
+            When the <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> is paused, transmissions are not sent. The queue is paused 
+            automatically when a network error is encountered when sending a transmission.
+            </remarks>
+            <seealso cref="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.PauseDuration"/>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.MaxAttemptsPerTransmission">
+            <summary>
+            Gets or sets a value that determines how many times the <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionQueue"/> will
+            attempt to send each <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.MaxNumberOfConcurrentTransmissions">
+            <summary>
+            Gets or sets the value that determines the maximum number of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> objects that can be sent the same time.
+            </summary>
+            <remarks>
+            Use this number to limit the number of concurrent HTTP connections. 
+            </remarks>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TransmissionQueue.MaxNumberOfTransmissions">
+            <summary>
+            Gets or sets the value that determines the maximum number of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> objects that will be accepted by the queue.
+            </summary>
+            <remarks>
+            Use this number to limit the amount of memory used to store telemetry in memory of the application before transmission. Once 
+            the maximum number of transmissions in the queue is reached, calls to <see cref="M:Microsoft.ApplicationInsights.Core.TransmissionQueue.Enqueue(Microsoft.ApplicationInsights.ObjectModel.ITransmission)"/> will be ignored until some of the 
+            existing transmissions are completed and removed from the queue.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TelemetryQueue">
+            <summary>
+            Accumulates <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> items for efficient transmission.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryQueue">
+            <summary>
+            Represents a queue used to send telemetry from the client to the Application Insights service.
+            </summary>
+            <remarks>
+            This is one of the core abstractions we have identified in the AI usage SDKs and the ongoing work on implementing
+            tracing telemetry adapters. Eventually we plan to have a single concrete class implementing this interface to 
+            transmit telemetry to Application Insights from both in-process (i.e. usage SDK) and out-of-process (i.e. MMA) components.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITelemetryQueue.Enqueue(Microsoft.ApplicationInsights.ObjectModel.ITelemetry)">
+            <summary>
+            Appends the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> item to the queue.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ISupportConfiguration">
+            <summary>
+            Represents an object that supports initialization from <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/>.
+            </summary>
+            <remarks>
+            Implementing classes should have a public constructor that takes a single <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/>
+            argument. This constructor should subscribe to the <see cref="E:Microsoft.ApplicationInsights.TelemetryConfiguration.PropertyChanged"/> event 
+            and configure the instance. Both the constructor and the event handler should configure the instance based 
+            on the property values of the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/>. By convention, implementing classes should 
+            define matching public properties for those properties of <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> they need. Code
+            updating instance properties based on configuration should preserve values of those properties that were 
+            set explicitly by user. Implementing classes should also implement <see cref="T:System.IDisposable"/> interface to 
+            unsubscribe from the <see cref="E:Microsoft.ApplicationInsights.TelemetryConfiguration.PropertyChanged"/> event and make the instance available 
+            for garbage collection. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryQueue"/> class with empty configuration.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.#ctor(Microsoft.ApplicationInsights.TelemetryConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryQueue"/> class with the specified <paramref name="configuration"/>.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="configuration"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.Dispose">
+            <summary>
+            Releases resources used by this <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryQueue"/> instance.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.Enqueue(Microsoft.ApplicationInsights.ObjectModel.ITelemetry)">
+            <summary>
+            Adds the specified <paramref name="telemetry"/> to the end of the queue.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="telemetry"/> is null.</exception>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.EndpointAddress"/> is null, or the <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.TransmissionQueue"/> is null when
+            the <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.MaxNumberOfItemsPerTransmission"/> is reached.
+            </exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.Flush">
+            <summary>
+            Passes all <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> items to the <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.TransmissionQueue"/> and empties the queue.
+            </summary>
+            <exception cref="T:System.InvalidOperationException">
+            The <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.EndpointAddress"/> is null, or the <see cref="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.TransmissionQueue"/> is null.
+            </exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.GetEnumerator">
+            <summary>
+            Returns a thread-safe, locking enumerator that iterates through <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> items in the queue.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.Lock">
+            <summary>
+            Obtains an exclusive lock to modify this instance.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will remove the lock when disposed.
+            </returns>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Only one thread can acquire an exclusive lock at the any given time. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryQueue.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns a thread-safe, locking enumerator that iterates through <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> items in the queue.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.MaxNumberOfItemsPerTransmission">
+            <summary>
+            Gets or sets the value that determines the maximum number of telemetry items per transmission.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is zero or less.</exception>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.MaxTransmissionDelay">
+            <summary>
+            Gets or sets the value that determines maximum amount of time until an item added to the queue is transmitted.
+            </summary>
+            <exception cref="T:System.ArgumentOutOfRangeException">The value is <see cref="F:System.TimeSpan.Zero"/> or less.</exception>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.EndpointAddress">
+            <summary>
+            Gets or sets the address of the endpoint where telemetry will be transmitted.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.TransmissionFactory">
+            <summary>
+            Gets or sets the object responsible for creating a transmission from the accumulated telemetry.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.TelemetryQueue.TransmissionQueue">
+            <summary>
+            Gets or sets the object responsible for transmission of accumulated telemetry to Application Insights.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Implementation.TelemetryContractResolver.ShouldSerializeProperties(System.Object)">
+            <summary>
+            Returns a boolean value that indicates whether <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.Properties"/> dictionary should be serialized.
+            </summary>
+            <remarks>
+            <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.Properties"/> are lazily initialized. This method allows to avoid triggering unnecessary 
+            creation of empty dictionaries during serialization and reduces its cost by ~10%.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs">
+            <summary>
+            Provides data for the <see cref="E:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendCompleted"/> event.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs.#ctor(System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs"/> class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs.Empty">
+            <summary>
+            Gets a default <see cref="T:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs"/> object used to report successful completion without creating a new instance for each event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventArgs.Error">
+            <summary>
+            Gets an expected, recoverable exception that was caught during asynchronous sending.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.TransmissionSendCompletedEventHandler">
+            <summary>
+            Represents the method that will handle the <see cref="E:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendCompleted"/> event of an asynchronous 
+            <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendAsync"/> operation.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.Transmission">
+            <summary>
+            Implements an asynchronous transmission of data to an HTTP POST endpoint.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission">
+            <summary>
+            Represents an asynchronous transmission of data to an HTTP POST endpoint.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendAsync">
+            <summary>
+            Starts asynchronously sending the transmission.
+            </summary>
+        </member>
+        <member name="E:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendCompleted">
+            <summary>
+            Indicates asynchronous completion of the <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendAsync"/> method.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITransmission.Attempt">
+            <summary>
+            Gets a value that indicates the number of times <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendAsync"/> was called.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITransmission.EndpointAddress">
+            <summary>
+            Gets address of the endpoint to which transmission will be sent.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITransmission.Content">
+            <summary>
+            Gets a content of the transmission.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITransmission.IsSending">
+            <summary>
+            Gets a value indicating whether <see cref="M:Microsoft.ApplicationInsights.ObjectModel.ITransmission.SendAsync"/> is in progress.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.Transmission.#ctor(System.Uri,System.Byte[])">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.Transmission"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.Transmission.#ctor(System.Uri,System.Byte[],System.String,System.Collections.Generic.IEnumerable{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.TimeSpan)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.Transmission"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.Transmission.Dispose">
+            <summary>
+            Releases resources allocated by this instance.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.Transmission.SendAsync">
+            <summary>
+            Starts asynchronously sending the transmission.
+            </summary>
+        </member>
+        <member name="E:Microsoft.ApplicationInsights.Core.Transmission.SendCompleted">
+            <summary>
+            Indicates asynchronous completion of the <see cref="M:Microsoft.ApplicationInsights.Core.Transmission.SendAsync"/> method.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.Attempt">
+            <summary>
+            Gets a value that indicates the number of times <see cref="M:Microsoft.ApplicationInsights.Core.Transmission.SendAsync"/> was called.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.EndpointAddress">
+            <summary>
+            Gets address of the endpoint to which transmission will be sent.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.Content">
+            <summary>
+            Gets a content of the transmission.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.ContentType">
+            <summary>
+            Gets a content type of the transmission.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.Headers">
+            <summary>
+            Gets the HTTP request headers of the transmission.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.IsSending">
+            <summary>
+            Gets a value indicating whether <see cref="M:Microsoft.ApplicationInsights.Core.Transmission.SendAsync"/> is in progress.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Core.Transmission.Timeout">
+            <summary>
+            Gets a timeout value for the transmission.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.Base64GuidSessionIdPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.SessionId"/>
+            property with <see cref="T:System.Guid"/> values converted to a base-64 string.
+            </summary>
+            <remarks>
+            <see cref="T:Microsoft.ApplicationInsights.Core.Base64GuidSessionIdPropertyProvider"/> is a session property provider. Adding it to  
+            <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryPropertyProviders"/> will result in every telemetry object
+            sent to Application Insights with a new session id.
+            </remarks>
+            <seealso cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.SessionPropertyProviders"/>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider">
+            <summary>
+            Represents an object that updates <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instances use <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> objects to 
+            automatically initialize their own properties as well as update properties of the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> 
+            objects passed to the <see cref="M:Microsoft.ApplicationInsights.TelemetrySession.Log(Microsoft.ApplicationInsights.ObjectModel.ITelemetry)"/> method.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates properties of the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.Base64GuidSessionIdPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.SessionId"/> of the specified <paramref name="properties"/> 
+            object with a new <see cref="T:System.Guid"/> converted to a base-64 string.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.CurrentThreadUILanguagePropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.Language"/>
+            property values with the <see cref="P:System.Globalization.CultureInfo.Name"/> of the <see cref="P:System.Globalization.CultureInfo.CurrentUICulture"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.CurrentThreadUILanguagePropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.Language"/> of the specified <paramref name="properties"/>
+            object with the <see cref="P:System.Globalization.CultureInfo.Name"/> of the <see cref="P:System.Globalization.CultureInfo.CurrentUICulture"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.ManagedThreadIdPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ThreadId"/>
+            property values with the <see cref="P:System.Threading.Thread.ManagedThreadId"/> of the <see cref="P:System.Threading.Thread.CurrentThread"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Core.ManagedThreadIdPropertyProvider"/> is not available on Windows Store.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.ManagedThreadIdPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ThreadId"/> of the specified <paramref name="properties"/>
+            object with the <see cref="P:System.Threading.Thread.ManagedThreadId"/> of the <see cref="P:System.Threading.Thread.CurrentThread"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.LockingEnumerator`1">
+            <summary>
+            A thread-safe <see ref="IEnumerator{T}"/> based on a reader <see ref="ILock"/> objects.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.LockingList`1">
+            <summary>
+            A thread-safe <see ref="IList{T}"/> based on reader and writer <see ref="ILock"/> objects.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.LockingDictionary`2">
+            <summary>
+            A thread-safe <see ref="IDictionary{TKey, TValue}"/> based on reader and writer <see ref="ILock"/> objects.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.CurrentProcessIdPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessId"/>
+            property values with the <see cref="P:System.Diagnostics.Process.Id"/> of the current <see cref="T:System.Diagnostics.Process"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Core.CurrentProcessIdPropertyProvider"/> is not available on Windows Store and Windows Phone.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.CurrentProcessIdPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessId"/> of the specified <paramref name="properties"/> 
+            object with the <see cref="P:System.Diagnostics.Process.Id"/> of the current <see cref="T:System.Diagnostics.Process"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.CurrentProcessNamePropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessName"/>
+            property values with the name of the current <see cref="T:System.Diagnostics.Process"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Core.CurrentProcessNamePropertyProvider"/> is not available on Windows Store and Windows Phone.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.CurrentProcessNamePropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessName"/> of the specified <paramref name="properties"/> 
+            object with the name of the current <see cref="T:System.Diagnostics.Process"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.CurrentThreadLanguagePropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.Language"/>
+            property values with the <see cref="P:System.Globalization.CultureInfo.Name"/> of the <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.CurrentThreadLanguagePropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.Language"/> of the specified <paramref name="properties"/>
+            object with the <see cref="P:System.Globalization.CultureInfo.Name"/> of the <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory">
+            <summary>
+            Represents an object creates a <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> instance for sending a set of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/>.
+            </summary>
+            <remarks>
+            <para>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory"/> implementation has knowledge of the transmission 
+            protocol for uploading telemetry. The default <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionFactory"/> implementation 
+            creates a <see cref="T:Microsoft.ApplicationInsights.Core.Transmission"/> that can be sent as an HTTP POST request to Application 
+            Insights immediately, from the application process. Alternative implementations of 
+            <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory"/> can be created to take advantage of platform 
+            capabilities, such as the background file transfer service in Windows Store application.
+            </para>
+            <para>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory"/> implementation also has knowledge of the telemetry 
+            serialization format. The default <see cref="T:Microsoft.ApplicationInsights.Core.TransmissionFactory"/> serializes telemetry in 
+            format expected by the Application Insights bulk endpoint. Alternative implementations of 
+            <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory"/> can be created to serialize telemetry in format expected by
+            other services, such as the Elastic Search bulk endpoint.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory.CreateTransmission(System.Uri,System.Collections.Generic.IEnumerable{Microsoft.ApplicationInsights.ObjectModel.ITelemetry})">
+            <summary>
+            Returns an <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmission"/> with the specified <paramref name="endpointAddress"/>
+            and <paramref name="telemetry"/> serialized to <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITransmission.Content"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">
+            The <paramref name="telemetry"/> collection is empty.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="endpointAddress"/> is null or the <paramref name="telemetry"/> is null.
+            </exception>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.NetBiosMachineNamePropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.MachineName"/>
+            property values with the NetBIOS machine name extracted from <see cref="T:System.Environment"/>.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Core.NetBiosMachineNamePropertyProvider"/> is not available on Windows Store and Windows Phone.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.NetBiosMachineNamePropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.MachineName"/> of the specified <paramref name="properties"/> 
+            object from the <see cref="T:System.Environment"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.MetricTelemetry">
+            <summary>
+            Telemetry type used to track metrics.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry">
+            <summary>
+            The base telemetry type for application insights.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties">
+            <summary>
+            Represents known telemetry properties. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.ComponentId">
+            <summary>
+            Gets or sets the component ID provided by the Application Insights portal. Determines which application these events are for.
+            If this is not set to a valid value, this <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> will be ignored.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.SessionId">
+            <summary>
+            Gets or sets the application-defined session ID. Default value supplied by the analyzer based on data sent to the AI service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.UserId">
+            <summary>
+            Gets or sets the application-defined user ID. Default value is supplied by the endpoint as unknown.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.Properties">
+            <summary>
+            Gets a dictionary of application-defined property values.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ObjectModel.ITelemetry.ToJsonString">
+            <summary>
+            Returns this <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> object serialized in JSON format.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetry.TelemetryType">
+            <summary>
+            Gets the type of telemetry this data represents, such as trace, page view, custom, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetry.Timestamp">
+            <summary>
+            Gets or sets date and time when telemetry was recorded.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.MetricTelemetry.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.MetricTelemetry"/> class with empty 
+            properties.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.MetricTelemetry.#ctor(System.String,System.Double)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.MetricTelemetry"/> class with the 
+            specified <paramref name="metricName"/> and <paramref name="metricValue"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">The <paramref name="metricName"/> is null or empty string.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.MetricTelemetry.ToJsonString">
+            <summary>
+            Returns this <see cref="T:Microsoft.ApplicationInsights.MetricTelemetry"/> object serialized in JSON format.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.MetricTelemetry.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object with information in this <see cref="T:Microsoft.ApplicationInsights.MetricTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.TelemetryType">
+            <summary>
+            Gets the type of telemetry this instance represents.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.ComponentId">
+            <summary>
+            Gets or sets the component ID provided by the Application Insights portal. Determines the application in which this metric was recorded.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.InstanceId">
+            <summary>
+            Gets or sets the thing sending the metric.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.Name">
+            <summary>
+            Gets or sets the name of the metric.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.SessionId">
+            <summary>
+            Gets or sets the application-defined session ID.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.Timestamp">
+            <summary>
+            Gets or sets date and time when telemetry was recorded.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.Unit">
+            <summary>
+            Gets or sets the unit of this metric.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.UserId">
+            <summary>
+            Gets or sets the application-defined user ID. 
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.Value">
+            <summary>
+            Gets or sets the value of this metric.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.MetricTelemetry.Properties">
+            <summary>
+            Gets a dictionary of application-defined property values.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TimestampPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that sets <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetry.Timestamp"/> to <see cref="P:System.DateTimeOffset.Now"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TimestampPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Sets <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetry.Timestamp"/> to <see cref="P:System.DateTimeOffset.Now"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TransmissionFactory">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITransmissionFactory"/> that creates a <see cref="T:Microsoft.ApplicationInsights.Core.Transmission"/> for 
+            sending <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> to Application Insights via HTTP POST requests from
+            the application process.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Core.TransmissionFactory.TransmissionEncoding">
+            <summary>
+            UTF-8 Encoding without the Unicode preamble.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TransmissionFactory.CreateTransmission(System.Uri,System.Collections.Generic.IEnumerable{Microsoft.ApplicationInsights.ObjectModel.ITelemetry})">
+            <summary>
+            Returns a <see cref="T:Microsoft.ApplicationInsights.Core.Transmission"/> with the specified <paramref name="endpointAddress"/>
+            and <paramref name="telemetry"/> serialized to JSON format.
+            </summary>
+            <exception cref="T:System.ArgumentException">
+            The <paramref name="telemetry"/> collection is empty.
+            </exception>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="endpointAddress"/> is null or the <paramref name="telemetry"/> is null.
+            </exception>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.EventTelemetry">
+            <summary>
+            Telemetry type used to track events.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.EventTelemetry.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.EventTelemetry"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.EventTelemetry.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.EventTelemetry"/> class with the given <paramref name="name"/>.
+            </summary>
+            <exception cref="T:System.ArgumentException">The event <paramref name="name"/> is null or empty string.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.EventTelemetry.ToJsonString">
+            <summary>
+            Returns this <see cref="T:Microsoft.ApplicationInsights.EventTelemetry"/> object serialized in JSON format.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.EventTelemetry.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object with information in this <see cref="T:Microsoft.ApplicationInsights.EventTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.ComponentId">
+            <summary>
+            Gets or sets the component ID provided by the Application Insights portal. Determines the application in which this event occurred.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.Name">
+            <summary>
+            Gets or sets the name of the event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.Metrics">
+            <summary>
+            Gets a dictionary of application-defined event metrics.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.SessionId">
+            <summary>
+            Gets or sets ID of the application session associated with this event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.TelemetryType">
+            <summary>
+            Gets the type of telemetry this instance represents.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.Timestamp">
+            <summary>
+            Gets or sets date and time when event was recorded.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.UserId">
+            <summary>
+            Gets or sets ID of the application user associated with this event.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.EventTelemetry.Properties">
+            <summary>
+            Gets a dictionary of application-defined property values.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.ThreadPoolTimeout">
+            <summary>
+            Encapsulates logic for invoking a callback when a timeout period expires.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.OperatingSystemPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.OperatingSystem"/>
+            property values with the operating system name.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Core.OperatingSystemPropertyProvider"/> is not available on Windows Store and Windows Phone.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.OperatingSystemPropertyProvider.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.OperatingSystemPropertyProvider"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.OperatingSystemPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.OperatingSystem"/> of the specified <paramref name="properties"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.WindowsThreadIdPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ThreadId"/>
+            property values with the Windows thread ID returned by <see cref="M:System.AppDomain.GetCurrentThreadId"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.WindowsThreadIdPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.ThreadId"/> of the specified <paramref name="properties"/>
+            object with the the Windows thread ID returned by <see cref="M:System.AppDomain.GetCurrentThreadId"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.TelemetryConfiguration">
+            <summary>
+            Implements platform-specific functionality of the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> class.
+            </summary>
+            <summary>
+            Encapsulates the global telemetry configuration typically loaded from the ApplicationInsights.config file.
+            </summary>
+            <remarks>
+            All <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> objects are initialized using the <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default"/> 
+            telemetry configuration provided by this class.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.UpdateConfigurationFile">
+            <summary>
+            The .NET 3.5 specific implementation of the partial method.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.TelemetryConfiguration.createDefaultTelemetryConfiguration">
+            <summary>
+            Creates a new <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> instance and loads it from the configuration file.
+            </summary>
+            <remarks>
+            A <see cref="T:System.Func`1"/> is used instead of a regular method to allow replacing it
+            in unit tests for reliable thread safety testing.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.Dispose">
+            <summary>
+            Releases resources used by the current instance of the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.SharedLock">
+            <summary>
+            Locks this <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> instance in read mode.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will remove the lock when disposed.
+            </returns>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Multiple threads can acquire the access lock at the same time. 
+            Use this method before accessing <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.SessionPropertyProviders"/> and 
+            <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TelemetryPropertyProviders"/> in multithreaded applications.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.Lock">
+            <summary>
+            Locks this <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> instance in write mode.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will remove the lock when disposed.
+            </returns>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Only one thread can acquire the modification lock at the any given time. 
+            Use this method before modifying <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.SessionPropertyProviders"/> and 
+            <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TelemetryPropertyProviders"/> in multithreaded applications.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.Dispose(System.Boolean)">
+            <summary>
+            Releases resources used by the current instance of the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetryConfiguration.OnPropertyChanged(System.String)">
+            <summary>
+            Raises the <see cref="E:Microsoft.ApplicationInsights.TelemetryConfiguration.PropertyChanged"/> event with the specified <paramref name="propertyName"/>.
+            </summary>
+        </member>
+        <member name="E:Microsoft.ApplicationInsights.TelemetryConfiguration.PropertyChanged">
+            <summary>
+            Occurs when a property value changes.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default">
+            <summary>
+            Gets the configuration loaded from the ApplicationInsights.config file. 
+            If the configuration file does not exist, returns an empty object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.ComponentId">
+            <summary>
+            Gets or sets the Application Insights component ID.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The new value is null.</exception>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.EndpointAddress">
+            <summary>
+            Gets or sets the address of the endpoint where telemetry will be transmitted.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.SessionPropertyProviders">
+            <summary>
+            Gets the list of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> objects used to initial property values 
+            for each <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> object during its construction.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TelemetryPropertyProviders">
+            <summary>
+            Gets the list of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> objects used to provide the default set of 
+            <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryPropertyProviders"/> for each <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> object 
+            during its construction.
+            </summary>
+            <remarks>
+            For the <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default"/> telemetry configuration instance, the list of property providers is loaded
+            from the ApplicationInsights.config file located in the application directory. 
+            </remarks>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TelemetryQueue">
+            <summary>
+            Gets or sets the object responsible for aggregation of telemetry before transmission.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TransmissionFactory">
+            <summary>
+            Gets or sets the object responsible for creating a transmission from a set of telemetry items.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TransmissionQueue">
+            <summary>
+            Gets or sets the object responsible for transmitting telemetry to Application Insights.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.TelemetrySession">
+            <summary>
+            Represents a session for sending telemetry to the Application Insights service.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> class with an empty configuration.
+            </summary>
+            <remarks>
+            Each <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instance requires a <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/> to log 
+            telemetry. Consider calling the <see cref="M:Microsoft.ApplicationInsights.TelemetrySession.Configure"/> method with <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default"/> 
+            to finish initializing this instance.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.#ctor(Microsoft.ApplicationInsights.TelemetryConfiguration)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> class with the specified <paramref name="configuration"/>.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="configuration"/> is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.Dispose">
+            <summary>
+            Releases resources used by this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instance.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.SharedLock">
+            <summary>
+            Acquires a shared lock to access this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instance.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will release the lock when disposed.
+            </returns>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Multiple threads can acquire the access lock at the same time. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.Lock">
+            <summary>
+            Acquires an exclusive lock to modify this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instance.
+            </summary>
+            <returns>
+            An <see cref="T:System.IDisposable"/> object that will release the lock when disposed.
+            </returns>
+            <exception cref="T:System.Threading.LockRecursionException">
+            <see cref="M:Microsoft.ApplicationInsights.TelemetrySession.Lock"/> was called after <see cref="M:Microsoft.ApplicationInsights.TelemetrySession.SharedLock"/>, requiring a lock escalation.
+            Lock escalation is not supported to avoid deadlocks.
+            </exception>
+            <remarks>
+            This method blocks until the calling thread acquires the access lock. 
+            Only one thread can acquire the modification lock at the any given time. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.Log(Microsoft.ApplicationInsights.ObjectModel.ITelemetry)">
+            <summary>
+            Enqueues the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> object for transmission to Application Insights.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="telemetry"/> parameter is null.</exception>
+            <exception cref="T:System.InvalidOperationException">The <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/> property is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.LogEvent(System.String)">
+            <summary>
+            Logs an <see cref="T:Microsoft.ApplicationInsights.EventTelemetry"/> with the specified <paramref name="name"/> for transmission to Application Insights.
+            </summary>
+            <exception cref="T:System.ArgumentException">The <paramref name="name"/> is null or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">The <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/> property is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.LogMetric(System.String,System.Double)">
+            <summary>
+            Logs a <see cref="T:Microsoft.ApplicationInsights.MetricTelemetry"/> with the specified <paramref name="name"/> and <paramref name="value"/> for transmission to Application Insights.
+            </summary>
+            <exception cref="T:System.ArgumentException">The <paramref name="name"/> is null or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">The <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/> property is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.LogTrace(System.String)">
+            <summary>
+            Logs a <see cref="T:Microsoft.ApplicationInsights.TraceTelemetry"/> with the specified <paramref name="message"/> for transmission to Application Insights.
+            </summary>
+            <exception cref="T:System.ArgumentException">The <paramref name="message"/> is null or empty.</exception>
+            <exception cref="T:System.InvalidOperationException">The <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/> property is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TelemetrySession.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object with information in this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.Default">
+            <summary>
+            Gets the default <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> for the application.
+            </summary>
+            <remarks>
+            In desktop applications the default <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/> is a global, static
+            instance. In web applications (not implemented yet) the default session will be specific 
+            to each HTTP request. 
+            </remarks>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.ComponentId">
+            <summary>
+            Gets or sets the default component ID for all <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> objects logged in this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/>.
+            </summary>
+            <remarks>
+            The initial value of this property is copied from the <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default"/> instance of 
+            <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/>.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.SessionId">
+            <summary>
+            Gets or sets the default application-defined session ID for all <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> objects logged in this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.UserId">
+            <summary>
+            Gets or sets the default application-defined user ID for all <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> objects logged in this <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.Properties">
+            <summary>
+            Gets a dictionary of application-defined property values.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryPropertyProviders">
+            <summary>
+            Gets a list of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> objects used by the <see cref="M:Microsoft.ApplicationInsights.TelemetrySession.Log(Microsoft.ApplicationInsights.ObjectModel.ITelemetry)"/> 
+            method to update common telemetry properties before passing them to the <see cref="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue"/>.
+            </summary>
+            <remarks>
+            A default set of <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> objects, appropriate for your type of application,
+            is provided automatically by the <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.TelemetryPropertyProviders"/> list of 
+            the <see cref="P:Microsoft.ApplicationInsights.TelemetryConfiguration.Default"/> <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/>. You can modify this 
+            list to change the default set or add custom property providers specific to your application.
+            </remarks>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TelemetrySession.TelemetryQueue">
+            <summary>
+            Gets or sets the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryQueue"/> used to transmit logged telemetry to Application Insights service.
+            </summary>
+            <remarks>
+            A default telemetry queue object is supplied by the <see cref="T:Microsoft.ApplicationInsights.TelemetryConfiguration"/> used to create this 
+            <see cref="T:Microsoft.ApplicationInsights.TelemetrySession"/>. You can set this property in automated tests to verify telemetry gathering 
+            functionality of your application.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ObjectModel.TelemetryType">
+            <summary>
+            Defines types of telemetry supported by Application Insights.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ObjectModel.TelemetryType.Trace">
+            <summary>
+            Trace telemetry.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ObjectModel.TelemetryType.Metric">
+            <summary>
+            Metric telemetry.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ObjectModel.TelemetryType.Event">
+            <summary>
+            Event telemetry.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.TraceTelemetry">
+            <summary>
+            Telemetry type used for trace or logging data.
+            Contains a time and message and optionally some additional metadata.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TraceTelemetry.ToJsonString">
+            <summary>
+            Returns this <see cref="T:Microsoft.ApplicationInsights.TraceTelemetry"/> object serialized in JSON format.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.TraceTelemetry.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the specified <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object with information in this <see cref="T:Microsoft.ApplicationInsights.TraceTelemetry"/> instance.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.TelemetryType">
+            <summary>
+            Gets the type of telemetry this object represents (trace).
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.ComponentId">
+            <summary>
+            Gets or sets the component ID provided by the Application Insights portal. Determines which application these events are for.
+            If this is not set to a valid value, this <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> will be ignored.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.EventTime">
+            <summary>
+            Gets or sets the time at which the event occurred.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.Message">
+            <summary>
+            Gets or sets the trace message. For example, the text that would normally be written to a log file line.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.MachineName">
+            <summary>
+            Gets or sets the name of the machine.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.SourceType">
+            <summary>
+            Gets or sets a unique identifier for the type of data in CustomProperties\Data.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.Language">
+            <summary>
+            Gets or sets the language.
+            Should map to a culture name specified in the National Language Support API (<a href="http://MSDN.microsoft.com/en-us/goglobal/bb896001.aspx"/>).
+            Default value supplied by the endpoint as "unknown". 
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.OperatingSystem">
+            <summary>
+            Gets or sets the name of the operating system. Default value supplied by endpoint based on User-Agent HTTP header.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.SessionId">
+            <summary>
+            Gets or sets the application-defined session ID. Default value supplied by the analyzer based on data sent to the AI service.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.UserId">
+            <summary>
+            Gets or sets the application-defined user ID. Default value is supplied by the endpoint as unknown.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessName">
+            <summary>
+            Gets or sets the name of the process from which this telemetry originated from.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.ProcessId">
+            <summary>
+            Gets or sets the process Id from which this telemetry originated from.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.Timestamp">
+            <summary>
+            Gets or sets date and time when telemetry was recorded.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.ThreadId">
+            <summary>
+            Gets or sets the thread Id from which this telemetry originated from.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.TraceTelemetry.Properties">
+            <summary>
+            Gets the custom properties for the trace event.
+            </summary>      
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.PassThroughConverter">
+            <summary>
+            Assumes the given object is already a properly formatted JSON string.
+            This converter simply passes the values straight through with no additional serialization.
+            </summary>
+            <remarks>
+            This class uses reflection for deserialization, the deserialization code path should really only be used for testing.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that uses a <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryPropertiesAction"/> delegate to provide properties.
+            </summary>
+            <remarks>
+            Consider using the <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider"/> class instead of implementing the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> 
+            interface when property logic is simple and does not need to be loaded from configuration. 
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider.#ctor(Microsoft.ApplicationInsights.Core.TelemetryPropertiesAction)">
+            <summary>
+            Initializes a new instance of the <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider"/> class.
+            </summary>
+            <exception cref="T:System.ArgumentNullException">The <paramref name="updateProperties"/> parameter is null.</exception>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the specified <paramref name="properties"/> object by calling the delegate 
+            passed to the constructor of this <see cref="T:Microsoft.ApplicationInsights.Core.TelemetryPropertyProvider"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Core.TelemetryPropertiesAction">
+            <summary>
+            Encapsulates an action performed on a single <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> object.
+            </summary>
+            <remarks>
+            This delegate is necessary because Windows Runtime Components cannot expose generics, like <see cref="T:System.Action`1"/> in public API.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.Telemetry">
+            <summary>
+            A helper class for implementing the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetry"/> interface. 
+            </summary>
+            <remarks>
+            Ideally, this would have been an abstract base class, but unfortunately, Windows RT does not support public 
+            abstract classes, forcing us to use a static helper class instead.
+            </remarks>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Implementation.TelemetryProperties">
+            <summary>
+            A helper class for implementing the <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties"/> interface. 
+            </summary>
+            <remarks>
+            Ideally, this would have been an abstract base class, but unfortunately, Windows RT does not support public 
+            abstract classes, forcing us to use a static helper class instead.
+            </remarks>
+        </member>
+    </members>
+</doc>

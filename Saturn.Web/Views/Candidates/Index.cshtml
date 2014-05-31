@@ -1,0 +1,42 @@
+﻿@model IEnumerable<Saturn.Model.ViewModels.CandidateViewModel>
+
+@{
+    ViewBag.Title = "Кандидати";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Create", "Registration") + "/#= Id #'" + ">Пријава</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Details", "Candidates") + "/#= Id #'" + ">#= DossierNumber #</a>").Title("Досие").Width(70);
+        columns.Bound(p => p.UniqueNumber);
+        columns.Bound(p => p.FirstName);
+        columns.Bound(p => p.FatherName);
+        columns.Bound(p => p.LastName);
+        columns.Bound(p => p.DrivingCategory);
+        columns.Bound(p => p.BirthDate).Format("{0:dd.MM.yyyy}");
+        columns.Bound(p => p.City);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "Candidates") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>");
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "Candidates") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>");
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "Candidates")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "Candidates"))
+    )
+)

@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Saturn.Model.Views.ViewExamCandidates>
+
+@{
+    ViewBag.Title = "Листа на кандидати";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<table class="table table-bordered table-condensed">
+    <tr>
+        <th>@Html.DisplayNameFor(model => model.ExamId)</th>
+        <th>@Html.DisplayNameFor(model => model.ExamType)</th>
+        <th>@Html.DisplayNameFor(model => model.ExamDate)</th>
+        <th>@Html.DisplayNameFor(model => model.ExamTime)</th>
+        <th>@Html.DisplayNameFor(model => model.DossierNumber)</th>
+        <th>@Html.DisplayNameFor(model => model.FirstName)</th>
+        <th>@Html.DisplayNameFor(model => model.LastName)</th>
+        <th>@Html.DisplayNameFor(model => model.Category)</th>
+        <th>@Html.DisplayNameFor(model => model.Language)</th>
+        <th>@Html.DisplayNameFor(model => model.WayOfTaking)</th>
+
+        <th>ОЛ</th>
+        <th>ОЛ1</th>
+        <th>ОЛ1-А</th>
+        <th>ОЛ2</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@Html.DisplayFor(modelItem => item.ExamId)</td>
+            <td>@Html.DisplayFor(modelItem => item.ExamType)</td>
+            <td>@Html.DisplayFor(modelItem => item.ExamDate, "ShortDateTime")</td>
+            <td>@Html.DisplayFor(modelItem => item.ExamTime)</td>
+            <td>@Html.DisplayFor(modelItem => item.DossierNumber)</td>
+            <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+            <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+            <td>@Html.DisplayFor(modelItem => item.Category)</td>
+            <td>@Html.DisplayFor(modelItem => item.Language)</td>
+            <td>@Html.DisplayFor(modelItem => item.WayOfTaking)</td>
+
+            <td>@Html.ActionLink("ОЛ", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ1", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ1-А", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ2", "Edit", new { id = item.CandidateId })</td>
+        </tr>
+    }
+</table>
+
+<table class="table table-bordered table-condensed" style="width:auto">
+    <tr>
+        <td>Шифра термин</td>
+        <td>@ViewBag.ExamId</td>
+    </tr>
+    <tr>
+        <td>Локација</td>
+        <td>@ViewBag.ExamLocation</td>
+    </tr>
+    <tr>
+        <td>Датум на полагање</td>
+        <td>@ViewBag.ExamDate</td>
+    </tr>
+    <tr>
+        <td>Време</td>
+        <td>@ViewBag.ExamTime</td>
+    </tr>
+    <tr>
+        <td>Претседател на комисија</td>
+        <td>@ViewBag.President</td>
+    </tr>
+    <tr>
+        <td>Испитувач</td>
+        <td>@ViewBag.Examiner</td>
+    </tr>
+    <tr>
+        <td>Член на комисија</td>
+        <td>@ViewBag.Member</td>
+    </tr>
+
+    <tr><td></td><td></td></tr>
+
+    <tr>
+        <td></td>
+        <td>@Html.ActionLink("Печати список на кандидати - теоретски дел", "Edit", new { id = 1 })</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.ActionLink("Печати список на кандидати - практичен дел", "Edit", new { id = 1 })</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.ActionLink("Печати оценувачки листи", "Edit", new { id = 1 })</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.ActionLink("Печати оценувачки листи бр.1", "Edit", new { id = 1 })</td>
+    </tr>
+    <tr>
+        <td></td>
+        <td>@Html.ActionLink("Печати оценувачки листи бр.2", "Edit", new { id = 1 })</td>
+    </tr>
+    
+</table>

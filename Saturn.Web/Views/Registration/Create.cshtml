@@ -1,0 +1,152 @@
+﻿@model Saturn.Model.Registration
+
+@{
+    ViewBag.Title = "Пријави";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.StatusId)
+        @Html.HiddenFor(m => m.CandidateId)
+        @Html.HiddenFor(m => m.DrivingCategoryId)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RegistrationDate, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DatePickerFor(m => m.RegistrationDate).Value(DateTime.Now).ParseFormats(new string[] { "dd.MM.yyyy" }).Format("dd/MM/yyyy"))
+                @Html.ValidationMessageFor(model => model.RegistrationDate)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Place, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.Place, new { @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(model => model.Place)
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.RegistrationNumber, new { @class = "control-label col-md-2" })
+                <div class="col-md-6">
+                    @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control input-sm" })
+                    @Html.ValidationMessageFor(model => model.RegistrationNumber)
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.Price, new { @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(model => model.Price)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Tax, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextBoxFor(model => model.Tax, new { @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(model => model.Tax)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DrivingSchoolId, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.DrivingSchoolId)
+                    .BindTo(ViewBag.DrivingSchoolId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.DrivingSchoolId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InstructorPracticeId, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.InstructorPracticeId)
+                    .BindTo(ViewBag.InstructorPracticeId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.InstructorPracticeId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.InstructorTheoryId, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.InstructorTheoryId)
+                    .BindTo(ViewBag.InstructorTheoryId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.InstructorTheoryId)
+            </div>
+        </div>
+
+        @*<div class="form-group">
+            @Html.LabelFor(model => model.VehicleFrom, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.VehicleFrom)
+                                                .BindTo(ViewBag.VehicleFrom)
+                                                .DataValueField("Value")
+                                                .DataTextField("Text")
+                                                .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.VehicleFrom)
+            </div>
+        </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.VehicleId, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.VehicleId)
+                    .BindTo(ViewBag.VehicleId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .OptionLabel("Одбери возило")
+                    .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.VehicleId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AuxiliaryVehicleId, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @(Html.Kendo().DropDownListFor(m => m.AuxiliaryVehicleId)
+                    .BindTo(ViewBag.AuxiliaryVehicleId)
+                    .DataValueField("Value")
+                    .DataTextField("Text")
+                    .OptionLabel("Одбери помошно возило")
+                    .HtmlAttributes(new { style = "width:300px" }))
+                @Html.ValidationMessageFor(model => model.AuxiliaryVehicleId)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Note, new { @class = "control-label col-md-2" })
+            <div class="col-md-6">
+                @Html.TextAreaFor(model => model.Note, new { @class = "form-control input-sm" })
+                @Html.ValidationMessageFor(model => model.Note)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <input type="submit" value="Сними" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+<div>
+    @Html.ActionLink("Вратисе назад", "Index")
+</div>

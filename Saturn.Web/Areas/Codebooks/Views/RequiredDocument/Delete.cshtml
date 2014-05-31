@@ -1,0 +1,30 @@
+﻿@model Saturn.Model.Codebooks.RequiredDocument
+
+@{
+    ViewBag.Title = "Документи";
+}
+
+<h3>Дали сте сигурни дека сакате да го избришите следново?</h3>
+<div>
+    <h4>Документ</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReqDocument)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReqDocument)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index")
+        </div>
+    }
+</div>

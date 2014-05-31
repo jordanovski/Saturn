@@ -1,0 +1,26 @@
+﻿@model Saturn.Model.Codebooks.RequiredDocument
+
+@{
+    ViewBag.Title = "Документи";
+}
+
+<h3>Детали</h3>
+
+<div>
+    <h5>Документ</h5>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReqDocument)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReqDocument)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

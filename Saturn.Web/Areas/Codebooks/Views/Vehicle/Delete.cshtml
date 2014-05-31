@@ -1,0 +1,70 @@
+﻿@model Saturn.Model.Codebooks.Vehicle
+
+@{
+    ViewBag.Title = "Возила";
+}
+
+<h4>Дали сте сигурни дека сакате да го избришете следново?</h4>
+<div>
+    <h5>Возило</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleBrand.Brand)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleBrand.Brand)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VehicleType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VehicleType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DrivingSchoolId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrivingSchoolId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CommercialMark)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CommercialMark)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RegistrationNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RegistrationNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index")
+        </div>
+    }
+</div>

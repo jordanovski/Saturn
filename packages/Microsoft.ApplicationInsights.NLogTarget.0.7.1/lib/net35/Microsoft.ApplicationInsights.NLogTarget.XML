@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.ApplicationInsights.NLogTarget</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget">
+            <summary>
+            NLog Target that routes all logging output to the Application Insights logging framework.
+            The messages will be read by the Microsoft Monitoring Agent (MMA) which uploads logging message to the Application Insights cloud service.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget.InitializeTarget">
+            <summary>
+            Initializes the Target and perform ComponentId validation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget.Write(NLog.LogEventInfo)">
+            <summary>
+            Send the log message to Application Insights.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget.Dispose(System.Boolean)">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget"/>.
+            </summary>
+            <param name="disposing">True if called from user code, false if called from finalizer.</param>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.NLogTarget.ApplicationInsightsTarget.ComponentId">
+            <summary>
+            The Application Insights ComponentId for your application. 
+            </summary>
+        </member>
+    </members>
+</doc>

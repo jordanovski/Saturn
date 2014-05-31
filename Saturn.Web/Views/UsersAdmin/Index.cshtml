@@ -1,0 +1,54 @@
+﻿@model IEnumerable<Saturn.Account.Model.ApplicationUser>
+
+@{
+    ViewBag.Title = "Корисници";
+}
+
+<h3>@ViewBag.Title</h3>
+
+<p>
+    @Html.ActionLink("Креирај нов", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Корисничко име
+        </th>
+        <th>
+            Име
+        </th>
+        <th>
+            Презиме
+        </th>
+        <th>
+            е-маил
+        </th>
+        <th>
+
+        </th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.UserName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedDate)
+            </td>
+            <td>
+                @Html.ActionLink("Промени", "Edit", new { id = item.Id }) |
+                @Html.ActionLink("Детали", "Details", new { id = item.Id }) |
+                @Html.ActionLink("Избриши", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>

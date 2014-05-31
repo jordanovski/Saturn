@@ -1,0 +1,78 @@
+﻿@model Saturn.Model.Codebooks.Instructor
+
+@{
+    ViewBag.Title = "Инструктори";
+}
+
+<h3>Дали сте сигурни дека сакате да го избришете следнови?</h3>
+<div>
+    <h5>Инструктор</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DrivingSchool.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrivingSchool.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.FirstName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FirstName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UniqueNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UniqueNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Practice)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Practice)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Theory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Theory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.IsActive)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.IsActive)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index")
+        </div>
+    }
+</div>

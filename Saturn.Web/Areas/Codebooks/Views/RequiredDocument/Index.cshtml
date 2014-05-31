@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.RequiredDocument>
+
+@{
+    ViewBag.Title = "Документи";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.ReqDocument);
+
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "RequiredDocument") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "RequiredDocument") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "RequiredDocument")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "RequiredDocument"))
+    )
+)

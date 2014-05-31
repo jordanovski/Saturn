@@ -1,0 +1,44 @@
+﻿@model Saturn.Model.Codebooks.ExamLanguage
+
+@{
+    ViewBag.Title = "Јазици на полагање на испит";
+}
+
+<h3>Нов</h3>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="form-horizontal">
+        <h5>Јазик на полагање на испит</h5>
+        <hr />
+        @Html.ValidationSummary(true)
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Language, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Language)
+                @Html.ValidationMessageFor(model => model.Language)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LanguageCode, new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.LanguageCode)
+                @Html.ValidationMessageFor(model => model.LanguageCode)
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Сними" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Вратисе назад", "Index")
+</div>

@@ -1,0 +1,53 @@
+﻿@model IEnumerable<Saturn.Model.Views.ViewRegistrations>
+
+@{
+    ViewBag.Title = "Пријави";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.DrivingCategory);
+        columns.Bound(p => p.DossierNumber);
+        columns.Bound(p => p.FirstName);
+        columns.Bound(p => p.LastName);
+        columns.Bound(p => p.UniqueNumber);
+        columns.Bound(p => p.RegistrationDate).Format("{0:dd.MM.yyyy}");
+        columns.Bound(p => p.RegistrationStatus).Filterable(filterable => filterable
+            .UI("statusFilter")
+            .Extra(false)
+            .Operators(operators => operators.ForString(str => str.Clear().IsEqualTo("Еднакво на").IsNotEqualTo("Различно од")))
+        );
+        columns.Bound(p => p.Price);
+        columns.Bound(p => p.DrivingSchoolName);
+
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Create", "ExamRegistration") + "/#= RegistrationId #'" + ">Закажување</a>").Width(90);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Delete", "Registration") + "/#= RegistrationId #'" + "><span class='glyphicon glyphicon-print'></span></a>");
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "Registration"))
+    )
+)
+
+<script>
+    function statusFilter(element) {
+        element.kendoDropDownList({
+            dataSource: {
+                transport: {
+                    read: "@Url.Action("FilterMenuCustomization_Status")"
+                }
+            },
+            optionLabel: "--Одбери вредност--"
+        });
+    }
+</script>

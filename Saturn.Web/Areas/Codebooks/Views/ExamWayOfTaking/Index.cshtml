@@ -1,0 +1,20 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.ExamWayOfTaking>
+
+@{
+    ViewBag.Title = "Начин на полагање";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.WayOfTaking);
+        columns.Bound(p => p.WayOfTakingCode);
+    })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("Read", "ExamWayOfTaking"))
+    )
+)

@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Saturn.Model.ViewModels.DrivingSchoolViewModel>
+
+@{
+    ViewBag.Title = "Авто школи";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Name);
+        columns.Bound(p => p.TaxNumber).Width(140);
+        columns.Bound(p => p.Address).Width(140);
+        columns.Bound(p => p.City).Width(110);
+        columns.Bound(p => p.IsActive).ClientTemplate("<input type='checkbox' name='IsInternalCb' #= IsActive? 'checked' : '' # disabled /> ").Width(100);
+
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Index", "ContactPerson") + "/Index/#= Id #'" + ">Контакти</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "DrivingSchool") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "DrivingSchool") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "DrivingSchool")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Read(read => read.Action("Read", "DrivingSchool"))
+    )
+)

@@ -1,0 +1,47 @@
+﻿@model IEnumerable<Saturn.Model.Views.ViewExaminations>
+
+@{
+    ViewBag.Title = "Терними";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("CandidatesList", "Examination") + "/#= ExaminationId #'" + ">Кандидати</a>").Width(80);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("ExaminationResult", "Examination") + "/#= ExaminationId #'" + ">Резултати</a>").Width(80);
+    
+        columns.Bound(p => p.ExamDateTime).Format("{0:dd.MM.yyyy}").Title("Датум").Width(100);
+        columns.Bound(p => p.ExamDateTime).Format("{0:HH:mm}").Title("Време").Width(70);
+        columns.Bound(p => p.ExamType);
+        columns.Bound(p => p.ExamCenter);
+        columns.Bound(p => p.PresidentName);
+        columns.Bound(p => p.ExaminerName);
+        columns.Bound(p => p.MemberName);
+        
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "Examination") + "/#= ExaminationId #'" + "><span class='glyphicon glyphicon-pencil'></span></a>");
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "Examination") + "/#= ExaminationId #'" + "><span class='glyphicon glyphicon-remove'></span></a>");
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "Examination")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Groupable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Read(read => read.Action("Read", "Examination"))
+    )
+)
+
+@Html.ActionLink("Поминати термини", "PassedExaminations", null, new { @class = "btn btn-link" })

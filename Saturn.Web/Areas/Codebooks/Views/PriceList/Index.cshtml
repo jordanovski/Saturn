@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Saturn.Model.ViewModels.PriceListViewModel>
+
+@{
+    ViewBag.Title = "Ценовник";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.DrivingCategory);
+        columns.Bound(p => p.ExaminationType);
+        columns.Bound(p => p.PriceFirst);
+        columns.Bound(p => p.TaxFirst);
+        columns.Bound(p => p.PriceRepeated);
+        columns.Bound(p => p.TaxRepeated);
+        columns.Bound(p => p.MaterialCosts);
+        columns.Bound(p => p.VAT);
+        columns.Bound(p => p.Note);
+
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "PriceList") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "PriceList") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "PriceList")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "PriceList"))
+    )
+)

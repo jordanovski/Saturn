@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Saturn.Model.ViewModels.ErrorTypeViewModel>
+
+@{
+    ViewBag.Title = "Типови на грешки";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Form).Width(100);
+        columns.Bound(p => p.Question).Width(100);
+        columns.Bound(p => p.Description);
+        columns.Bound(p => p.DrivingCategory).Width(100);
+        columns.Bound(p => p.ExaminationType).Width(140);
+        columns.Bound(p => p.PenaltyPoints).Width(80);
+
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "ErrorType") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "ErrorType") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "ErrorType")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Read(read => read.Action("Read", "ErrorType"))
+    )
+)

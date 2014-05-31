@@ -1,0 +1,40 @@
+﻿@model IEnumerable<Saturn.Model.Views.ViewVehicles>
+
+@{
+    ViewBag.Title = "Возила";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.DrivingSchool);
+        columns.Bound(p => p.VehicleType);
+        columns.Bound(p => p.VehicleBrand);
+        columns.Bound(p => p.CommercialMark);
+        columns.Bound(p => p.RegistrationNumber);
+        columns.Bound(p => p.VehicleIsActive);
+
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "Vehicle") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "Vehicle") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "Vehicle")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .Reorderable(o => o.Columns(true))
+    .Resizable(r => r.Columns(true))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "Vehicle"))
+    )
+)

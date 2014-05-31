@@ -1,0 +1,19 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.ExamType>
+
+@{
+    ViewBag.Title = "Тип на испит";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Type);
+    })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Read(read => read.Action("Read", "ExamType"))
+    )
+)

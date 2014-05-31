@@ -1,0 +1,751 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Microsoft.ApplicationInsights.Tracing</name>
+    </assembly>
+    <members>
+        <member name="T:Microsoft.ApplicationInsights.ConfigurationReader">
+            <summary>
+            This class reads the ApplicationInsights.config file and provides read access to
+            the configuration for the active profile.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ConfigurationReader.LoadConfigurationFile(System.String)">
+            <summary>
+            Loads the specified configuration file.
+            </summary>
+            <param name="configFile">The full path to the ApplicationInsights.config file.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ConfigurationReader.GetConfiguration(Microsoft.ApplicationInsights.ConfigurationSections)">
+            <summary>
+            Gets the configuration for the corresponding configuration section.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ConfigurationReader.GetProfileNames">
+            <summary>
+            Get the names of the configuration profiles.
+            </summary>
+            <returns>A collection of configuration names.</returns>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ConfigurationReader.GetActiveProfileValue">
+            <summary>
+            Get the value specified in the ActiveProfile element.
+            </summary>
+            <returns>The name of the active profile.</returns>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.ConfigurationReader.GetDebugBuildProfileValue">
+            <summary>
+            Gets the value specified in the DebugBuildProfile element.
+            </summary>
+            <returns>The name of the profile to be used for debug builds.</returns>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.ConfigurationSections">
+            <summary>
+            ConfigurationSections enumeration used to access ApplicationInsights.config file.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.None">
+            <summary>
+            Accessing None.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.ServerAnalytics">
+            <summary>
+            Accessing ServerAnalytics section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.MMAOutputChannels">
+            <summary>
+            Accessing MMAOutputChannels section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.APMSettings">
+            <summary>
+            Accessing APMSettings section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.MemoryEventSettings">
+            <summary>
+            Accessing MemoryEventSettings section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.PerformanceCounters">
+            <summary>
+            Accessing PerformanceCounters section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.ClientAnalytics">
+            <summary>
+            Accessing ClientAnalytics section.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.ConfigurationSections.MonitoringAgent">
+            <summary>
+            Accessing MonitoringAgent section.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource">
+            <summary>
+            Emits ETW events the for Application Insights that can be read by the Microsoft Monitoring Agent (MMA).
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogMessageEventId">
+            <summary>
+            EventId for LogMessage.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogMessageWithDataEventId">
+            <summary>
+            EventId for LogMessageWithData.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogTruncatedMessageEventId">
+            <summary>
+            EventId for sending truncated message.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogMessageWithDataObjectOmittedEventId">
+            <summary>
+            EventId for sending message (optionally truncated) without data due to size issue.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogMessage(System.String,System.String)">
+            <summary>
+            Simple event that simply communicates a message.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="componentId">Application Insights ComponentId that indicates which app this log message is for.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LogMessageWithData(System.String,System.String,System.Object,Newtonsoft.Json.JsonConverter[])">
+            <summary>
+            Advanced event that communicates a message with additional serialized metadata.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="componentId">Application Insights ComponentId that indicates which app this log message is for.</param>
+            <param name="data">Additional metadata about the event.</param>
+            <param name="dataConverters">Custom <seealso cref="T:Newtonsoft.Json.JsonConverter"/> for customizing how the data object is converted to JSON.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.EtwLogMessage(System.Int64,System.String,System.String)">
+            <summary>
+            Log a message to the ETW.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.EtwLogMessageWithData(System.Int64,System.String,System.String,System.String,System.String)">
+            <summary>
+            Advanced event that communicates a message with additional serialized metadata.
+            </summary>
+            <remarks>
+            EventSource generates the manifest based on the parameters present in the method attributed with the EventAttribute. So we need this secondary method to be a thin wrapper over WriteEvent.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.EtwLogTruncatedMessage(System.Int64,System.String,System.String)">
+            <summary>
+            Log a truncated message to the ETW.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.EtwLogMessageWithDataOmitted(System.Int64,System.String,System.String)">
+            <summary>
+            Log a truncated message to the ETW. Also indicating we have switched from LogMessage to LogMessageWithData due to that the 
+            serialized message + object is way too long for ETW to process the message, we simply switch to sending message without object sent.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.TruncateMessage(System.String@,System.String)">
+            <summary>
+            For a passed in ref message, this method determine whether truncation is needed. If so, message is truncated and true returned. 
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.LoadCoreLogDataIntoNativeEventDataArray(Microsoft.Diagnostics.Tracing.EventSource.EventData*,System.Int64*,System.Char*,System.Int32,System.Char*,System.Int32)">
+            <summary>
+            Construct the payload to be send to ETW WriteEventCore. This is done via loading serializedTime/message/componentId onto the 1st 3 entries in eventDescriptor.
+            </summary>
+            <param name="eventDescriptor">Pointer to the start of the EventData object.</param>
+            <param name="serializedTime">DateTime in long format.</param>
+            <param name="messageBytes">Pointer to the message.</param>
+            <param name="messageLength">Message length.</param>
+            <param name="componentIdBytes">Pointer to the component Id.</param>
+            <param name="componentIdLength">Key length.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.IsCombinedDataTooLongForEtw(System.String,System.String[])">
+            <summary>
+            Check if the pass in string is way too long for ETW to handle. If so, we will reduce to simply sending message and skipping serializedDataType/serializedData.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.WriteLogMessageToEtw(System.Int32,System.Int64,System.String,System.String)">
+            <summary>
+            Helper method to construct EventSource.EventData and write to ETW.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.WriteEventCoreAndRaiseNotification(System.Int32,System.Int32,Microsoft.Diagnostics.Tracing.EventSource.EventData*)">
+            <summary>
+            Thin wrapper class to write EventData array to the underlying EventSource.WriteEventCore and optionally raise eventWritten event for testing purpose.
+            </summary>
+            <param name="eventId">The ETW event id.</param>
+            <param name="eventDataCount">The count of EventData to write.</param>
+            <param name="eventData">Pointer to the eventData.</param>
+        </member>
+        <member name="E:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.WriteEventOccurred">
+            <summary>
+            Fired every time an ApplicationInsightsEventSource ETW event is emitted.
+            This is for testing purposes only. Make sure these are marked with [NonEvent]. 
+            Without this, EventSource reflection will treat it as ETW event, expect its a manifest and ex will be thrown.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource.Log">
+            <summary>
+            Returns the singleton instance of <see cref="T:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsEventSource"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration">
+            <summary>
+            Thin wrapper class for accessing AI.Config file. It also responds to configure file change and reload ComponentId if needed.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.#ctor">
+            <summary>
+            Initializes a new instance of the ApplicationInsightsConfiguration class
+            This constructor will use AppDomain.CurrentDomain.BaseDirectory folder to search the ApplicationInsights.config file.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the ApplicationInsightsConfiguration class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.ValidateComponentId(System.String)">
+            <summary>
+            Validates that the given componentId is valid. This method is made public so that it can be used by
+            other classes (i.e. logging adapters) that need to validate a component ID.
+            If validation fails, an exception of the supplied type will be thrown, with the FormatException
+            wrapped inside.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.Dispose">
+            <summary>
+            Dispose implementation.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.LoadConfiguration">
+            <summary>
+            Loads the Component Id (under path ApplicationInsights/ComponentSettings/ComponentId from the path contained in the
+            AppInsightsConfigPath property, and reads the component ID into the DefaultComponentId property.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.ConfigurationWatcher_OnConfigurationChanged(System.Object,System.IO.FileSystemEventArgs)">
+            <summary>
+            Event handler responds to file changes.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.ConfigPath">
+            <summary>
+            Returns a path to ApplicationInsights.config in the application's assembly probing path.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.DefaultComponentId">
+            <summary>
+            The component ID that was read from ApplicationInsights.config.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider">
+            <summary>
+            Extracts the component id for tracing/logging specified in the application insights configuration file.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.IComponentIdProvider">
+            <summary>
+            Interface that provides component ids.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.IComponentIdProvider.ComponentId">
+            <summary>
+            Returns the current component id. 
+            The current component id may change during running so multiple calls to this API can return different results.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider.#ctor">
+            <summary>
+            Creates an instance of the <see cref="T:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider"/> class.
+            Will throw exceptions if application insights configuration file is not found or it has an invalid component id.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider.Dispose">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider.ComponentId">
+            <summary>
+            Returns the current component id. 
+            The current component id may change during running so multiple calls to this API can return different results.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.ConfigurationFileComponentIdProvider.Configuration">
+            <summary>
+            Get and set Configuration.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.ConfigFileChangedEventArgs">
+            <summary>
+            EventArgs for the <see cref="P:Microsoft.ApplicationInsights.Tracing.ApplicationInsightsConfiguration.ConfigFileChanged"/> event.
+            For testing purposes only.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.InProcLoggingController">
+            <summary>
+            Sends tracing data in process.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.LoggingController">
+            <summary>
+            Enables sending log messages to the Application Insights service.
+            </summary>
+        </member>
+        <member name="F:Microsoft.ApplicationInsights.Tracing.LoggingController.baselineMMAVersion">
+            <summary>
+            First version of MMA that shipped with logging support.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.#ctor(System.String)">
+            <summary>
+            Creates an instance of <see cref="T:Microsoft.ApplicationInsights.Tracing.LoggingController"/>
+            </summary>
+            <param name="componentId">
+            Application Insights ComponentId that indicates which app this log message is for.
+            If null or empty the ComponentId will be read from the ApplicationInsights.config file.
+            </param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.CreateLoggingController(System.String)">
+            <summary>
+            Creates an instance of <see cref="T:Microsoft.ApplicationInsights.Tracing.LoggingController"/>
+            </summary>
+            <param name="componentId">
+            Application Insights ComponentId that indicates which app this log message is for.
+            If null or empty the ComponentId will be read from the ApplicationInsights.config file.
+            </param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.LogMessage(System.String)">
+            <summary>
+            Log simple message with no metadata.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.LogMessageWithData(System.String,System.Object)">
+            <summary>
+            Log message with additional metadata object.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.LogMessageWithData(System.String,System.Object,Newtonsoft.Json.JsonConverter[])">
+            <summary>
+            Log message with additional metadata object with custom <see cref="T:Newtonsoft.Json.JsonConverter"/>s.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+            <param name="dataConverters">Custom <seealso cref="T:Newtonsoft.Json.JsonConverter"/> for customizing how the data object is converted to JSON.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.Dispose">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.Tracing.LoggingController"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.LoggingController.Dispose(System.Boolean)">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.Tracing.LoggingController"/>.
+            </summary>
+            <param name="disposing">True if called from user code, false if called from finalizer.</param>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.LoggingController.ComponentId">
+            <summary>
+            The given component id. If null or empty the component id will come from the application insights configuration file.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.LoggingController.LoggingControllerCreationOverride">
+            <summary>
+            For testing purposes only. Allows tests to override the LoggingController created by <see cref="M:Microsoft.ApplicationInsights.Tracing.LoggingController.CreateLoggingController(System.String)"/>.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.#ctor(System.String)">
+            <summary>
+            Creates an instance of the <see cref="T:Microsoft.ApplicationInsights.Tracing.InProcLoggingController"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.#ctor(System.String,System.Collections.Generic.IEnumerable{System.Func{Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider}})">
+            <summary>
+            Creates an instance of the <see cref="T:Microsoft.ApplicationInsights.Tracing.InProcLoggingController"/> class with custom property providers.
+            Primarily for testing purposes.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.LogMessage(System.String)">
+            <summary>
+            Log simple message with no metadata.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.LogMessageWithData(System.String,System.Object)">
+            <summary>
+            Log message with additional metadata object.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.LogMessageWithData(System.String,System.Object,Newtonsoft.Json.JsonConverter[])">
+            <summary>
+            Log message with additional metadata object with custom <see cref="T:Newtonsoft.Json.JsonConverter"/>s.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+            <param name="dataConverters">Custom <seealso cref="T:Newtonsoft.Json.JsonConverter"/> for customizing how the data object is converted to JSON.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.InProcLoggingController.Dispose(System.Boolean)">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.Tracing.InProcLoggingController"/>.
+            </summary>
+            <param name="disposing">True if called from user code, false if called from finalizer.</param>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController">
+            <summary>
+            Sends tracing data out of process via the Microsoft Monitoring Agent.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController.#ctor(System.String)">
+            <summary>
+            Creates an instance of the <see cref="T:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController.LogMessage(System.String)">
+            <summary>
+            Log simple message with no metadata.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController.LogMessageWithData(System.String,System.Object)">
+            <summary>
+            Log message with additional metadata object.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.OutOfProcLoggingController.LogMessageWithData(System.String,System.Object,Newtonsoft.Json.JsonConverter[])">
+            <summary>
+            Log message with additional metadata object with custom <see cref="T:Newtonsoft.Json.JsonConverter"/>s.
+            </summary>
+            <param name="message">A meaningful human readable message.</param>
+            <param name="data">Additional metadata about the event.</param>
+            <param name="dataConverters">Custom <seealso cref="T:Newtonsoft.Json.JsonConverter"/> for customizing how the data object is converted to JSON.</param>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider">
+            <summary>
+            Stores the component id passed in by logging framework configuration files.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider.#ctor(System.String)">
+            <summary>
+            Creates an instance of the <see cref="T:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider"/> class.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider.Dispose">
+            <summary>
+            Releases all resources used by <see cref="T:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider"/>.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.PassedComponentIdProvider.ComponentId">
+            <summary>
+            Returns the current component id. 
+            The current component id will remain the same for the lifetime of this object.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.AzureData">
+            <summary>
+            AzureData to capture Azure related deployment data in the TraceTelemetry object.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.AzureData.ToString">
+            <summary>
+            Returns a string that represents the current object.
+            </summary>
+            <returns>String represents the object.</returns>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.Instance">
+            <summary>
+            Gets the singleton instance for AzureData object.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.DeploymentId">
+            <summary>
+            Gets or sets Azure runtime DeploymentId of the WebRole/WorkerRole.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.RoleInstanceName">
+            <summary>
+            Gets or sets Azure runtime RoleInstanceName of the WebRole/WorkerRole.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.RoleType">
+            <summary>
+            Gets or sets Azure runtime RoleType of the WebRole/WorkerRole.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.RoleName">
+            <summary>
+            Gets or sets Azure runtime RoleName of the WebRole/WorkerRole.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.AzureData.HasData">
+            <summary>
+            Gets a value indicating whether AzureData has runtime data.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.AzureDataReflection">
+            <summary>
+            AzureDataReflection class to use reflection to retrieve Azure related deployment data.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.AzureDataReflection.FindRoleTypeFromWaRoleTypeVariable(System.String)">
+            <summary>
+            Returns RoleType defined in the passed in xml file. In the event when the xmlRoleModel file is ill-formed xml or we cannot find the info, 
+            empty string will be returned.
+            </summary>
+            <param name="xmlRoleModel">RoleModel.xml file content.</param>
+            <returns>Returns Azure RoleType name, null if we cannot find it.</returns>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.AzurePropertyProvider">
+            <summary>
+            An <see cref="T:Microsoft.ApplicationInsights.ObjectModel.ITelemetryPropertyProvider"/> that updates the <see cref="P:Microsoft.ApplicationInsights.TraceTelemetry.Properties"/>
+            property values with the <see cref="T:Microsoft.ApplicationInsights.Tracing.AzureData"/> in the current Azure running environment.
+            </summary>
+            <remarks>
+            The <see cref="T:Microsoft.ApplicationInsights.Tracing.AzurePropertyProvider"/> is not available on Windows Store and Windows Phone.
+            </remarks>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.AzurePropertyProvider.UpdateProperties(Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties)">
+            <summary>
+            Updates the <see cref="P:Microsoft.ApplicationInsights.ObjectModel.ITelemetryProperties.Properties"/> of the specified <paramref name="properties"/> 
+            object with the current <see cref="T:Microsoft.ApplicationInsights.Tracing.AzureData"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.ApplicationInsightsContractResolver">
+            <summary>
+            Custom contract resolver for Application Insights.
+            Converts any type mutable fields (of type object or collection of object) to strings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ApplicationInsightsContractResolver.CreateProperty(System.Reflection.MemberInfo,Newtonsoft.Json.MemberSerialization)">
+            <summary>
+            Creates a <see cref="T:Newtonsoft.Json.Serialization.JsonProperty"/> for the given <see cref="T:System.Reflection.MemberInfo"/>.
+            In the case of object fields, the property converter will be overridden to use the <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter"/> that converts objects to strings.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.ApplicationInsightsContractResolver.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.ApplicationInsightsContractResolver"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.EnumerableConverter">
+            <summary>
+            This converter converts each individual object in the <see cref="T:System.Collections.IEnumerable"/> to JSON and then wraps serialized object JSON in a string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.EnumerableConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes JSON for the types of object types this converter supports.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter">
+            <summary>
+            Converts IFormatProvider to JSON. Stringifies all complex types of IFormatProvider to avoid type conflicts with Elastic search.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes JSON for objects of type IFormatProvider this converter supports.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.FormatProviderConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.StackConverter">
+            <summary>
+            <see cref="T:Newtonsoft.Json.JsonConverter"/> that wraps <see cref="T:System.Collections.Stack"/> contents in strings.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.StackConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.StackConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.StackConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.StackConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter">
+            <summary>
+            Converts exceptions to JSON. Stringifies all complex types to avoid type conflicts with Elastic search.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes JSON for the types of object types this converter supports.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.ExceptionConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectArrayConverter">
+            <summary>
+            Rather than converting object arrays to JSON, this converter converts each individual object to JSON and then wraps serialized object JSON in a string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectArrayConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectArrayConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectArrayConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectArrayConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter">
+            <summary>
+            Rather than converting objects to JSON, this converter converts the object to JSON and then wraps serialized object JSON in a string.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes JSON for the types of object types this converter supports.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.ObjectConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.StringifiedJsonTextWriter">
+            <summary>
+            Simply wraps a <see cref="T:Newtonsoft.Json.JsonTextWriter"/> type.
+            This class just exists to let our other converters know that the contents they are converting has already been stringified at a higher level.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.StringifiedJsonTextWriter.#ctor(System.IO.TextWriter)">
+            <summary>
+            Creates an instance of the StringifiedJsonTextWriter class using the specified <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter">
+            <summary>
+            Converts object of type Dictionary to JSON to avoid type conflicts with Elastic search.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter.CanConvert(System.Type)">
+            <summary>
+            Determines if this converter to convert the given type.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter.ReadJson(Newtonsoft.Json.JsonReader,System.Type,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Reads in JSON written by this converter. Currently not implemented.
+            </summary>
+        </member>
+        <member name="M:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter.WriteJson(Newtonsoft.Json.JsonWriter,System.Object,Newtonsoft.Json.JsonSerializer)">
+            <summary>
+            Writes JSON for objects of type Dictionary this converter supports.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter.Instance">
+            <summary>
+            <see cref="T:Microsoft.ApplicationInsights.Tracing.Serialization.DictionaryConverter"/> is a Singleton with no state. This returns the only instance of the class.
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.Strings">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.InvalidComponentIdException">
+            <summary>
+              Looks up a localized string similar to ComponentId &apos;{0}&apos; specified is not a valid ComponentId GUID. Please specify the ComponentId attribute in the ApplicationInsights.config file with the correct ComponentId of your application..
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.MissingComponentIdException">
+            <summary>
+              Looks up a localized string similar to ComponentId has not been specified. Please specify the ComponentId either in your ApplicationInsights.config file or using the configuration settings for the logging framework you are using..
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.MissingMessageException">
+            <summary>
+              Looks up a localized string similar to Message has not been specified. Please provide a value for message..
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.RequiredArgumentIsUndefined">
+            <summary>
+              Looks up a localized string similar to Required parameter {0} has a null or default value..
+            </summary>
+        </member>
+        <member name="P:Microsoft.ApplicationInsights.Tracing.Strings.TruncatedStringWithEllipsis">
+            <summary>
+              Looks up a localized string similar to {0}....
+            </summary>
+        </member>
+        <member name="T:Microsoft.ApplicationInsights.Tracing.WriteEventArgs">
+            <summary>
+            EventArgs for testing purposes.
+            </summary>
+        </member>
+    </members>
+</doc>

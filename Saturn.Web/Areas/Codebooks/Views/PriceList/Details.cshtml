@@ -1,0 +1,90 @@
+﻿@model Saturn.Model.Codebooks.PriceList
+
+@{
+    ViewBag.Title = "Ценовник";
+}
+
+<h3>Детали</h3>
+
+<div>
+    <h4>Ценовник</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.DrivingCategory.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DrivingCategory.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PriceFirst)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PriceFirst)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxFirst)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxFirst)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PriceRepeated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PriceRepeated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.TaxRepeated)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.TaxRepeated)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaterialCosts)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaterialCosts)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.VAT)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.VAT)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Note)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Note)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

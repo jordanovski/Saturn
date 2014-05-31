@@ -1,0 +1,39 @@
+﻿@{
+    ViewBag.Title = "Ангажман на членовите на испитните комисии";
+}
+
+<h3>@ViewBag.Title</h3>
+
+Од: @(Html.Kendo().DatePicker().Name("from").Format("dd/MM/yyyy"))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+До: @(Html.Kendo().DatePicker().Name("to").Format("dd/MM/yyyy"))
+<br />
+<br />
+<input type="button" value="Преглед" id="GetExaminersStatistic" class="btn btn-default" />
+<br />
+<br />
+<div id="rData">
+</div>
+
+<script type="text/jscript">
+    $(document).ready(function (e) {
+        $.get("/Statistics/GetExaminersStatistic", function (data) {
+            $("#rData").html(data);
+        });
+
+        $('#GetExaminersStatistic').click(function () {
+            var url = "/Statistics/GetExaminersStatistic";
+            var fromValue = $("#from").data("kendoDatePicker").value();
+            var toValue = $("#to").data("kendoDatePicker").value();
+            if (fromValue) {
+                fromValue = fromValue.toDateString();
+            }
+            if (toValue) {
+                toValue = toValue.toDateString();
+            }
+        
+            $.get(url, { fromDate: fromValue, toDate: toValue}, function (data) {
+                $("#rData").html(data);
+            });
+        });
+    });
+</script>

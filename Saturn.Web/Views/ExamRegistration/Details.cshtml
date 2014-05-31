@@ -1,0 +1,156 @@
+﻿@model Saturn.Model.ExamRegistration
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ExamRegistration</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Examination.Id)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Examination.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamLanguage.Language)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamLanguage.Language)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamRegistrationStatus.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamRegistrationStatus.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamWayOfTaking.WayOfTaking)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamWayOfTaking.WayOfTaking)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Registration.Place)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Registration.Place)
+        </dd>
+
+
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamRegistrationDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamRegistrationDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ExamCenterId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ExamCenterId)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Place)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Place)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Tax)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Tax)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.UseVehicle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.UseVehicle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MaterialCosts)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MaterialCosts)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PDVAmount)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PDVAmount)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PDVVehicle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PDVVehicle)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PDVTest)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PDVTest)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Result)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Result)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

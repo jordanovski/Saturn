@@ -1,0 +1,58 @@
+﻿@model Saturn.Model.Codebooks.DrivingCategory
+
+@{
+    ViewBag.Title = "Возачки категории";
+}
+
+<h3>Детали</h3>
+
+<div>
+    <h4>Возачка категорија</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Category)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Category)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AllowedNegativeTheory)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AllowedNegativeTheory)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AllowedNegativePolygon)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AllowedNegativePolygon)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.AllowedNegativePracticle)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AllowedNegativePracticle)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

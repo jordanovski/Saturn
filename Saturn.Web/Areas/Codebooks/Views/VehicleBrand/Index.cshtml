@@ -1,0 +1,33 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.VehicleBrand>
+
+@{
+    ViewBag.Title = "Брендови на возила";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Brand);
+
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "VehicleBrand") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "VehicleBrand") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "VehicleBrand")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "VehicleBrand"))
+    )
+)
