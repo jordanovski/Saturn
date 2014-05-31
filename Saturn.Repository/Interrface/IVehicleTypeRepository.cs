@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Saturn.Repository.Interrface
 {
-    public interface IVehicleTypeRepository
+    public interface IVehicleTypeRepository : IDisposable
     {
         Task<List<VehicleType>> GetAllAsync();
         Task<VehicleType> FindAsync(Expression<Func<VehicleType, bool>> match);

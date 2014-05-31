@@ -19,7 +19,7 @@ namespace Saturn.Repository
             this.dbContext = dbContext;
             this.dbContext.Configuration.ProxyCreationEnabled = false;
         }
-
+                        
 
         public async Task<List<VehicleType>> GetAllAsync()
         {
@@ -57,6 +57,27 @@ namespace Saturn.Repository
         public async Task<int> CountAsync()
         {
             return await dbContext.VehicleType.CountAsync();
+        }
+
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    dbContext.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
         }
     }
 }

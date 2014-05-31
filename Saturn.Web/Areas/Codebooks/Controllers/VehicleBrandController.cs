@@ -11,7 +11,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class VehicleBrandController : Controller
     {
-        readonly Repository<VehicleBrand> repository = new Repository<VehicleBrand>(new SaturnDbContext());
+        readonly VehicleBrandRepository repository = new VehicleBrandRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
@@ -52,7 +52,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                await repository.AddAsync(vehiclebrand);
+                await repository.InsertAsync(vehiclebrand);
                 return RedirectToAction("Index");
             }
 
@@ -115,7 +115,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                //repository.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }
