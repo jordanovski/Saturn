@@ -12,9 +12,11 @@ namespace Saturn.Repository.Interrface
         Task<List<VehicleViewModel>> GetAllAsync();
         Task<Vehicle> FindAsync(Expression<Func<Vehicle, bool>> match);
         Task<List<Vehicle>> FindAllAsync(Expression<Func<Vehicle, bool>> match);
-        Task<int> InsertAsync(Vehicle t);
-        Task<int> UpdateAsync(Vehicle t);
-        Task<int> RemoveAsync(Vehicle t);
+        void InsertAsync(Vehicle t);
+        void UpdateAsync(Vehicle t);
+        void RemoveAsync(Vehicle t);
         Task<int> CountAsync();
+
+        Task<int> SaveAsync();
     }
 }

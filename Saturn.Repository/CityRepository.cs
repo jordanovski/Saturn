@@ -10,50 +10,50 @@ using System.Threading.Tasks;
 
 namespace Saturn.Repository
 {
-    public class VehicleBrandRepository : IVehicleBrandRepository
+    public class CityRepository : ICityRepository
     {
         private readonly SaturnDbContext dbContext;
 
-        public VehicleBrandRepository(SaturnDbContext dbContext)
+        public CityRepository(SaturnDbContext dbContext)
         {
             this.dbContext = dbContext;
             this.dbContext.Configuration.ProxyCreationEnabled = false;
         }
 
 
-        public async Task<List<VehicleBrand>> GetAllAsync()
+        public async Task<List<City>> GetAllAsync()
         {
-            return await dbContext.VehicleBrand.OrderBy(o => o.Brand).ToListAsync();
+            return await dbContext.City.OrderBy(o => o.Name).ToListAsync();
         }
 
-        public async Task<VehicleBrand> FindAsync(Expression<Func<VehicleBrand, bool>> match)
+        public async Task<City> FindAsync(Expression<Func<City, bool>> match)
         {
-            return await dbContext.VehicleBrand.SingleOrDefaultAsync(match);
+            return await dbContext.City.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<VehicleBrand>> FindAllAsync(Expression<Func<VehicleBrand, bool>> match)
+        public async Task<List<City>> FindAllAsync(Expression<Func<City, bool>> match)
         {
-            return await dbContext.VehicleBrand.Where(match).ToListAsync();
+            return await dbContext.City.Where(match).ToListAsync();
         }
 
-        public void InsertAsync(VehicleBrand t)
+        public void InsertAsync(City t)
         {
-            dbContext.VehicleBrand.Add(t);
+            dbContext.City.Add(t);
         }
 
-        public void UpdateAsync(VehicleBrand t)
+        public void UpdateAsync(City t)
         {
             dbContext.Entry(t).State = EntityState.Modified;
         }
 
-        public void RemoveAsync(VehicleBrand t)
+        public void RemoveAsync(City t)
         {
             dbContext.Entry(t).State = EntityState.Deleted;
         }
 
         public async Task<int> CountAsync()
         {
-            return await dbContext.VehicleBrand.CountAsync();
+            return await dbContext.City.CountAsync();
         }
 
 

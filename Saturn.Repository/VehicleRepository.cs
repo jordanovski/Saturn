@@ -51,27 +51,30 @@ namespace Saturn.Repository
             return await dbContext.Vehicle.Where(match).ToListAsync();
         }
 
-        public async Task<int> InsertAsync(Vehicle t)
+        public void InsertAsync(Vehicle t)
         {
             dbContext.Vehicle.Add(t);
-            return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateAsync(Vehicle t)
+        public void UpdateAsync(Vehicle t)
         {
             dbContext.Entry(t).State = EntityState.Modified;
-            return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> RemoveAsync(Vehicle t)
+        public void RemoveAsync(Vehicle t)
         {
             dbContext.Entry(t).State = EntityState.Deleted;
-            return await dbContext.SaveChangesAsync();
         }
 
         public async Task<int> CountAsync()
         {
             return await dbContext.Vehicle.CountAsync();
+        }
+
+
+        public async Task<int> SaveAsync()
+        {
+            return await dbContext.SaveChangesAsync();
         }
 
 

@@ -11,9 +11,11 @@ namespace Saturn.Repository.Interrface
         Task<List<VehicleBrand>> GetAllAsync();
         Task<VehicleBrand> FindAsync(Expression<Func<VehicleBrand, bool>> match);
         Task<List<VehicleBrand>> FindAllAsync(Expression<Func<VehicleBrand, bool>> match);
-        Task<int> InsertAsync(VehicleBrand t);
-        Task<int> UpdateAsync(VehicleBrand t);
-        Task<int> RemoveAsync(VehicleBrand t);
+        void InsertAsync(VehicleBrand t);
+        void UpdateAsync(VehicleBrand t);
+        void RemoveAsync(VehicleBrand t);
         Task<int> CountAsync();
+
+        Task<int> SaveAsync();
     }
 }

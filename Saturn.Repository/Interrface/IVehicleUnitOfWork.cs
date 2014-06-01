@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Saturn.Repository.Interrface
 {
@@ -8,5 +9,7 @@ namespace Saturn.Repository.Interrface
         IVehicleBrandRepository VehicleBrandRepository { get; }
         IVehicleTypeRepository VehicleTypeRepository { get; }
         IDrivingSchoolRepository DrivingSchoolRepository { get; }
+
+        Task<int> SaveAsync();
     }
 }

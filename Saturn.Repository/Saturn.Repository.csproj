@@ -46,8 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CityRepository.cs" />
     <Compile Include="DrivingSchoolRepository.cs" />
+    <Compile Include="Interrface\IContactPersonRepository.cs" />
+    <Compile Include="Interrface\IContactTypeRepository.cs" />
+    <Compile Include="Interrface\IDrivingCategoryRepository.cs" />
+    <Compile Include="Interrface\ICityRepository.cs" />
     <Compile Include="Interrface\IDrivingSchoolRepository.cs" />
+    <Compile Include="Interrface\IErrorTypeRepository.cs" />
+    <Compile Include="Interrface\IExamCentersRepository.cs" />
+    <Compile Include="Interrface\IExaminerRepository.cs" />
+    <Compile Include="Interrface\IExamLanguageRepository.cs" />
+    <Compile Include="Interrface\IExamRegistrationStatusRepository.cs" />
+    <Compile Include="Interrface\IExamTypeRepository.cs" />
+    <Compile Include="Interrface\IExamWayOfTakingRepository.cs" />
+    <Compile Include="Interrface\IInstructorRepository.cs" />
+    <Compile Include="Interrface\IPriceListRepository.cs" />
+    <Compile Include="Interrface\IRegistrationStatusRepository.cs" />
+    <Compile Include="Interrface\IReqDocDrivingCategoryRepository.cs" />
+    <Compile Include="Interrface\IRequiredDocumentRepository.cs" />
     <Compile Include="Interrface\IVehicleRepository.cs" />
     <Compile Include="Interrface\IVehicleTypeRepository.cs" />
     <Compile Include="Interrface\IVehicleBrandRepository.cs" />
