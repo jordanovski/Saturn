@@ -23,7 +23,7 @@ namespace Saturn.Repository
 
         public async Task<List<VehicleBrand>> GetAllAsync()
         {
-            return await dbContext.VehicleBrand.ToListAsync();
+            return await dbContext.VehicleBrand.OrderBy(o => o.Brand).ToListAsync();
         }
 
         public async Task<VehicleBrand> FindAsync(Expression<Func<VehicleBrand, bool>> match)
@@ -60,6 +60,8 @@ namespace Saturn.Repository
         }
 
 
+        #region IDisposable Methods
+
         private bool disposed = false;
 
         protected virtual void Dispose(bool disposing)
@@ -79,5 +81,7 @@ namespace Saturn.Repository
             Dispose(true);
             GC.SuppressFinalize(this);
         }
+
+        #endregion
     }
 }

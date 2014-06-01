@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Saturn.Model.Views.ViewVehicles>
+﻿@model IEnumerable<Saturn.Model.ViewModels.VehicleViewModel>
 
 @{
     ViewBag.Title = "Возила";
@@ -15,7 +15,7 @@
         columns.Bound(p => p.VehicleBrand);
         columns.Bound(p => p.CommercialMark);
         columns.Bound(p => p.RegistrationNumber);
-        columns.Bound(p => p.VehicleIsActive);
+        columns.Bound(p => p.VehicleIsActive).ClientTemplate("#= VehicleIsActive? 'Да' : 'Не' #");
 
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "Vehicle") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></a>").Width(50);
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "Vehicle") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
@@ -34,7 +34,7 @@
     .Resizable(r => r.Columns(true))
     .DataSource(dataSource => dataSource
         .Ajax()
-        .PageSize(15)
+        .PageSize(10)
         .Read(read => read.Action("Read", "Vehicle"))
     )
 )

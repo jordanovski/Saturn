@@ -1,5 +1,6 @@
 ﻿using Saturn.Data;
 using Saturn.Model.Codebooks;
+using Saturn.Model.ViewModels;
 using Saturn.Repository.Interrface;
 using System;
 using System.Collections.Generic;
@@ -21,9 +22,23 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<Vehicle>> GetAllAsync()
+        public async Task<List<VehicleViewModel>> GetAllAsync()
         {
-            return await dbContext.Vehicle.ToListAsync();
+            var data = await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).ToListAsync();
+            foreach (var v in data)
+            {
+                if (v.DrivingSchoolId != null)
+                {
+                    var drivingSchool = dbContext.DrivingSchool.Find((int)v.DrivingSchoolId);
+                    if (drivingSchool!=null)
+                    {
+                        v.DrivingSchool = drivingSchool.Name;
+                        v.DrivingSchoolIsActive = drivingSchool.IsActive;
+                    }
+                }
+            }
+           
+            return data;
         }
 
         public async Task<Vehicle> FindAsync(Expression<Func<Vehicle, bool>> match)
@@ -58,5 +73,30 @@ namespace Saturn.Repository
         {
             return await dbContext.Vehicle.CountAsync();
         }
+
+
+        #region IDisposable Methods
+
+        private bool disposed = false;
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    dbContext.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        #endregion
     }
 }

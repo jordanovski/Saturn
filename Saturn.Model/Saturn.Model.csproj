@@ -102,6 +102,7 @@
     <Compile Include="ViewModels\ReqDocCandidateViewModel.cs" />
     <Compile Include="ViewModels\ReqDocDrivingCategoryViewModel.cs" />
     <Compile Include="ViewModels\StatusViewModel.cs" />
+    <Compile Include="ViewModels\VehicleViewModel.cs" />
     <Compile Include="Views\ViewCandidates.cs" />
     <Compile Include="Views\ViewExamCandidates.cs" />
     <Compile Include="Views\ViewExaminations.cs" />

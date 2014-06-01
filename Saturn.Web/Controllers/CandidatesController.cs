@@ -18,17 +18,7 @@ namespace Saturn.Web.Controllers
     {
         private readonly SaturnDbContext db = new SaturnDbContext();
         private readonly SaturnDbViewContext dbView = new SaturnDbViewContext();
-        private readonly ICandidateRepository repository = null;
-
-        public CandidatesController()
-        {
-            this.repository = new CandidateRepository();
-        }
-        public CandidatesController(ICandidateRepository repository)
-        {
-            this.repository = repository;
-        }
-
+        
 
         public ActionResult Index()
         {
@@ -36,7 +26,13 @@ namespace Saturn.Web.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            List<CandidateViewModel> data = await repository.SelectAll();
+            db.Configuration.ProxyCreationEnabled = false;
+            var data = db.Candidate
+                .Include(c => c.City)
+                .Include(c => c.DrivingCategory)
+                .Include(c => c.ExistingDrivingCategory)
+                .OrderByDescending(o => o.Id)
+                .Select(CandidateViewModel.FromCandidates).ToList();
             
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -155,10 +151,8 @@ namespace Saturn.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                repository.Insert(candidate);
-                await repository.Save();
-                //db.Candidate.Add(candidate);
-                //await db.SaveChangesAsync();
+                db.Candidate.Add(candidate);
+                await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 

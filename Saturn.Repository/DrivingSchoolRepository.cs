@@ -10,45 +10,45 @@ using System.Threading.Tasks;
 
 namespace Saturn.Repository
 {
-    public class VehicleTypeRepository : IVehicleTypeRepository
+    public class DrivingSchoolRepository : IDrivingSchoolRepository
     {
         private readonly SaturnDbContext dbContext;
 
-        public VehicleTypeRepository(SaturnDbContext dbContext)
+        public DrivingSchoolRepository(SaturnDbContext dbContext)
         {
             this.dbContext = dbContext;
             this.dbContext.Configuration.ProxyCreationEnabled = false;
         }
 
 
-        public async Task<List<VehicleType>> GetAllAsync()
+        public async Task<List<DrivingSchool>> GetAllAsync()
         {
-            return await dbContext.VehicleType.OrderBy(o => o.Type).ToListAsync();
+            return await dbContext.DrivingSchool.ToListAsync();
         }
 
-        public async Task<VehicleType> FindAsync(Expression<Func<VehicleType, bool>> match)
+        public async Task<DrivingSchool> FindAsync(Expression<Func<DrivingSchool, bool>> match)
         {
-            return await dbContext.VehicleType.SingleOrDefaultAsync(match);
+            return await dbContext.DrivingSchool.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<VehicleType>> FindAllAsync(Expression<Func<VehicleType, bool>> match)
+        public async Task<List<DrivingSchool>> FindAllAsync(Expression<Func<DrivingSchool, bool>> match)
         {
-            return await dbContext.VehicleType.Where(match).ToListAsync();
+            return await dbContext.DrivingSchool.Where(match).ToListAsync();
         }
 
-        public async Task<int> InsertAsync(VehicleType t)
+        public async Task<int> InsertAsync(DrivingSchool t)
         {
-            dbContext.VehicleType.Add(t);
+            dbContext.DrivingSchool.Add(t);
             return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> UpdateAsync(VehicleType t)
+        public async Task<int> UpdateAsync(DrivingSchool t)
         {
             dbContext.Entry(t).State = EntityState.Modified;
             return await dbContext.SaveChangesAsync();
         }
 
-        public async Task<int> RemoveAsync(VehicleType t)
+        public async Task<int> RemoveAsync(DrivingSchool t)
         {
             dbContext.Entry(t).State = EntityState.Deleted;
             return await dbContext.SaveChangesAsync();
@@ -56,7 +56,7 @@ namespace Saturn.Repository
 
         public async Task<int> CountAsync()
         {
-            return await dbContext.VehicleType.CountAsync();
+            return await dbContext.DrivingSchool.CountAsync();
         }
 
 

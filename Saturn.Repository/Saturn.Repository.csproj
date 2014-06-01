@@ -46,19 +46,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CandidateRepository.cs" />
-    <Compile Include="ICandidateRepository.cs" />
+    <Compile Include="DrivingSchoolRepository.cs" />
+    <Compile Include="Interrface\IDrivingSchoolRepository.cs" />
     <Compile Include="Interrface\IVehicleRepository.cs" />
     <Compile Include="Interrface\IVehicleTypeRepository.cs" />
-    <Compile Include="IRegistrationRepository.cs" />
-    <Compile Include="IRepository.cs" />
     <Compile Include="Interrface\IVehicleBrandRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationRepository.cs" />
-    <Compile Include="Repository.cs" />
     <Compile Include="VehicleBrandRepository.cs" />
     <Compile Include="VehicleRepository.cs" />
     <Compile Include="VehicleTypeRepository.cs" />
+    <Compile Include="Interrface\IVehicleUnitOfWork.cs" />
+    <Compile Include="VehicleUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Saturn.Data\Saturn.Data.csproj">
