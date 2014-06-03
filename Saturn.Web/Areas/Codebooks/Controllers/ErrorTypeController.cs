@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,26 +11,15 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ErrorTypeController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        private readonly ErrorTypeUnitOfWork unitOfWork = new ErrorTypeUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.ErrorType
-                .ToList()
-                .Select(s => new ErrorTypeViewModel
-                {
-                    Id = s.Id,
-                    Form = s.Form,
-                    Question = s.Question,
-                    Description = s.Description,
-                    DrivingCategory = s.DrivingCategory,
-                    PenaltyPoints = s.PenaltyPoints
-                });
+            var data = await unitOfWork.ErrorTypeRepository.GetAllAsync();
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -43,7 +30,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ErrorType errortype = await db.ErrorType.FindAsync(id);
+            ErrorType errortype = await unitOfWork.ErrorTypeRepository.FindAsync(p => p.Id == id);
             if (errortype == null)
             {
                 return HttpNotFound();
@@ -52,10 +39,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory.OrderBy(o => o.Category), "Id", "Category");
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type");
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type");
             return View();
         }
 
@@ -65,12 +51,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ErrorType.Add(errortype);
-                await db.SaveChangesAsync();
+                unitOfWork.ErrorTypeRepository.InsertAsync(errortype);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", errortype.ExamTypeId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", errortype.ExamTypeId);
             return View(errortype);
         }
 
@@ -81,12 +67,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ErrorType errortype = await db.ErrorType.FindAsync(id);
+            ErrorType errortype = await unitOfWork.ErrorTypeRepository.FindAsync(p => p.Id == id);
             if (errortype == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", errortype.ExamTypeId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", errortype.ExamTypeId);
             return View(errortype);
         }
 
@@ -96,11 +82,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(errortype).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.ErrorTypeRepository.UpdateAsync(errortype);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", errortype.ExamTypeId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", errortype.ExamTypeId);
             return View(errortype);
         }
 
@@ -111,7 +97,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ErrorType errortype = await db.ErrorType.FindAsync(id);
+            ErrorType errortype = await unitOfWork.ErrorTypeRepository.FindAsync(p => p.Id == id);
             if (errortype == null)
             {
                 return HttpNotFound();
@@ -123,9 +109,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ErrorType errortype = await db.ErrorType.FindAsync(id);
-            db.ErrorType.Remove(errortype);
-            await db.SaveChangesAsync();
+            ErrorType errortype = await unitOfWork.ErrorTypeRepository.FindAsync(p => p.Id == id);
+            unitOfWork.ErrorTypeRepository.RemoveAsync(errortype);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -134,7 +120,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

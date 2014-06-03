@@ -1,6 +1,7 @@
 ﻿using Saturn.Data;
 using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<ErrorType>> GetAllAsync()
+        public async Task<List<ErrorTypeViewModel>> GetAllAsync()
         {
-            return await dbContext.ErrorType.ToListAsync();
+            return await dbContext.ErrorType.Select(ErrorTypeViewModel.FromErrorType).ToListAsync();
         }
 
         public async Task<ErrorType> FindAsync(Expression<Func<ErrorType, bool>> match)
@@ -31,9 +32,9 @@ namespace Saturn.Repository
             return await dbContext.ErrorType.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<ErrorType>> FindAllAsync(Expression<Func<ErrorType, bool>> match)
+        public async Task<List<ErrorTypeViewModel>> FindAllAsync(Expression<Func<ErrorTypeViewModel, bool>> match)
         {
-            return await dbContext.ErrorType.Where(match).ToListAsync();
+            return await dbContext.ErrorType.Select(ErrorTypeViewModel.FromErrorType).Where(match).ToListAsync();
         }
 
         public void InsertAsync(ErrorType t)

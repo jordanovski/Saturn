@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="ContactPersonUnitOfWork.cs" />
     <Compile Include="DrivingSchoolUnitOfWork.cs" />
+    <Compile Include="ErrorTypeUnitOfWork.cs" />
+    <Compile Include="ExamCentersUnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="VehicleUnitOfWork.cs" />
   </ItemGroup>

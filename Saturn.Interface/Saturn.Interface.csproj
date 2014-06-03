@@ -62,6 +62,8 @@
     <Compile Include="Repository\IVehicleTypeRepository.cs" />
     <Compile Include="UnitOfWork\IContactPersonUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IDrivingSchoolUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IErrorTypeUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IExamCentersUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IVehicleUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

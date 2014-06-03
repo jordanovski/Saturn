@@ -1,4 +1,5 @@
 ﻿using Saturn.Model.Codebooks;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -8,7 +9,7 @@ namespace Saturn.Interface.Repository
 {
     public interface IExamCentersRepository : IDisposable
     {
-        Task<List<ExamCenters>> GetAllAsync();
+        Task<List<ExamCenterViewModel>> GetAllAsync();
         Task<ExamCenters> FindAsync(Expression<Func<ExamCenters, bool>> match);
         Task<List<ExamCenters>> FindAllAsync(Expression<Func<ExamCenters, bool>> match);
         void InsertAsync(ExamCenters t);

@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Saturn.Model.ViewModels;
 
 namespace Saturn.Repository
 {
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-         public async Task<List<ExamCenters>> GetAllAsync()
+         public async Task<List<ExamCenterViewModel>> GetAllAsync()
         {
-            return await dbContext.ExamCenters.ToListAsync();
+            return await dbContext.ExamCenters.Select(ExamCenterViewModel.FromExamCenter).ToListAsync();
         }
 
          public async Task<ExamCenters> FindAsync(Expression<Func<ExamCenters, bool>> match)

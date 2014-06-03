@@ -1,9 +1,28 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Saturn.Model.Codebooks;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace Saturn.Model.ViewModels
 {
     public class ErrorTypeViewModel
     {
+        public static Expression<Func<ErrorType, ErrorTypeViewModel>> FromErrorType
+        {
+            get
+            {
+                return s => new ErrorTypeViewModel
+                {
+                    Id = s.Id,
+                    Form = s.Form,
+                    Question = s.Question,
+                    Description = s.Description,
+                    DrivingCategory = s.DrivingCategory,
+                    PenaltyPoints = s.PenaltyPoints
+                };
+            }
+        }
+
         public int Id { get; set; }
 
         [Display(Name = "Форма")]

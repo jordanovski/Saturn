@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,23 +11,16 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExamCentersController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        private readonly ExamCentersUnitOfWork unitOfWork = new ExamCentersUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.ExamCenters.Include(d => d.City).OrderBy(o => o.Name).ToList().Select(s => new ExamCenterViewModel
-            {
-                Id = s.Id,
-                Name = s.Name,
-                TaxNumber = s.TaxNumber,
-                Address = s.Address,
-                City = s.City.Name
-            });
+            var data = await unitOfWork.ExamCentersRepository.GetAllAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -40,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await db.ExamCenters.FindAsync(id);
+            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
@@ -49,9 +40,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name");
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -61,12 +52,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ExamCenters.Add(examcenters);
-                await db.SaveChangesAsync();
+                unitOfWork.ExamCentersRepository.InsertAsync(examcenters);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -77,12 +68,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await db.ExamCenters.FindAsync(id);
+            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -92,11 +83,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(examcenters).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.ExamCentersRepository.UpdateAsync(examcenters);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -107,7 +98,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await db.ExamCenters.FindAsync(id);
+            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
@@ -119,9 +110,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ExamCenters examcenters = await db.ExamCenters.FindAsync(id);
-            db.ExamCenters.Remove(examcenters);
-            await db.SaveChangesAsync();
+            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
+            unitOfWork.ExamCentersRepository.RemoveAsync(examcenters);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -130,7 +121,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }
