@@ -2,10 +2,10 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Saturn.UnitOfWork;
 
 namespace Saturn.Web.Areas.Codebooks.Controllers
 {
@@ -31,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Vehicle vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
+            var vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
             if (vehicle == null)
             {
                 return HttpNotFound();

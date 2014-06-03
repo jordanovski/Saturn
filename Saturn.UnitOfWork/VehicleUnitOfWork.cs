@@ -1,9 +1,11 @@
 ﻿using Saturn.Data;
-using Saturn.Repository.Interrface;
+using Saturn.Interface.Repository;
+using Saturn.Interface.UnitOfWork;
+using Saturn.Repository;
 using System;
 using System.Threading.Tasks;
 
-namespace Saturn.Repository
+namespace Saturn.UnitOfWork
 {
     public class VehicleUnitOfWork : IVehicleUnitOfWork
     {

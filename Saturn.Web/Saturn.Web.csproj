@@ -858,6 +858,10 @@
       <Project>{e4bdcf6a-a07f-4689-b147-3545e2469759}</Project>
       <Name>Saturn.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Saturn.Interface\Saturn.Interface.csproj">
+      <Project>{2e01f1f6-dc0a-4cb4-a2cb-878d52ed6d5c}</Project>
+      <Name>Saturn.Interface</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Saturn.Model\Saturn.Model.csproj">
       <Project>{543eff59-f4d0-4f03-86e7-78b079a5428e}</Project>
       <Name>Saturn.Model</Name>
@@ -865,6 +869,10 @@
     <ProjectReference Include="..\Saturn.Repository\Saturn.Repository.csproj">
       <Project>{a4ece361-6051-4239-b0a1-4bbd89d82f4d}</Project>
       <Name>Saturn.Repository</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Saturn.UnitOfWork\Saturn.UnitOfWork.csproj">
+      <Project>{db20aa78-2703-4cbf-b5d7-d1018dcf195c}</Project>
+      <Name>Saturn.UnitOfWork</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,31 +11,18 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ContactPersonController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly ContactPersonUnitOfWork unitOfWork = new ContactPersonUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index(int id = 0)
         {
             Session["DrivingSchoolId"] = id;
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-
             int drivingSchoolId = int.Parse(Session["DrivingSchoolId"].ToString());
-
-            var data = db.ContactPerson
-                .Include(c => c.ContactType)
-                .Include(c => c.DrivingSchool)
-                .Where(w => w.DrivingSchoolId == drivingSchoolId)
-                .Select(s => new ContactPersonViewModel
-                {
-                    Id = s.Id,
-                    Name = s.Name,
-                    DrivingSchool = s.DrivingSchool.Name,
-                    ContactType = s.ContactType.Type,
-                    ContactValue = s.ContactValue
-                });
+            var data = await unitOfWork.ContactPersonRepository.FindAllAsync(f => f.DrivingSchoolId == drivingSchoolId);
+            
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -48,7 +33,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactPerson contactperson = await db.ContactPerson.FindAsync(id);
+            ContactPerson contactperson = await unitOfWork.ContactPersonRepository.FindAsync(p => p.Id == id);
             if (contactperson == null)
             {
                 return HttpNotFound();
@@ -57,9 +42,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.ContactTypeId = new SelectList(db.ContactType, "Id", "Type");
+            ViewBag.ContactTypeId = new SelectList(await unitOfWork.ContactTypeRepository.GetAllAsync(), "Id", "Type");
             return View();
         }
 
@@ -70,12 +55,13 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             contactperson.DrivingSchoolId = int.Parse(Session["DrivingSchoolId"].ToString());
             if (ModelState.IsValid)
             {
-                db.ContactPerson.Add(contactperson);
-                await db.SaveChangesAsync();
+                unitOfWork.ContactPersonRepository.InsertAsync(contactperson);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index", new { Id = Session["DrivingSchoolId"] });
             }
 
-            ViewBag.ContactTypeId = new SelectList(db.ContactType, "Id", "Type", contactperson.ContactTypeId);
+            ViewBag.ContactTypeId = new SelectList(await unitOfWork.ContactTypeRepository.GetAllAsync(), "Id", "Type", contactperson.ContactTypeId);
+
             return View(contactperson);
         }
 
@@ -86,13 +72,13 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactPerson contactperson = await db.ContactPerson.FindAsync(id);
+            ContactPerson contactperson = await unitOfWork.ContactPersonRepository.FindAsync(p => p.Id == id);
             if (contactperson == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ContactTypeId = new SelectList(db.ContactType, "Id", "Type", contactperson.ContactTypeId);
-            ViewBag.DrivingSchoolId = new SelectList(db.DrivingSchool, "Id", "Name", contactperson.DrivingSchoolId);
+            ViewBag.ContactTypeId = new SelectList(await unitOfWork.ContactTypeRepository.GetAllAsync(), "Id", "Type", contactperson.ContactTypeId);
+            
             return View(contactperson);
         }
 
@@ -102,11 +88,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(contactperson).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.ContactPersonRepository.UpdateAsync(contactperson);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index", new { Id = Session["DrivingSchoolId"] });
             }
-            ViewBag.ContactTypeId = new SelectList(db.ContactType, "Id", "Type", contactperson.ContactTypeId);
+            ViewBag.ContactTypeId = new SelectList(await unitOfWork.ContactTypeRepository.GetAllAsync(), "Id", "Type", contactperson.ContactTypeId);
             return View(contactperson);
         }
 
@@ -117,7 +103,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactPerson contactperson = await db.ContactPerson.FindAsync(id);
+            ContactPerson contactperson = await unitOfWork.ContactPersonRepository.FindAsync(p => p.Id == id);
             if (contactperson == null)
             {
                 return HttpNotFound();
@@ -129,9 +115,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ContactPerson contactperson = await db.ContactPerson.FindAsync(id);
-            db.ContactPerson.Remove(contactperson);
-            await db.SaveChangesAsync();
+            ContactPerson contactperson = await unitOfWork.ContactPersonRepository.FindAsync(p => p.Id == id);
+            unitOfWork.ContactPersonRepository.RemoveAsync(contactperson);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index", new { Id = Session["DrivingSchoolId"] });
         }
 
@@ -140,7 +126,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

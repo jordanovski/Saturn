@@ -3,14 +3,15 @@ using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Saturn.Model.ViewModels;
 
-namespace Saturn.Repository.Interrface
+namespace Saturn.Interface.Repository
 {
     public interface IContactPersonRepository : IDisposable
     {
-        Task<List<ContactPerson>> GetAllAsync();
+        Task<List<ContactPersonViewModel>> GetAllAsync();
         Task<ContactPerson> FindAsync(Expression<Func<ContactPerson, bool>> match);
-        Task<List<ContactPerson>> FindAllAsync(Expression<Func<ContactPerson, bool>> match);
+        Task<List<ContactPersonViewModel>> FindAllAsync(Expression<Func<ContactPersonViewModel, bool>> match);
         void InsertAsync(ContactPerson t);
         void UpdateAsync(ContactPerson t);
         void RemoveAsync(ContactPerson t);

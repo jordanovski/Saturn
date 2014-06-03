@@ -1,6 +1,7 @@
 ﻿using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
-using Saturn.Repository.Interrface;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<ContactPerson>> GetAllAsync()
+        public async Task<List<ContactPersonViewModel>> GetAllAsync()
         {
-            return await dbContext.ContactPerson.ToListAsync();
+            return await dbContext.ContactPerson.Select(ContactPersonViewModel.FromContactPerson).ToListAsync();
         }
 
         public async Task<ContactPerson> FindAsync(Expression<Func<ContactPerson, bool>> match)
@@ -31,9 +32,9 @@ namespace Saturn.Repository
             return await dbContext.ContactPerson.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<ContactPerson>> FindAllAsync(Expression<Func<ContactPerson, bool>> match)
+        public async Task<List<ContactPersonViewModel>> FindAllAsync(Expression<Func<ContactPersonViewModel, bool>> match)
         {
-            return await dbContext.ContactPerson.Where(match).ToListAsync();
+            return await dbContext.ContactPerson.Select(ContactPersonViewModel.FromContactPerson).Where(match).ToListAsync();
         }
 
         public void InsertAsync(ContactPerson t)

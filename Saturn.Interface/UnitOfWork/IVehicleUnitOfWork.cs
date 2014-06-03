@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Saturn.Interface.Repository;
+using System;
 using System.Threading.Tasks;
 
-namespace Saturn.Repository.Interrface
+namespace Saturn.Interface.UnitOfWork
 {
     public interface IVehicleUnitOfWork : IDisposable
     {

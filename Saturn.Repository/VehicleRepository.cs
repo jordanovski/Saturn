@@ -1,7 +1,7 @@
 ﻿using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
 using Saturn.Model.ViewModels;
-using Saturn.Repository.Interrface;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -43,12 +43,27 @@ namespace Saturn.Repository
 
         public async Task<Vehicle> FindAsync(Expression<Func<Vehicle, bool>> match)
         {
-            return await dbContext.Vehicle.SingleOrDefaultAsync(match);
+            var data = await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).SingleOrDefaultAsync(match);
+           
+            return data;
         }
 
-        public async Task<List<Vehicle>> FindAllAsync(Expression<Func<Vehicle, bool>> match)
+        public async Task<List<VehicleViewModel>> FindAllAsync(Expression<Func<VehicleViewModel, bool>> match)
         {
-            return await dbContext.Vehicle.Where(match).ToListAsync();
+            var data=await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).Where(match).ToListAsync();
+            foreach (var v in data)
+            {
+                if (v.DrivingSchoolId != null)
+                {
+                    var drivingSchool = dbContext.DrivingSchool.Find((int)v.DrivingSchoolId);
+                    if (drivingSchool != null)
+                    {
+                        v.DrivingSchool = drivingSchool.Name;
+                        v.DrivingSchoolIsActive = drivingSchool.IsActive;
+                    }
+                }
+            }
+            return data;
         }
 
         public void InsertAsync(Vehicle t)

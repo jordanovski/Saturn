@@ -5,13 +5,13 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
-namespace Saturn.Repository.Interrface
+namespace Saturn.Interface.Repository
 {
     public interface IVehicleRepository : IDisposable
     {
         Task<List<VehicleViewModel>> GetAllAsync();
         Task<Vehicle> FindAsync(Expression<Func<Vehicle, bool>> match);
-        Task<List<Vehicle>> FindAllAsync(Expression<Func<Vehicle, bool>> match);
+        Task<List<VehicleViewModel>> FindAllAsync(Expression<Func<VehicleViewModel, bool>> match);
         void InsertAsync(Vehicle t);
         void UpdateAsync(Vehicle t);
         void RemoveAsync(Vehicle t);

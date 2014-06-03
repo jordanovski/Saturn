@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,26 +11,16 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class DrivingSchoolController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly DrivingSchoolUnitOfWork unitOfWork = new DrivingSchoolUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
+            var data = await unitOfWork.DrivingSchoolRepository.GetAllAsync();
 
-            var data = db.DrivingSchool.Include(d => d.City).OrderBy(o => o.Name).ToList().Select(c => new DrivingSchoolViewModel
-            {
-                Id = c.Id,
-                Name = c.Name,
-                TaxNumber = c.TaxNumber,
-                Address = c.Address,
-                City = c.City.Name,
-                Note = c.Note,
-                IsActive = c.IsActive
-            });
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -43,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await db.DrivingSchool.FindAsync(id);
+            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
@@ -52,9 +40,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name");
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name");
 
             DrivingSchool drivingschool = new DrivingSchool();
             drivingschool.IsActive = true;
@@ -68,12 +56,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.DrivingSchool.Add(drivingschool);
-                await db.SaveChangesAsync();
+                unitOfWork.DrivingSchoolRepository.InsertAsync(drivingschool);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -84,12 +72,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await db.DrivingSchool.FindAsync(id);
+            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -99,11 +87,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(drivingschool).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.DrivingSchoolRepository.UpdateAsync(drivingschool);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -114,7 +102,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await db.DrivingSchool.FindAsync(id);
+            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
@@ -126,9 +114,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            DrivingSchool drivingschool = await db.DrivingSchool.FindAsync(id);
-            db.DrivingSchool.Remove(drivingschool);
-            await db.SaveChangesAsync();
+            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
+            unitOfWork.DrivingSchoolRepository.RemoveAsync(drivingschool);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -137,7 +125,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

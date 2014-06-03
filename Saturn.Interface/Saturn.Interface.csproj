@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A4ECE361-6051-4239-B0A1-4BBD89D82F4D}</ProjectGuid>
+    <ProjectGuid>{2E01F1F6-DC0A-4CB4-A2CB-878D52ED6D5C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Saturn.Repository</RootNamespace>
-    <AssemblyName>Saturn.Repository</AssemblyName>
+    <RootNamespace>Saturn.Interface</RootNamespace>
+    <AssemblyName>Saturn.Interface</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -30,14 +30,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework">
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
-    </Reference>
-    <Reference Include="EntityFramework.SqlServer">
-      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -46,45 +39,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CityRepository.cs" />
-    <Compile Include="ContactPersonRepository.cs" />
-    <Compile Include="DrivingCategoryRepository.cs" />
-    <Compile Include="DrivingSchoolRepository.cs" />
-    <Compile Include="ErrorTypeRepository.cs" />
-    <Compile Include="ExamCentersRepository.cs" />
-    <Compile Include="ExaminerRepository.cs" />
-    <Compile Include="ExamLanguageRepository.cs" />
-    <Compile Include="ExamRegistrationStatusRepository.cs" />
-    <Compile Include="ExamWayOfTakingRepository.cs" />
-    <Compile Include="InstructorRepository.cs" />
-    <Compile Include="ContactTypeRepository.cs" />
-    <Compile Include="ExamTypeRepository.cs" />
-    <Compile Include="PriceListRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationStatusRepository.cs" />
-    <Compile Include="ReqDocDrivingCategoryRepository.cs" />
-    <Compile Include="RequiredDocumentRepository.cs" />
-    <Compile Include="VehicleBrandRepository.cs" />
-    <Compile Include="VehicleRepository.cs" />
-    <Compile Include="VehicleTypeRepository.cs" />
+    <Compile Include="Repository\ICityRepository.cs" />
+    <Compile Include="Repository\IContactPersonRepository.cs" />
+    <Compile Include="Repository\IContactTypeRepository.cs" />
+    <Compile Include="Repository\IDrivingCategoryRepository.cs" />
+    <Compile Include="Repository\IDrivingSchoolRepository.cs" />
+    <Compile Include="Repository\IErrorTypeRepository.cs" />
+    <Compile Include="Repository\IExamCentersRepository.cs" />
+    <Compile Include="Repository\IExaminerRepository.cs" />
+    <Compile Include="Repository\IExamLanguageRepository.cs" />
+    <Compile Include="Repository\IExamRegistrationStatusRepository.cs" />
+    <Compile Include="Repository\IExamTypeRepository.cs" />
+    <Compile Include="Repository\IExamWayOfTakingRepository.cs" />
+    <Compile Include="Repository\IInstructorRepository.cs" />
+    <Compile Include="Repository\IPriceListRepository.cs" />
+    <Compile Include="Repository\IRegistrationStatusRepository.cs" />
+    <Compile Include="Repository\IReqDocDrivingCategoryRepository.cs" />
+    <Compile Include="Repository\IRequiredDocumentRepository.cs" />
+    <Compile Include="Repository\IVehicleBrandRepository.cs" />
+    <Compile Include="Repository\IVehicleRepository.cs" />
+    <Compile Include="Repository\IVehicleTypeRepository.cs" />
+    <Compile Include="UnitOfWork\IContactPersonUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IDrivingSchoolUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IVehicleUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Saturn.Data\Saturn.Data.csproj">
-      <Project>{e4bdcf6a-a07f-4689-b147-3545e2469759}</Project>
-      <Name>Saturn.Data</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Saturn.Interface\Saturn.Interface.csproj">
-      <Project>{2e01f1f6-dc0a-4cb4-a2cb-878d52ed6d5c}</Project>
-      <Name>Saturn.Interface</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Saturn.Model\Saturn.Model.csproj">
       <Project>{543eff59-f4d0-4f03-86e7-78b079a5428e}</Project>
       <Name>Saturn.Model</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -1,6 +1,7 @@
 ﻿using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
-using Saturn.Repository.Interrface;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<DrivingSchool>> GetAllAsync()
+        public async Task<List<DrivingSchoolViewModel>> GetAllAsync()
         {
-            return await dbContext.DrivingSchool.ToListAsync();
+            return await dbContext.DrivingSchool.Select(DrivingSchoolViewModel.FromDrivingSchool).ToListAsync();
         }
 
         public async Task<DrivingSchool> FindAsync(Expression<Func<DrivingSchool, bool>> match)
@@ -31,9 +32,9 @@ namespace Saturn.Repository
             return await dbContext.DrivingSchool.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<DrivingSchool>> FindAllAsync(Expression<Func<DrivingSchool, bool>> match)
+        public async Task<List<DrivingSchoolViewModel>> FindAllAsync(Expression<Func<DrivingSchoolViewModel, bool>> match)
         {
-            return await dbContext.DrivingSchool.Where(match).ToListAsync();
+            return await dbContext.DrivingSchool.Select(DrivingSchoolViewModel.FromDrivingSchool).Where(match).ToListAsync();
         }
 
         public void InsertAsync(DrivingSchool t)
