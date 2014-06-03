@@ -2,8 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -12,16 +11,16 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ContactTypeController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly ContactTypeRepository repository = new ContactTypeRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.ContactType.OrderBy(o => o.Type).ToList();
+            var data = await repository.GetAllAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -32,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contacttype = await db.ContactType.FindAsync(id);
+            ContactType contacttype = await repository.FindAsync(p => p.Id == id);
             if (contacttype == null)
             {
                 return HttpNotFound();
@@ -52,8 +51,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.ContactType.Add(contacttype);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(contacttype);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +66,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contacttype = await db.ContactType.FindAsync(id);
+            ContactType contacttype = await repository.FindAsync(p => p.Id == id);
             if (contacttype == null)
             {
                 return HttpNotFound();
@@ -81,8 +80,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(contacttype).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(contacttype);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(contacttype);
@@ -95,7 +94,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ContactType contacttype = await db.ContactType.FindAsync(id);
+            ContactType contacttype = await repository.FindAsync(p => p.Id == id);
             if (contacttype == null)
             {
                 return HttpNotFound();
@@ -107,9 +106,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ContactType contacttype = await db.ContactType.FindAsync(id);
-            db.ContactType.Remove(contacttype);
-            await db.SaveChangesAsync();
+            ContactType contacttype = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(contacttype);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -118,7 +117,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }

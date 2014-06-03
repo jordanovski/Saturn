@@ -1,23 +1,24 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Repository;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExamRegistrationStatusController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly ExamRegistrationStatusRepository repository = new ExamRegistrationStatusRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.ExamRegistrationStatus.OrderBy(o => o.Status).ToList();
+            var data = await repository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -27,7 +28,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }

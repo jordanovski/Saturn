@@ -52,7 +52,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                await repository.InsertAsync(vehiclebrand);
+                repository.InsertAsync(vehiclebrand);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -80,7 +81,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {               
-                await repository.UpdateAsync(vehiclebrand);
+                repository.UpdateAsync(vehiclebrand);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(vehiclebrand);
@@ -106,7 +108,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             VehicleBrand vehiclebrand = await repository.FindAsync(p => p.Id == id);
-            await repository.RemoveAsync(vehiclebrand);
+            repository.RemoveAsync(vehiclebrand);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 

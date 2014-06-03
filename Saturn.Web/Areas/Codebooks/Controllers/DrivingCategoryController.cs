@@ -2,8 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -12,16 +11,15 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class DrivingCategoryController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly DrivingCategoryRepository repository = new DrivingCategoryRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.DrivingCategory.OrderBy(o => o.Category).ToList();
+            var data = await repository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -33,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingCategory drivingcategory = await db.DrivingCategory.FindAsync(id);
+            DrivingCategory drivingcategory = await repository.FindAsync(p => p.Id == id);
             if (drivingcategory == null)
             {
                 return HttpNotFound();
@@ -53,8 +51,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.DrivingCategory.Add(drivingcategory);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(drivingcategory);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -68,7 +66,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingCategory drivingcategory = await db.DrivingCategory.FindAsync(id);
+            DrivingCategory drivingcategory = await repository.FindAsync(p => p.Id == id);
             if (drivingcategory == null)
             {
                 return HttpNotFound();
@@ -82,8 +80,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(drivingcategory).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(drivingcategory);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(drivingcategory);
@@ -96,7 +94,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingCategory drivingcategory = await db.DrivingCategory.FindAsync(id);
+            DrivingCategory drivingcategory = await repository.FindAsync(p => p.Id == id);
             if (drivingcategory == null)
             {
                 return HttpNotFound();
@@ -108,9 +106,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            DrivingCategory drivingcategory = await db.DrivingCategory.FindAsync(id);
-            db.DrivingCategory.Remove(drivingcategory);
-            await db.SaveChangesAsync();
+            DrivingCategory drivingcategory = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(drivingcategory);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -119,7 +117,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }

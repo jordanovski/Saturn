@@ -2,8 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -12,16 +11,15 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExaminerController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly ExaminerRepository repository = new ExaminerRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.Examiner.OrderBy(o => o.LastName).ToList();
+            var data = await repository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -33,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examiner examiner = await db.Examiner.FindAsync(id);
+            Examiner examiner = await repository.FindAsync(p => p.Id == id);
             if (examiner == null)
             {
                 return HttpNotFound();
@@ -56,8 +54,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Examiner.Add(examiner);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(examiner);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -71,7 +69,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examiner examiner = await db.Examiner.FindAsync(id);
+            Examiner examiner = await repository.FindAsync(p => p.Id == id);
             if (examiner == null)
             {
                 return HttpNotFound();
@@ -85,8 +83,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(examiner).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(examiner);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(examiner);
@@ -99,7 +97,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examiner examiner = await db.Examiner.FindAsync(id);
+            Examiner examiner = await repository.FindAsync(p => p.Id == id);
             if (examiner == null)
             {
                 return HttpNotFound();
@@ -111,9 +109,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Examiner examiner = await db.Examiner.FindAsync(id);
-            db.Examiner.Remove(examiner);
-            await db.SaveChangesAsync();
+            Examiner examiner = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(examiner);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -122,7 +120,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }

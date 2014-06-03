@@ -58,7 +58,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                await unitOfWork.VehicleRepository.InsertAsync(vehicle);
+                unitOfWork.VehicleRepository.InsertAsync(vehicle);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -94,7 +95,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                await unitOfWork.VehicleRepository.UpdateAsync(vehicle);
+                unitOfWork.VehicleRepository.UpdateAsync(vehicle);
+                await unitOfWork.SaveAsync(); 
                 return RedirectToAction("Index");
             }
             ViewBag.VehicleTypeId = new SelectList(await unitOfWork.VehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
@@ -124,7 +126,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
             Vehicle vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
-            await unitOfWork.VehicleRepository.RemoveAsync(vehicle);
+            unitOfWork.VehicleRepository.RemoveAsync(vehicle);
+            await unitOfWork.SaveAsync(); 
             return RedirectToAction("Index");
         }
 

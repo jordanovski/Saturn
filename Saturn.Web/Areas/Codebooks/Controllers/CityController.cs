@@ -2,8 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -12,16 +11,16 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class CityController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        readonly CityRepository repository = new CityRepository(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.City.OrderBy(o => o.Name).ToList();
+            var data = await repository.GetAllAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -32,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.City.FindAsync(id);
+            City city = await repository.FindAsync(p => p.Id == id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -52,8 +51,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.City.Add(city);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(city);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
@@ -67,7 +66,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.City.FindAsync(id);
+            City city = await repository.FindAsync(p => p.Id == id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -81,8 +80,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(city).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(city);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(city);
@@ -95,7 +94,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            City city = await db.City.FindAsync(id);
+            City city = await repository.FindAsync(p => p.Id == id);
             if (city == null)
             {
                 return HttpNotFound();
@@ -107,9 +106,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            City city = await db.City.FindAsync(id);
-            db.City.Remove(city);
-            await db.SaveChangesAsync();
+            City city = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(city);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -118,7 +117,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
             }
             base.Dispose(disposing);
         }
