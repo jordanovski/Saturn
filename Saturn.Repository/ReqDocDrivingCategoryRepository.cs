@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Saturn.Model.ViewModels;
 
 namespace Saturn.Repository
 {
@@ -21,9 +22,14 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<ReqDocDrivingCategory>> GetAllAsync()
+        public async Task<List<ReqDocDrivingCategoryViewModel>> GetAllAsync()
         {
-            return await dbContext.ReqDocDrivingCategory.ToListAsync();
+            return await dbContext.ReqDocDrivingCategory
+                .Include(r => r.DrivingCategory)
+                .Include(r => r.RequiredDocument)               
+                .OrderBy(o => o.DrivingCategory.Category)
+                .Select(ReqDocDrivingCategoryViewModel.FromReqDocDriving)
+                .ToListAsync();
         }
 
         public async Task<ReqDocDrivingCategory> FindAsync(Expression<Func<ReqDocDrivingCategory, bool>> match)
@@ -31,9 +37,15 @@ namespace Saturn.Repository
             return await dbContext.ReqDocDrivingCategory.SingleOrDefaultAsync(match);
         }
 
-        public async Task<List<ReqDocDrivingCategory>> FindAllAsync(Expression<Func<ReqDocDrivingCategory, bool>> match)
+        public async Task<List<ReqDocDrivingCategoryViewModel>> FindAllAsync(Expression<Func<ReqDocDrivingCategoryViewModel, bool>> match)
         {
-            return await dbContext.ReqDocDrivingCategory.Where(match).ToListAsync();
+            return await dbContext.ReqDocDrivingCategory
+                .Include(r => r.DrivingCategory)
+                .Include(r => r.RequiredDocument)
+                .OrderBy(o => o.DrivingCategory.Category)
+                .Select(ReqDocDrivingCategoryViewModel.FromReqDocDriving)
+                .Where(match)
+                .ToListAsync();
         }
 
         public void InsertAsync(ReqDocDrivingCategory t)

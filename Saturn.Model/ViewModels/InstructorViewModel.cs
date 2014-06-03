@@ -1,9 +1,29 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Saturn.Model.Codebooks;
+using System;
+using System.ComponentModel.DataAnnotations;
+using System.Linq.Expressions;
 
 namespace Saturn.Model.ViewModels
 {
     public class InstructorViewModel
     {
+        public static Expression<Func<Instructor, InstructorViewModel>> FromInstructor
+        {
+            get
+            {
+                return s => new InstructorViewModel
+                {
+                    Id = s.Id,
+                    FirstName = s.FirstName,
+                    LastName = s.LastName,
+                    UniqueNumber = s.UniqueNumber,
+                    DrivingSchool = s.DrivingSchool.Name,
+                    Practice = s.Practice,
+                    Theory = s.Theory,
+                    IsActive = s.IsActive
+                };
+            }
+        }
         public int Id { get; set; }
 
         [Display(Name = "Име")]

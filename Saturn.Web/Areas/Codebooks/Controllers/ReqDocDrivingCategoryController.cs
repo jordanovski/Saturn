@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,32 +11,19 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ReqDocDrivingCategoryController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        private readonly ReqDocDrivingCategoryUnitOfWork unitOfWork = new ReqDocDrivingCategoryUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index(int id = 0)
         {
             Session["DrivingCategoryId"] = id;
-            Session["Category"] = db.DrivingCategory.Find(id).Category;
+            Session["Category"] = unitOfWork.DrivingCategoryRepository.FindAllAsync(p => p.Id == id);
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-
             int drivingCategoryId = int.Parse(Session["DrivingCategoryId"].ToString());
-
-            var data = db.ReqDocDrivingCategory
-                .Include(r => r.DrivingCategory)
-                .Include(r => r.RequiredDocument)
-                .Where(w => w.DrivingCategoryId == drivingCategoryId)
-                .OrderBy(o => o.DrivingCategory.Category)
-                .ToList()
-                .Select(s => new ReqDocDrivingCategoryViewModel
-                {
-                    Id = s.Id,
-                    ReqDocument = s.RequiredDocument.ReqDocument,
-                    DrivingCategory = s.DrivingCategory.Category
-                });
+            var data = await unitOfWork.ReqDocDrivingCategoryRepository.FindAllAsync(f => f.DrivingCategoryId == drivingCategoryId);
+                       
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -49,7 +34,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ReqDocDrivingCategory reqdocdrivingcategory = await db.ReqDocDrivingCategory.FindAsync(id);
+            ReqDocDrivingCategory reqdocdrivingcategory = await unitOfWork.ReqDocDrivingCategoryRepository.FindAsync(p => p.Id == id);
             if (reqdocdrivingcategory == null)
             {
                 return HttpNotFound();
@@ -58,9 +43,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.ReqDocumentId = new SelectList(db.RequiredDocument, "Id", "ReqDocument");
+            ViewBag.ReqDocumentId = new SelectList(await unitOfWork.RequiredDocumentRepository.GetAllAsync(), "Id", "ReqDocument");
             return View();
         }
 
@@ -71,12 +56,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             reqdocdrivingcategory.DrivingCategoryId = int.Parse(Session["DrivingCategoryId"].ToString());
             if (ModelState.IsValid)
             {
-                db.ReqDocDrivingCategory.Add(reqdocdrivingcategory);
-                await db.SaveChangesAsync();
+                unitOfWork.ReqDocDrivingCategoryRepository.InsertAsync(reqdocdrivingcategory);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index", new { Id = Session["DrivingCategoryId"] });
             }
 
-            ViewBag.ReqDocumentId = new SelectList(db.RequiredDocument, "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
+            ViewBag.ReqDocumentId = new SelectList(await unitOfWork.RequiredDocumentRepository.GetAllAsync(), "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
             return View(reqdocdrivingcategory);
         }
 
@@ -87,12 +72,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ReqDocDrivingCategory reqdocdrivingcategory = await db.ReqDocDrivingCategory.FindAsync(id);
+            ReqDocDrivingCategory reqdocdrivingcategory = await unitOfWork.ReqDocDrivingCategoryRepository.FindAsync(p => p.Id == id);
             if (reqdocdrivingcategory == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.ReqDocumentId = new SelectList(db.RequiredDocument, "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
+            ViewBag.ReqDocumentId = new SelectList(await unitOfWork.RequiredDocumentRepository.GetAllAsync(), "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
             return View(reqdocdrivingcategory);
         }
 
@@ -102,11 +87,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(reqdocdrivingcategory).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.ReqDocDrivingCategoryRepository.UpdateAsync(reqdocdrivingcategory);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index", new { Id = Session["DrivingCategoryId"] });
             }
-            ViewBag.ReqDocumentId = new SelectList(db.RequiredDocument, "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
+            ViewBag.ReqDocumentId = new SelectList(await unitOfWork.RequiredDocumentRepository.GetAllAsync(), "Id", "ReqDocument", reqdocdrivingcategory.ReqDocumentId);
             return View(reqdocdrivingcategory);
         }
 
@@ -117,7 +102,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ReqDocDrivingCategory reqdocdrivingcategory = await db.ReqDocDrivingCategory.FindAsync(id);
+            ReqDocDrivingCategory reqdocdrivingcategory = await unitOfWork.ReqDocDrivingCategoryRepository.FindAsync(p => p.Id == id);
             if (reqdocdrivingcategory == null)
             {
                 return HttpNotFound();
@@ -129,9 +114,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ReqDocDrivingCategory reqdocdrivingcategory = await db.ReqDocDrivingCategory.FindAsync(id);
-            db.ReqDocDrivingCategory.Remove(reqdocdrivingcategory);
-            await db.SaveChangesAsync();
+            ReqDocDrivingCategory reqdocdrivingcategory = await unitOfWork.ReqDocDrivingCategoryRepository.FindAsync(p => p.Id == id);
+            unitOfWork.ReqDocDrivingCategoryRepository.RemoveAsync(reqdocdrivingcategory);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index", new { Id = Session["DrivingCategoryId"] });
         }
 
@@ -140,7 +125,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

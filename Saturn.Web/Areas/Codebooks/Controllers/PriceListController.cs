@@ -2,9 +2,7 @@
 using Kendo.Mvc.UI;
 using Saturn.Data;
 using Saturn.Model.Codebooks;
-using Saturn.Model.ViewModels;
-using System.Data.Entity;
-using System.Linq;
+using Saturn.UnitOfWork;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,32 +11,16 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class PriceListController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
+        private readonly PriceListUnitOfWork unitOfWork = new PriceListUnitOfWork(new SaturnDbContext());
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.PriceList
-                .Include(p => p.DrivingCategory)
-                .Include(p => p.ExamType)
-                .OrderBy(o => o.DrivingCategory.Category)
-                .Select(s => new PriceListViewModel
-                {
-                    Id = s.Id,
-                    DrivingCategory = s.DrivingCategory.Category,
-                    ExaminationType = s.ExamType.Type,
-                    PriceFirst = s.PriceFirst,
-                    TaxFirst = s.TaxFirst,
-                    PriceRepeated = s.PriceRepeated,
-                    TaxRepeated = s.TaxRepeated,
-                    MaterialCosts = s.MaterialCosts,
-                    VAT = s.VAT,
-                    Note = s.Note
-                });
+            var data = await unitOfWork.PriceListRepository.GetAllAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -49,7 +31,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PriceList pricelist = await db.PriceList.FindAsync(id);
+            PriceList pricelist = await unitOfWork.PriceListRepository.FindAsync(p => p.Id == id);
             if (pricelist == null)
             {
                 return HttpNotFound();
@@ -58,10 +40,10 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category");
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type");
+            ViewBag.DrivingCategoryId = new SelectList(await unitOfWork.DrivingCategoryRepository.GetAllAsync(), "Id", "Category");
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type");
             return View();
         }
 
@@ -71,13 +53,13 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.PriceList.Add(pricelist);
-                await db.SaveChangesAsync();
+                unitOfWork.PriceListRepository.InsertAsync(pricelist);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", pricelist.DrivingCategoryId);
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", pricelist.ExamTypeId);
+            ViewBag.DrivingCategoryId = new SelectList(await unitOfWork.DrivingCategoryRepository.GetAllAsync(), "Id", "Category", pricelist.DrivingCategoryId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", pricelist.ExamTypeId);
             return View(pricelist);
         }
 
@@ -88,13 +70,13 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PriceList pricelist = await db.PriceList.FindAsync(id);
+            PriceList pricelist = await unitOfWork.PriceListRepository.FindAsync(p => p.Id == id);
             if (pricelist == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", pricelist.DrivingCategoryId);
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", pricelist.ExamTypeId);
+            ViewBag.DrivingCategoryId = new SelectList(await unitOfWork.DrivingCategoryRepository.GetAllAsync(), "Id", "Category", pricelist.DrivingCategoryId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", pricelist.ExamTypeId);
             return View(pricelist);
         }
 
@@ -104,12 +86,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(pricelist).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                unitOfWork.PriceListRepository.UpdateAsync(pricelist);
+                await unitOfWork.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", pricelist.DrivingCategoryId);
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", pricelist.ExamTypeId);
+            ViewBag.DrivingCategoryId = new SelectList(await unitOfWork.DrivingCategoryRepository.GetAllAsync(), "Id", "Category", pricelist.DrivingCategoryId);
+            ViewBag.ExamTypeId = new SelectList(await unitOfWork.ExamTypeRepository.GetAllAsync(), "Id", "Type", pricelist.ExamTypeId);
             return View(pricelist);
         }
 
@@ -120,7 +102,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            PriceList pricelist = await db.PriceList.FindAsync(id);
+            PriceList pricelist = await unitOfWork.PriceListRepository.FindAsync(p => p.Id == id);
             if (pricelist == null)
             {
                 return HttpNotFound();
@@ -132,9 +114,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            PriceList pricelist = await db.PriceList.FindAsync(id);
-            db.PriceList.Remove(pricelist);
-            await db.SaveChangesAsync();
+            PriceList pricelist = await unitOfWork.PriceListRepository.FindAsync(p => p.Id == id);
+            unitOfWork.PriceListRepository.RemoveAsync(pricelist);
+            await unitOfWork.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -143,7 +125,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                unitOfWork.Dispose();
             }
             base.Dispose(disposing);
         }

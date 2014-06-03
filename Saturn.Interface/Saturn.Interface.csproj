@@ -64,6 +64,9 @@
     <Compile Include="UnitOfWork\IDrivingSchoolUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IErrorTypeUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IExamCentersUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IInstructorUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IPriceListUnitOfWork.cs" />
+    <Compile Include="UnitOfWork\IReqDocDrivingCategoryUnitOfWork.cs" />
     <Compile Include="UnitOfWork\IVehicleUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

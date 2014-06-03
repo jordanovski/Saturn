@@ -1,4 +1,5 @@
 ﻿using Saturn.Model.Codebooks;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
@@ -8,9 +9,9 @@ namespace Saturn.Interface.Repository
 {
     public interface IReqDocDrivingCategoryRepository : IDisposable
     {
-        Task<List<ReqDocDrivingCategory>> GetAllAsync();
+        Task<List<ReqDocDrivingCategoryViewModel>> GetAllAsync();
         Task<ReqDocDrivingCategory> FindAsync(Expression<Func<ReqDocDrivingCategory, bool>> match);
-        Task<List<ReqDocDrivingCategory>> FindAllAsync(Expression<Func<ReqDocDrivingCategory, bool>> match);
+        Task<List<ReqDocDrivingCategoryViewModel>> FindAllAsync(Expression<Func<ReqDocDrivingCategoryViewModel, bool>> match);
         void InsertAsync(ReqDocDrivingCategory t);
         void UpdateAsync(ReqDocDrivingCategory t);
         void RemoveAsync(ReqDocDrivingCategory t);

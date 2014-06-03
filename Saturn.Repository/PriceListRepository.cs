@@ -1,6 +1,7 @@
 ﻿using Saturn.Data;
 using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
+using Saturn.Model.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<PriceList>> GetAllAsync()
+        public async Task<List<PriceListViewModel>> GetAllAsync()
         {
-            return await dbContext.PriceList.ToListAsync();
+            return await dbContext.PriceList.Include(p => p.DrivingCategory).Include(p => p.ExamType).OrderBy(o => o.DrivingCategory.Category).Select(PriceListViewModel.FromPriceLists).ToListAsync();
         }
 
         public async Task<PriceList> FindAsync(Expression<Func<PriceList, bool>> match)

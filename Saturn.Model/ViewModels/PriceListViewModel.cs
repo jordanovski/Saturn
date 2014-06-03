@@ -21,6 +21,7 @@ namespace Saturn.Model.ViewModels
                     PriceRepeated = s.PriceRepeated,
                     TaxRepeated = s.TaxRepeated,
                     MaterialCosts = s.MaterialCosts,
+                    VAT = s.VAT,
                     Note = s.Note
                 };
             }

@@ -7,6 +7,7 @@ using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using Saturn.Model.ViewModels;
 
 namespace Saturn.Repository
 {
@@ -21,9 +22,9 @@ namespace Saturn.Repository
         }
 
 
-        public async Task<List<Instructor>> GetAllAsync()
+        public async Task<List<InstructorViewModel>> GetAllAsync()
         {
-            return await dbContext.Instructor.ToListAsync();
+            return await dbContext.Instructor.Include(d => d.DrivingSchool).OrderBy(o => o.DrivingSchool.Name).ThenBy(o => o.LastName).Select(InstructorViewModel.FromInstructor).ToListAsync();
         }
 
         public async Task<Instructor> FindAsync(Expression<Func<Instructor, bool>> match)
