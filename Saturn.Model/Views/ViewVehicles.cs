@@ -6,54 +6,27 @@ namespace Saturn.Model.Views
     public partial class ViewVehicles
     {
         [Key]
-        [Column(Order = 0)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
-        public int Id { get; set; }
-
-        [Key]
-        [Column(Order = 1)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
+        public int VehicleId { get; set; }
         public int VehicleTypeId { get; set; }
-
-        [Key]
-        [Column(Order = 2)]
-        [StringLength(50)]
         public string VehicleType { get; set; }
-
-        [Key]
-        [Column(Order = 3)]
-        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int VehicleBrandId { get; set; }
-
-        [Key]
-        [Column(Order = 4)]
-        [StringLength(50)]
         public string VehicleBrand { get; set; }
-
-        [Key]
-        [Column(Order = 5)]
-        [StringLength(50)]
-        public string CommercialMark { get; set; }
-
-        [Key]
-        [Column(Order = 6)]
-        [StringLength(50)]
-        public string RegistrationNumber { get; set; }
-
+        public string VehicleCommercialMark { get; set; }
+        public string VehicleRegistrationNumber { get; set; }
         public bool? VehicleIsActive { get; set; }
-
         public int? DrivingSchoolId { get; set; }
-
-        public string DrivingSchool { get; set; }
-
+        public string DrivingSchoolName { get; set; }
         public bool? DrivingSchoolIsActive { get; set; }
-
-
+        public string DrivingSchoolTaxNumber { get; set; }
+        public string DrivingSchoolAddress { get; set; }
+        public string DrivingSchoolNote { get; set; }
+        public int? DrivingSchoolCityId { get; set; }
+        public string DrivingSchoolCityName { get; set; }
 
         [NotMapped]
         public string FullName
         {
-            get { return VehicleBrand + " " + CommercialMark + " / " + RegistrationNumber; }
+            get { return VehicleBrand + " " + VehicleCommercialMark + " / " + VehicleRegistrationNumber; }
             private set { }
         }
     }

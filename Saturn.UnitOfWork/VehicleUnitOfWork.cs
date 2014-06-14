@@ -9,20 +9,20 @@ namespace Saturn.UnitOfWork
 {
     public class VehicleUnitOfWork : IVehicleUnitOfWork
     {
-        private readonly SaturnDbContext dbContext;
+        private readonly VehiclesContext dbContext;
         private readonly IVehicleRepository vehicleRepository;
         private readonly IVehicleTypeRepository vehicleTypeRepository;
         private readonly IVehicleBrandRepository vehicleBrandRepository;
         private readonly IDrivingSchoolRepository drivingSchoolRepository;
 
-        public VehicleUnitOfWork(SaturnDbContext context)
+        public VehicleUnitOfWork(VehiclesContext context)
         {
             dbContext = context;
 
             vehicleRepository = new VehicleRepository(dbContext);
             vehicleTypeRepository = new VehicleTypeRepository(dbContext);
             vehicleBrandRepository = new VehicleBrandRepository(dbContext);
-            drivingSchoolRepository = new DrivingSchoolRepository(dbContext);
+            //drivingSchoolRepository = new DrivingSchoolRepository(dbContext);
         }
 
 

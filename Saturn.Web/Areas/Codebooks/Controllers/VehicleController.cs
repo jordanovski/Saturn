@@ -1,17 +1,37 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Saturn.UnitOfWork;
 
 namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class VehicleController : Controller
     {
-        readonly VehicleUnitOfWork unitOfWork = new VehicleUnitOfWork(new SaturnDbContext());
+        private readonly IVehicleRepository vehicleRepository;
+        private readonly IVehicleTypeRepository vehicleTypeRepository;
+        private readonly IVehicleBrandRepository vehicleBrandRepository;
+        private readonly IDrivingSchoolRepository drivingSchoolRepository;
+       
+        public VehicleController()
+        {
+            this.vehicleRepository = new VehicleRepository(new VehiclesContext());
+            this.vehicleTypeRepository = new VehicleTypeRepository(new VehiclesContext());
+            this.vehicleBrandRepository = new VehicleBrandRepository(new VehiclesContext());
+            this.drivingSchoolRepository= new DrivingSchoolRepository(new SaturnDbContext());
+        }
+        public VehicleController(IVehicleRepository vehicleRepository, IVehicleTypeRepository vehicleTypeRepository, IVehicleBrandRepository vehicleBrandRepository, IDrivingSchoolRepository drivingSchoolRepository)
+        {
+            this.vehicleRepository = vehicleRepository;
+            this.vehicleTypeRepository = vehicleTypeRepository;
+            this.vehicleBrandRepository = vehicleBrandRepository;
+            this.drivingSchoolRepository = drivingSchoolRepository;
+        }
+
 
         public ActionResult Index()
         {
@@ -19,7 +39,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            var data = await unitOfWork.VehicleRepository.GetAllAsync();
+            var data = await vehicleRepository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -31,7 +51,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            var vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
+            var vehicle = await vehicleRepository.FindAsync(p => p.Id == id);
             if (vehicle == null)
             {
                 return HttpNotFound();
@@ -42,9 +62,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 
         public async Task<ActionResult> Create()
         {
-            ViewBag.VehicleTypeId = new SelectList(await unitOfWork.VehicleTypeRepository.GetAllAsync(), "Id", "Type");
-            ViewBag.VehicleBrandId = new SelectList(await unitOfWork.VehicleBrandRepository.GetAllAsync(), "Id", "Brand");
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.VehicleTypeId = new SelectList(await vehicleTypeRepository.GetAllAsync(), "Id", "Type");
+            ViewBag.VehicleBrandId = new SelectList(await vehicleBrandRepository.GetAllAsync(), "Id", "Brand");
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name");
 
             Vehicle vehicle = new Vehicle();
             vehicle.IsActive = true;
@@ -58,14 +78,14 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.VehicleRepository.InsertAsync(vehicle);
-                await unitOfWork.SaveAsync();
+                vehicleRepository.InsertAsync(vehicle);
+                await vehicleRepository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.VehicleTypeId = new SelectList(await unitOfWork.VehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
-            ViewBag.VehicleBrandId = new SelectList(await unitOfWork.VehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
+            ViewBag.VehicleTypeId = new SelectList(await vehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
+            ViewBag.VehicleBrandId = new SelectList(await vehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
            
             return View(vehicle);
         }
@@ -77,14 +97,14 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Vehicle vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
+            Vehicle vehicle = await vehicleRepository.FindAsync(p => p.Id == id);
             if (vehicle == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.VehicleTypeId = new SelectList(await unitOfWork.VehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
-            ViewBag.VehicleBrandId = new SelectList(await unitOfWork.VehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
+            ViewBag.VehicleTypeId = new SelectList(await vehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
+            ViewBag.VehicleBrandId = new SelectList(await vehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
 
             return View(vehicle);
         }
@@ -95,13 +115,13 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.VehicleRepository.UpdateAsync(vehicle);
-                await unitOfWork.SaveAsync(); 
+                vehicleRepository.UpdateAsync(vehicle);
+                await vehicleRepository.SaveAsync(); 
                 return RedirectToAction("Index");
             }
-            ViewBag.VehicleTypeId = new SelectList(await unitOfWork.VehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
-            ViewBag.VehicleBrandId = new SelectList(await unitOfWork.VehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
+            ViewBag.VehicleTypeId = new SelectList(await vehicleTypeRepository.GetAllAsync(), "Id", "Type", vehicle.VehicleTypeId);
+            ViewBag.VehicleBrandId = new SelectList(await vehicleBrandRepository.GetAllAsync(), "Id", "Brand", vehicle.VehicleBrandId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", vehicle.DrivingSchoolId);
 
             return View(vehicle);
         }
@@ -113,7 +133,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Vehicle vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
+            Vehicle vehicle = await vehicleRepository.FindAsync(p => p.Id == id);
             if (vehicle == null)
             {
                 return HttpNotFound();
@@ -125,9 +145,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Vehicle vehicle = await unitOfWork.VehicleRepository.FindAsync(p => p.Id == id);
-            unitOfWork.VehicleRepository.RemoveAsync(vehicle);
-            await unitOfWork.SaveAsync(); 
+            Vehicle vehicle = await vehicleRepository.FindAsync(p => p.Id == id);
+            vehicleRepository.RemoveAsync(vehicle);
+            await vehicleRepository.SaveAsync(); 
             return RedirectToAction("Index");
         }
 
@@ -136,7 +156,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                unitOfWork.Dispose();
+                vehicleRepository.Dispose();
             }
             base.Dispose(disposing);
         }

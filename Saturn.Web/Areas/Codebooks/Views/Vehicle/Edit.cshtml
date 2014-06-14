@@ -4,14 +4,12 @@
     ViewBag.Title = "Возила";
 }
 
-<h3>Промени</h3>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h5>Возило</h5>
+        <h3>Промена на возило</h3>
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
@@ -25,7 +23,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери авто школа")
                     .HtmlAttributes(new { style = "width: 250px" }))
-                @Html.ValidationMessageFor(model => model.DrivingSchoolId)
+                @Html.ValidationMessageFor(model => model.DrivingSchoolId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -38,7 +36,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери тип")
                     .HtmlAttributes(new { style = "width: 250px" }))
-                @Html.ValidationMessageFor(model => model.VehicleTypeId)
+                @Html.ValidationMessageFor(model => model.VehicleTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -51,7 +49,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери бренд")
                     .HtmlAttributes(new { style = "width: 250px" }))
-                @Html.ValidationMessageFor(model => model.VehicleBrandId)
+                @Html.ValidationMessageFor(model => model.VehicleBrandId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -59,7 +57,7 @@
             @Html.LabelFor(model => model.CommercialMark, new { @class = "control-label col-md-2" })
             <div class="col-md-6">
                 @Html.TextBoxFor(model => model.CommercialMark, new { @class = "form-control input-sm" })
-                @Html.ValidationMessageFor(model => model.CommercialMark)
+                @Html.ValidationMessageFor(model => model.CommercialMark, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -67,7 +65,7 @@
             @Html.LabelFor(model => model.RegistrationNumber, new { @class = "control-label col-md-2" })
             <div class="col-md-6">
                 @Html.TextBoxFor(model => model.RegistrationNumber, new { @class = "form-control input-sm" })
-                @Html.ValidationMessageFor(model => model.RegistrationNumber)
+                @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -75,7 +73,7 @@
             @Html.LabelFor(model => model.IsActive, new { @class = "control-label col-md-2" })
             <div class="col-md-6">
                 @Html.CheckBoxFor(model => model.IsActive)
-                @Html.ValidationMessageFor(model => model.IsActive)
+                @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
             </div>
         </div>
 

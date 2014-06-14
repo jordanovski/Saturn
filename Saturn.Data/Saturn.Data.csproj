@@ -66,9 +66,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationContext.cs" />
     <Compile Include="SaturnDbContext.cs" />
     <Compile Include="SaturnDbViewContext.cs" />
+    <Compile Include="VehiclesContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

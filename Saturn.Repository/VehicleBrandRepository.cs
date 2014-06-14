@@ -12,9 +12,9 @@ namespace Saturn.Repository
 {
     public class VehicleBrandRepository : IVehicleBrandRepository
     {
-        private readonly SaturnDbContext dbContext;
+        private readonly VehiclesContext dbContext;
 
-        public VehicleBrandRepository(SaturnDbContext dbContext)
+        public VehicleBrandRepository(VehiclesContext dbContext)
         {
             this.dbContext = dbContext;
             this.dbContext.Configuration.ProxyCreationEnabled = false;
@@ -23,22 +23,22 @@ namespace Saturn.Repository
 
         public async Task<List<VehicleBrand>> GetAllAsync()
         {
-            return await dbContext.VehicleBrand.OrderBy(o => o.Brand).ToListAsync();
+            return await dbContext.VehicleBrands.OrderBy(o => o.Brand).ToListAsync();
         }
 
         public async Task<VehicleBrand> FindAsync(Expression<Func<VehicleBrand, bool>> match)
         {
-            return await dbContext.VehicleBrand.SingleOrDefaultAsync(match);
+            return await dbContext.VehicleBrands.SingleOrDefaultAsync(match);
         }
 
         public async Task<List<VehicleBrand>> FindAllAsync(Expression<Func<VehicleBrand, bool>> match)
         {
-            return await dbContext.VehicleBrand.Where(match).ToListAsync();
+            return await dbContext.VehicleBrands.Where(match).ToListAsync();
         }
 
         public void InsertAsync(VehicleBrand t)
         {
-            dbContext.VehicleBrand.Add(t);
+            dbContext.VehicleBrands.Add(t);
         }
 
         public void UpdateAsync(VehicleBrand t)
@@ -53,7 +53,7 @@ namespace Saturn.Repository
 
         public async Task<int> CountAsync()
         {
-            return await dbContext.VehicleBrand.CountAsync();
+            return await dbContext.VehicleBrands.CountAsync();
         }
 
 

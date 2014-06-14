@@ -13,9 +13,9 @@ namespace Saturn.Repository
 {
     public class VehicleRepository : IVehicleRepository
     {
-        private readonly SaturnDbContext dbContext;
+        private readonly VehiclesContext dbContext;
 
-        public VehicleRepository(SaturnDbContext dbContext)
+        public VehicleRepository(VehiclesContext dbContext)
         {
             this.dbContext = dbContext;
             this.dbContext.Configuration.ProxyCreationEnabled = false;
@@ -24,12 +24,12 @@ namespace Saturn.Repository
 
         public async Task<List<VehicleViewModel>> GetAllAsync()
         {
-            var data = await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).ToListAsync();
+            var data = await dbContext.Vehicles.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).ToListAsync();
             foreach (var v in data)
             {
                 if (v.DrivingSchoolId != null)
                 {
-                    var drivingSchool = dbContext.DrivingSchool.Find((int)v.DrivingSchoolId);
+                    var drivingSchool = dbContext.DrivingSchools.Find((int)v.DrivingSchoolId);
                     if (drivingSchool!=null)
                     {
                         v.DrivingSchool = drivingSchool.Name;
@@ -43,19 +43,19 @@ namespace Saturn.Repository
 
         public async Task<Vehicle> FindAsync(Expression<Func<Vehicle, bool>> match)
         {
-            var data = await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).SingleOrDefaultAsync(match);
+            var data = await dbContext.Vehicles.Include(i => i.VehicleBrand).Include(i => i.VehicleType).SingleOrDefaultAsync(match);
            
             return data;
         }
 
         public async Task<List<VehicleViewModel>> FindAllAsync(Expression<Func<VehicleViewModel, bool>> match)
         {
-            var data=await dbContext.Vehicle.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).Where(match).ToListAsync();
+            var data=await dbContext.Vehicles.Include(i => i.VehicleBrand).Include(i => i.VehicleType).Select(VehicleViewModel.FromVehicle).Where(match).ToListAsync();
             foreach (var v in data)
             {
                 if (v.DrivingSchoolId != null)
                 {
-                    var drivingSchool = dbContext.DrivingSchool.Find((int)v.DrivingSchoolId);
+                    var drivingSchool = dbContext.DrivingSchools.Find((int)v.DrivingSchoolId);
                     if (drivingSchool != null)
                     {
                         v.DrivingSchool = drivingSchool.Name;
@@ -68,7 +68,7 @@ namespace Saturn.Repository
 
         public void InsertAsync(Vehicle t)
         {
-            dbContext.Vehicle.Add(t);
+            dbContext.Vehicles.Add(t);
         }
 
         public void UpdateAsync(Vehicle t)
@@ -83,7 +83,7 @@ namespace Saturn.Repository
 
         public async Task<int> CountAsync()
         {
-            return await dbContext.Vehicle.CountAsync();
+            return await dbContext.Vehicles.CountAsync();
         }
 
 
