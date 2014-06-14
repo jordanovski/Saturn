@@ -16,8 +16,9 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Тип")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string Type { get; set; }
 
         public virtual ICollection<ErrorType> ErrorType { get; set; }

@@ -1,8 +1,8 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Repository;
-using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -10,7 +10,18 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExamRegistrationStatusController : Controller
     {
-        readonly ExamRegistrationStatusRepository repository = new ExamRegistrationStatusRepository(new SaturnDbContext());
+        private readonly IExamRegistrationStatusRepository repository;
+
+        public ExamRegistrationStatusController()
+        {
+            this.repository = new ExamRegistrationStatusRepository(new SaturnDbContext());
+
+        }
+        public ExamRegistrationStatusController(IExamRegistrationStatusRepository repository)
+        {
+            this.repository = repository;
+
+        }
 
         public ActionResult Index()
         {

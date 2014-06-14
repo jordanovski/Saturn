@@ -14,12 +14,14 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Начин на полагање")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string WayOfTaking { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Код")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string WayOfTakingCode { get; set; }
 
         public virtual ICollection<ExamRegistration> ExamRegistration { get; set; }
