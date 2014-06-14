@@ -54,6 +54,7 @@
     <Compile Include="Repository\IExamWayOfTakingRepository.cs" />
     <Compile Include="Repository\IInstructorRepository.cs" />
     <Compile Include="Repository\IPriceListRepository.cs" />
+    <Compile Include="Repository\IRegistrationRepository.cs" />
     <Compile Include="Repository\IRegistrationStatusRepository.cs" />
     <Compile Include="Repository\IReqDocDrivingCategoryRepository.cs" />
     <Compile Include="Repository\IRequiredDocumentRepository.cs" />
