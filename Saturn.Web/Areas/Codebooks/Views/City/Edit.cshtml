@@ -1,16 +1,15 @@
 ﻿@model Saturn.Model.Codebooks.City
 
 @{
-    ViewBag.Title = "Градови - Промена на град";
+    ViewBag.Title = "Градови";
 }
-
-<h3>Промени град</h3>
 
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
+        <h3>Промени град</h3>
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
