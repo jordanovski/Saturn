@@ -19,6 +19,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.UnitOfWork", "Saturn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Interface", "Saturn.Interface\Saturn.Interface.csproj", "{2E01F1F6-DC0A-4CB4-A2CB-878D52ED6D5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Data.Test", "Saturn.Data.Test\Saturn.Data.Test.csproj", "{54EDE368-000E-4968-B3C2-616FD105AE55}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -115,6 +117,16 @@ Global
 		{2E01F1F6-DC0A-4CB4-A2CB-878D52ED6D5C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2E01F1F6-DC0A-4CB4-A2CB-878D52ED6D5C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2E01F1F6-DC0A-4CB4-A2CB-878D52ED6D5C}.Release|x64.ActiveCfg = Release|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Release|Any CPU.Build.0 = Release|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{54EDE368-000E-4968-B3C2-616FD105AE55}.Release|x64.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

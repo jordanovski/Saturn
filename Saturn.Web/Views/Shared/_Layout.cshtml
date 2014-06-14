@@ -45,14 +45,21 @@
                                 <li>@Html.ActionLink("Инструктори", "Index", "Instructor", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Комисија", "Index", "Examiner", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Возила", "Index", "Vehicle", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Возила типови", "Index", "VehicleType", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Возила брендови", "Index", "VehicleBrand", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Категории", "Index", "DrivingCategory", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Ценовник", "Index", "PriceList", new { Area = "Codebooks" }, new { })</li>
 
                                 @if (Request.IsAuthenticated && User.IsInRole("Admin"))
                                 {
                                     <li class="divider"></li>
-                                    @*<li class="dropdown-header">Nav header</li>*@
                                     <li>@Html.ActionLink("Корисници", "Index", "UsersAdmin")</li>
+
+                                    <li class="divider"></li>
+                                    <li class="dropdown-header">Не менливи</li>
+                                    <li>@Html.ActionLink("Статус на закажување", "Index", "ExamRegistrationStatus", new { Area = "Codebooks" }, new { })</li>
+                                    <li>@Html.ActionLink("Статус на пријава", "Index", "RegistrationStatus", new { Area = "Codebooks" }, new { })</li>
+                                    <li>@Html.ActionLink("Начин на полагање", "Index", "ExamWayOfTaking", new { Area = "Codebooks" }, new { })</li>
                                 }
                             </ul>
                         </li>

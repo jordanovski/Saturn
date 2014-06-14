@@ -1,6 +1,7 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
 using Saturn.Repository;
 using System.Net;
@@ -11,7 +12,19 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class VehicleBrandController : Controller
     {
-        readonly VehicleBrandRepository repository = new VehicleBrandRepository(new SaturnDbContext());
+        private readonly IVehicleBrandRepository repository;
+
+        public VehicleBrandController()
+        {
+            this.repository = new VehicleBrandRepository(new VehiclesContext());
+           
+        }
+        public VehicleBrandController(IVehicleBrandRepository repository)
+        {
+            this.repository = repository;
+           
+        }
+
 
         public ActionResult Index()
         {

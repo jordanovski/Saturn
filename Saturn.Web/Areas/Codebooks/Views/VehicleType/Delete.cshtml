@@ -1,7 +1,7 @@
 ﻿@model Saturn.Model.Codebooks.VehicleType
 
 @{
-    ViewBag.Title = "Типови на возила - Бришење на тип на возила";
+    ViewBag.Title = "Типови на возила";
 }
 
 <h3>Дали сте сигурни дека сакате да го избришете следново?</h3>
@@ -9,14 +9,8 @@
     <h4>Тип на возила</h4>
     <hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Type)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Type)
-        </dd>
-
+        <dt>@Html.DisplayNameFor(model => model.Type)</dt>
+        <dd>@Html.DisplayFor(model => model.Type)</dd>
     </dl>
 
     @using (Html.BeginForm()) {

@@ -1,6 +1,7 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
 using Saturn.Repository;
 using System.Net;
@@ -11,7 +12,19 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class VehicleTypeController : Controller
     {
-        readonly VehicleTypeRepository repository = new VehicleTypeRepository(new SaturnDbContext());
+        private readonly IVehicleTypeRepository repository;
+
+        public VehicleTypeController()
+        {
+            this.repository = new VehicleTypeRepository(new VehiclesContext());
+
+        }
+        public VehicleTypeController(IVehicleTypeRepository repository)
+        {
+            this.repository = repository;
+
+        }
+
 
         public ActionResult Index()
         {
@@ -81,7 +94,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             if (ModelState.IsValid)
             {
                 repository.UpdateAsync(vehicletype);
-                await repository.SaveAsync(); 
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
             return View(vehicletype);
