@@ -29,7 +29,7 @@ namespace Saturn.Repository
 
         public async Task<ContactPerson> FindAsync(Expression<Func<ContactPerson, bool>> match)
         {
-            return await dbContext.ContactPerson.SingleOrDefaultAsync(match);
+            return await dbContext.ContactPerson.Include(c=>c.ContactType).SingleOrDefaultAsync(match);
         }
 
         public async Task<List<ContactPersonViewModel>> FindAllAsync(Expression<Func<ContactPersonViewModel, bool>> match)

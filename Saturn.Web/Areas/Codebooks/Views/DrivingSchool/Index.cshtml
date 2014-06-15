@@ -4,7 +4,7 @@
     ViewBag.Title = "Авто школи";
 }
 
-<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Title</h3>
 
 @(Html.Kendo().Grid(Model)
     .Name("grid")
@@ -14,7 +14,7 @@
         columns.Bound(p => p.TaxNumber).Width(140);
         columns.Bound(p => p.Address).Width(140);
         columns.Bound(p => p.City).Width(110);
-        columns.Bound(p => p.IsActive).ClientTemplate("<input type='checkbox' name='IsInternalCb' #= IsActive? 'checked' : '' # disabled /> ").Width(100);
+        columns.Bound(p => p.IsActive).ClientTemplate("#= IsActive? 'Да' : 'Не' #");
 
         columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Index", "ContactPerson") + "/Index/#= Id #'" + ">Контакти</a>").Width(70);
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "DrivingSchool") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);

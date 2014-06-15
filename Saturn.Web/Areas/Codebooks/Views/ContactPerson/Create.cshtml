@@ -4,14 +4,12 @@
     ViewBag.Title = "Контакт особи";
 }
 
-<h3>Нова</h3>
-
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h5>Контакт особа</h5>
+        <h3>Нова контакт особа</h3>
         <hr />
         @Html.ValidationSummary(true)
 
@@ -32,7 +30,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери тип")
                     .HtmlAttributes(new { style = "width: 250px" }))
-                @Html.ValidationMessageFor(model => model.ContactTypeId)
+                @Html.ValidationMessageFor(model => model.ContactTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -53,5 +51,5 @@
 }
 
 <div>
-    @Html.ActionLink("Вратисе назад", "Index")
+    @Html.ActionLink("Вратисе назад", "Index", new { Id = System.Web.HttpContext.Current.Session["DrivingSchoolId"] })
 </div>

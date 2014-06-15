@@ -29,7 +29,7 @@ namespace Saturn.Repository
 
         public async Task<DrivingSchool> FindAsync(Expression<Func<DrivingSchool, bool>> match)
         {
-            return await dbContext.DrivingSchool.SingleOrDefaultAsync(match);
+            return await dbContext.DrivingSchool.Include(c => c.City).SingleOrDefaultAsync(match);
         }
 
         public async Task<List<DrivingSchoolViewModel>> FindAllAsync(Expression<Func<DrivingSchoolViewModel, bool>> match)

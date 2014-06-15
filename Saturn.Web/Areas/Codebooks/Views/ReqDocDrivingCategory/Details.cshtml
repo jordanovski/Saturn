@@ -20,5 +20,5 @@
 </div>
 <p>
     @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Вратисе назад", "Index")
+    @Html.ActionLink("Вратисе назад", "Index", new { Id = System.Web.HttpContext.Current.Session["DrivingCategoryId"] })
 </p>

@@ -1,8 +1,9 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
-using Saturn.UnitOfWork;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -11,7 +12,21 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class DrivingSchoolController : Controller
     {
-        readonly DrivingSchoolUnitOfWork unitOfWork = new DrivingSchoolUnitOfWork(new SaturnDbContext());
+        private readonly ICityRepository cityRepository;
+        private readonly IDrivingSchoolRepository repository;
+
+        public DrivingSchoolController()
+        {
+            this.cityRepository = new CityRepository(new SaturnDbContext());
+            this.repository = new DrivingSchoolRepository(new SaturnDbContext());
+
+        }
+        public DrivingSchoolController(IDrivingSchoolRepository repository, ICityRepository cityRepository)
+        {
+            this.repository = repository;
+            this.cityRepository = cityRepository;
+        }
+
 
         public ActionResult Index()
         {
@@ -19,7 +34,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            var data = await unitOfWork.DrivingSchoolRepository.GetAllAsync();
+            var data = await repository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -31,7 +46,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
+            DrivingSchool drivingschool = await repository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
@@ -42,7 +57,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 
         public async Task<ActionResult> Create()
         {
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name");
 
             DrivingSchool drivingschool = new DrivingSchool();
             drivingschool.IsActive = true;
@@ -56,12 +71,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.DrivingSchoolRepository.InsertAsync(drivingschool);
-                await unitOfWork.SaveAsync();
+                repository.InsertAsync(drivingschool);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -72,12 +87,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
+            DrivingSchool drivingschool = await repository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -87,11 +102,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.DrivingSchoolRepository.UpdateAsync(drivingschool);
-                await unitOfWork.SaveAsync();
+                repository.UpdateAsync(drivingschool);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", drivingschool.CityId);
             return View(drivingschool);
         }
 
@@ -102,7 +117,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
+            DrivingSchool drivingschool = await repository.FindAsync(p => p.Id == id);
             if (drivingschool == null)
             {
                 return HttpNotFound();
@@ -114,9 +129,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            DrivingSchool drivingschool = await unitOfWork.DrivingSchoolRepository.FindAsync(p => p.Id == id);
-            unitOfWork.DrivingSchoolRepository.RemoveAsync(drivingschool);
-            await unitOfWork.SaveAsync();
+            DrivingSchool drivingschool = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(drivingschool);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -125,7 +140,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                unitOfWork.Dispose();
+                repository.Dispose();
+                cityRepository.Dispose();
+
             }
             base.Dispose(disposing);
         }
