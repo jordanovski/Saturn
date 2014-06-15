@@ -4,14 +4,12 @@
     ViewBag.Title = "Докименти за категорија " + Session["Category"];
 }
 
-<h3>Промени</h3>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h5>Документ за катедорија @Session["Category"]</h5>
+        <h3>Промени документ за катедорија - @Session["Category"]</h3>
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
@@ -26,7 +24,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери документ")
                     .HtmlAttributes(new { style = "width: 540px" }))
-                @Html.ValidationMessageFor(model => model.ReqDocumentId)
+                @Html.ValidationMessageFor(model => model.ReqDocumentId, "", new { @class = "text-danger" })
             </div>
         </div>
 

@@ -16,16 +16,24 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Категорија")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string Category { get; set; }
 
+        [Display(Name = "Опис")]
         public string Description { get; set; }
 
+        [Display(Name = "Теорија нег. поени")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int AllowedNegativeTheory { get; set; }
 
+        [Display(Name = "Полигон нег. поени")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int AllowedNegativePolygon { get; set; }
 
+        [Display(Name = "Град нег. поени")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int AllowedNegativePracticle { get; set; }
 
         [Display(Name = "Опис")]
@@ -34,9 +42,9 @@ namespace Saturn.Model.Codebooks
         {
             get
             {
-                if (Description.Length > 80)
+                if (Description.Length > 30)
                 {
-                    return Description.Substring(0, 80) + "...";
+                    return Description.Substring(0, 30) + "...";
                 }
                 else
                 {

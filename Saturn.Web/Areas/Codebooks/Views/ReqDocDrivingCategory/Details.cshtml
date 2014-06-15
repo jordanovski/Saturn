@@ -4,20 +4,10 @@
     ViewBag.Title = "Докименти за категорија " + Session["Category"];
 }
 
-<h2>Details</h2>
-
 <div>
-    <h4>ReqDocDrivingCategory</h4>
+    <h3>Детали за документ за катедорија - @Session["Category"]</h3>
 	<hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.DrivingCategory.Category)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.DrivingCategory.Category)
-        </dd>
-
         <dt>
             @Html.DisplayNameFor(model => model.RequiredDocument.ReqDocument)
         </dt>

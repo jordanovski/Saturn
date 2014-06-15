@@ -27,12 +27,12 @@
                 <a class="btn btn-info btn-sm" href="@Url.Action("Create", "DrivingCategory")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
             </text>);
     })
+    .Pageable()
     .Sortable()
     .Filterable()
-    .Resizable(r => r.Columns(true))
     .DataSource(dataSource => dataSource
         .Ajax()
-        .PageSize(15)
+        .PageSize(10)
         .Read(read => read.Action("Read", "DrivingCategory"))
     )
 )

@@ -34,7 +34,7 @@ namespace Saturn.Repository
 
         public async Task<ReqDocDrivingCategory> FindAsync(Expression<Func<ReqDocDrivingCategory, bool>> match)
         {
-            return await dbContext.ReqDocDrivingCategory.SingleOrDefaultAsync(match);
+            return await dbContext.ReqDocDrivingCategory.Include(r => r.RequiredDocument).SingleOrDefaultAsync(match);
         }
 
         public async Task<List<ReqDocDrivingCategoryViewModel>> FindAllAsync(Expression<Func<ReqDocDrivingCategoryViewModel, bool>> match)

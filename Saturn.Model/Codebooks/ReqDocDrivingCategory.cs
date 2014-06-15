@@ -1,5 +1,6 @@
 namespace Saturn.Model.Codebooks
 {
+    using System.ComponentModel.DataAnnotations;
     using System.ComponentModel.DataAnnotations.Schema;
 
     [Table("ReqDocDrivingCategory")]
@@ -7,6 +8,8 @@ namespace Saturn.Model.Codebooks
     {
         public int Id { get; set; }
 
+        [Display(Name = "Документ")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int ReqDocumentId { get; set; }
 
         public int DrivingCategoryId { get; set; }
