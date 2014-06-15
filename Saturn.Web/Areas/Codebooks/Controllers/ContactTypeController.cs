@@ -1,6 +1,7 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
 using Saturn.Repository;
 using System.Net;
@@ -11,7 +12,19 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ContactTypeController : Controller
     {
-        readonly ContactTypeRepository repository = new ContactTypeRepository(new SaturnDbContext());
+        private readonly IContactTypeRepository repository;
+
+        public ContactTypeController()
+        {
+            this.repository = new ContactTypeRepository(new SaturnDbContext());
+
+        }
+        public ContactTypeController(IContactTypeRepository repository)
+        {
+            this.repository = repository;
+
+        }
+
 
         public ActionResult Index()
         {
