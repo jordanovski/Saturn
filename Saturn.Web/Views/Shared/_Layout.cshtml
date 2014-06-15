@@ -52,6 +52,7 @@
                                 <li>@Html.ActionLink("Ценовник", "Index", "PriceList", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Типови на контакти", "Index", "ContactType", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Испитни центри", "Index", "ExamCenters", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Јазици на полагање на испит", "Index", "ExamLanguage", new { Area = "Codebooks" }, new { })</li>
 
                                 @if (Request.IsAuthenticated && User.IsInRole("Admin"))
                                 {

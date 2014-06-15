@@ -4,30 +4,28 @@
     ViewBag.Title = "Јазици на полагање на испит";
 }
 
-<h3>Нов</h3>
-
 @using (Html.BeginForm()) 
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h5>Јазик на полагање на испит</h5>
+        <h3>Нов јазик на полагање на испит</h3>
         <hr />
         @Html.ValidationSummary(true)
 
         <div class="form-group">
             @Html.LabelFor(model => model.Language, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Language)
-                @Html.ValidationMessageFor(model => model.Language)
+                @Html.EditorFor(model => model.Language, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Language, "", new { @class = "text-danger" })
             </div>
         </div>
 
         <div class="form-group">
             @Html.LabelFor(model => model.LanguageCode, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.LanguageCode)
-                @Html.ValidationMessageFor(model => model.LanguageCode)
+                @Html.EditorFor(model => model.LanguageCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.LanguageCode, "", new { @class = "text-danger" })
             </div>
         </div>
 
