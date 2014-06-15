@@ -12,17 +12,23 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Име")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string Name { get; set; }
 
-        [StringLength(13)]
+        [Display(Name = "Даночен број")]
+        [StringLength(13, ErrorMessage = "Вредноста не може да биде поголема од 13 катактери.")]
         public string TaxNumber { get; set; }
 
-        [StringLength(50)]
+        [Display(Name = "Адреса")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string Address { get; set; }
 
+        [Display(Name = "Град")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int CityId { get; set; }
+
 
         public virtual City City { get; set; }
 

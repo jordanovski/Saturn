@@ -1,8 +1,9 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
-using Saturn.UnitOfWork;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -11,7 +12,20 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExamCentersController : Controller
     {
-        private readonly ExamCentersUnitOfWork unitOfWork = new ExamCentersUnitOfWork(new SaturnDbContext());
+        private readonly ICityRepository cityRepository;
+        private readonly IExamCentersRepository examCentersRepository;
+       
+        public ExamCentersController()
+        {
+            this.cityRepository = new CityRepository(new SaturnDbContext());
+            this.examCentersRepository = new ExamCentersRepository(new SaturnDbContext());
+        }
+        public ExamCentersController(ICityRepository cityRepository, IExamCentersRepository examCentersRepository)
+        {
+            this.cityRepository = cityRepository;
+            this.examCentersRepository = examCentersRepository;
+        }
+               
 
         public ActionResult Index()
         {
@@ -19,7 +33,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            var data = await unitOfWork.ExamCentersRepository.GetAllAsync();
+            var data = await examCentersRepository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -31,7 +45,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
+            ExamCenters examcenters = await examCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
@@ -42,7 +56,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 
         public async Task<ActionResult> Create()
         {
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -52,12 +66,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.ExamCentersRepository.InsertAsync(examcenters);
-                await unitOfWork.SaveAsync();
+                examCentersRepository.InsertAsync(examcenters);
+                await examCentersRepository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -68,12 +82,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
+            ExamCenters examcenters = await examCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -83,11 +97,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.ExamCentersRepository.UpdateAsync(examcenters);
-                await unitOfWork.SaveAsync();
+                examCentersRepository.UpdateAsync(examcenters);
+                await examCentersRepository.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(await unitOfWork.CityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", examcenters.CityId);
             return View(examcenters);
         }
 
@@ -98,7 +112,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
+            ExamCenters examcenters = await examCentersRepository.FindAsync(p => p.Id == id);
             if (examcenters == null)
             {
                 return HttpNotFound();
@@ -110,9 +124,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            ExamCenters examcenters = await unitOfWork.ExamCentersRepository.FindAsync(p => p.Id == id);
-            unitOfWork.ExamCentersRepository.RemoveAsync(examcenters);
-            await unitOfWork.SaveAsync();
+            ExamCenters examcenters = await examCentersRepository.FindAsync(p => p.Id == id);
+            examCentersRepository.RemoveAsync(examcenters);
+            await examCentersRepository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -121,7 +135,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                unitOfWork.Dispose();
+                cityRepository.Dispose();
+                examCentersRepository.Dispose();
+
             }
             base.Dispose(disposing);
         }

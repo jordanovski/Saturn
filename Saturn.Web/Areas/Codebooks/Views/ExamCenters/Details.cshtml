@@ -4,44 +4,21 @@
     ViewBag.Title = "Испитни центри";
 }
 
-<h3>Детали</h3>
-
 <div>
-    <h5>Испитен центар</h5>
+    <h3>Детали за испитен центар</h3>
 	<hr />
     <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.City.Name)
-        </dt>
+        <dt>@Html.DisplayNameFor(model => model.City.Name)</dt>
+        <dd>@Html.DisplayFor(model => model.City.Name)</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.City.Name)
-        </dd>
+        <dt>@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd>@Html.DisplayFor(model => model.Name)</dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+        <dt>@Html.DisplayNameFor(model => model.TaxNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.TaxNumber)</dd>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.TaxNumber)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.TaxNumber)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-
+        <dt>@Html.DisplayNameFor(model => model.Address)</dt>
+        <dd>@Html.DisplayFor(model => model.Address)</dd>
     </dl>
 </div>
 <p>

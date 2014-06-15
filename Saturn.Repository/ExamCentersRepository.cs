@@ -29,7 +29,7 @@ namespace Saturn.Repository
 
          public async Task<ExamCenters> FindAsync(Expression<Func<ExamCenters, bool>> match)
         {
-            return await dbContext.ExamCenters.SingleOrDefaultAsync(match);
+            return await dbContext.ExamCenters.Include(i=>i.City).SingleOrDefaultAsync(match);
         }
 
          public async Task<List<ExamCenters>> FindAllAsync(Expression<Func<ExamCenters, bool>> match)
