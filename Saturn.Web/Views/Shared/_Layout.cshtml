@@ -54,6 +54,7 @@
                                 <li>@Html.ActionLink("Испитни центри", "Index", "ExamCenters", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Јазици на полагање на испит", "Index", "ExamLanguage", new { Area = "Codebooks" }, new { })</li>
                                 <li>@Html.ActionLink("Документи", "Index", "RequiredDocument", new { Area = "Codebooks" }, new { })</li>
+                                <li>@Html.ActionLink("Типови на грешки", "Index", "ErrorType", new { Area = "Codebooks" }, new { })</li>
 
                                 @if (Request.IsAuthenticated && User.IsInRole("Admin"))
                                 {

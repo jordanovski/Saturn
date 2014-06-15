@@ -14,19 +14,25 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [StringLength(10)]
+        [Display(Name = "Форма")]
+        [StringLength(10, ErrorMessage = "Вредноста не може да биде поголема од 10 катактери.")]
         public string Form { get; set; }
 
-        [StringLength(10)]
+        [Display(Name = "Прашање")]
+        [StringLength(10, ErrorMessage = "Вредноста не може да биде поголема од 10 катактери.")]
         public string Question { get; set; }
 
+        [Display(Name = "Опис")]
         public string Description { get; set; }
 
+        [Display(Name = "Негативни поени")]
         public int? PenaltyPoints { get; set; }
 
-        [StringLength(50)]
+        [Display(Name = "Категорија")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string DrivingCategory { get; set; }
 
+        [Display(Name = "Тип на испит")]
         public int? ExamTypeId { get; set; }
 
         public virtual ExamType ExamType { get; set; }

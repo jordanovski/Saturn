@@ -13,8 +13,8 @@
         columns.Bound(p => p.Form).Width(100);
         columns.Bound(p => p.Question).Width(100);
         columns.Bound(p => p.Description);
-        columns.Bound(p => p.DrivingCategory).Width(100);
-        columns.Bound(p => p.ExaminationType).Width(140);
+        //columns.Bound(p => p.DrivingCategory).Width(100);
+        //columns.Bound(p => p.ExaminationType).Width(140);
         columns.Bound(p => p.PenaltyPoints).Width(80);
 
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "ErrorType") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
