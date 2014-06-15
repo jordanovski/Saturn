@@ -1,6 +1,7 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
 using Saturn.Repository;
 using System.Net;
@@ -11,7 +12,19 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class RequiredDocumentController : Controller
     {
-        readonly RequiredDocumentRepository repository = new RequiredDocumentRepository(new SaturnDbContext());
+        private readonly IRequiredDocumentRepository repository;
+
+        public RequiredDocumentController()
+        {
+            this.repository = new RequiredDocumentRepository(new SaturnDbContext());
+
+        }
+        public RequiredDocumentController(IRequiredDocumentRepository repository)
+        {
+            this.repository = repository;
+
+        }
+
 
         public ActionResult Index()
         {
@@ -23,6 +36,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
+
 
         public async Task<ActionResult> Details(int? id)
         {

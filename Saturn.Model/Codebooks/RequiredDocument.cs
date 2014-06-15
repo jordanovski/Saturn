@@ -15,8 +15,9 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(255)]
+        [Display(Name = "Документ")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(255, ErrorMessage = "Вредноста не може да биде поголема од 255 катактери.")]
         public string ReqDocument { get; set; }
 
         public virtual ICollection<ReqDocCandidate> ReqDocCandidate { get; set; }

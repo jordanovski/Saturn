@@ -4,7 +4,7 @@
     ViewBag.Title = "Документи";
 }
 
-<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Title</h3>
 
 @(Html.Kendo().Grid(Model)
     .Name("grid")
@@ -27,7 +27,7 @@
     .Filterable()
     .DataSource(dataSource => dataSource
         .Ajax()
-        .PageSize(15)
+        .PageSize(10)
         .Read(read => read.Action("Read", "RequiredDocument"))
     )
 )
