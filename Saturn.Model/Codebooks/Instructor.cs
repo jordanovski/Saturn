@@ -15,31 +15,35 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Име")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string FirstName { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Презиме")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string LastName { get; set; }
 
-        [StringLength(13)]
+        [Display(Name = "Матичен број")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(13, ErrorMessage = "Вредноста не може да биде поголема од 13 катактери.")]
         public string UniqueNumber { get; set; }
 
+        [Display(Name = "Авто школа")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
         public int DrivingSchoolId { get; set; }
 
+        [Display(Name = "Пракса")]
         public bool Practice { get; set; }
 
+        [Display(Name = "Теорија")]
         public bool Theory { get; set; }
 
+        [Display(Name = "Активен")]
         public bool IsActive { get; set; }
 
-        [NotMapped]
-        public string FullName
-        {
-            get { return LastName + " " + FirstName; }
-            private set { }
-        }
+       
 
         public virtual DrivingSchool DrivingSchool { get; set; }
 

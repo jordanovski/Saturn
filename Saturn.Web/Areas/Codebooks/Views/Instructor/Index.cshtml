@@ -14,9 +14,9 @@
         columns.Bound(p => p.LastName);
         columns.Bound(p => p.UniqueNumber);
         columns.Bound(p => p.DrivingSchool);
-        columns.Bound(p => p.Theory).ClientTemplate("<input type='checkbox' name='IsInternalCb' #= Theory? 'checked' : '' # disabled /> ");
-        columns.Bound(p => p.Practice).ClientTemplate("<input type='checkbox' name='IsInternalCb' #= Practice? 'checked' : '' # disabled /> ");
-        columns.Bound(p => p.IsActive).ClientTemplate("<input type='checkbox' name='IsInternalCb' #= IsActive? 'checked' : '' # disabled /> ");
+        columns.Bound(p => p.Theory).ClientTemplate("#= Theory? 'Да' : 'Не' #");
+        columns.Bound(p => p.Practice).ClientTemplate("#= Practice? 'Да' : 'Не' #");
+        columns.Bound(p => p.IsActive).ClientTemplate("#= IsActive? 'Да' : 'Не' #");
 
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "Instructor") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
         columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "Instructor") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></a>").Width(50);
@@ -35,7 +35,7 @@
     .Resizable(r => r.Columns(true))
     .DataSource(dataSource => dataSource
         .Ajax()
-        .PageSize(15)
+        .PageSize(10)
         .Read(read => read.Action("Read", "Instructor"))
     )
 )

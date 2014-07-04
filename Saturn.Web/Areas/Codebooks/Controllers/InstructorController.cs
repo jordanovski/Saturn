@@ -1,8 +1,9 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model.Codebooks;
-using Saturn.UnitOfWork;
+using Saturn.Repository;
 using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -11,7 +12,21 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class InstructorController : Controller
     {
-        private readonly InstructorUnitOfWork unitOfWork = new InstructorUnitOfWork(new SaturnDbContext());
+        private readonly IInstructorRepository repository;
+        private readonly IDrivingSchoolRepository drivingSchoolRepository;
+
+        public InstructorController()
+        {
+            this.repository = new InstructorRepository(new SaturnDbContext());
+            this.drivingSchoolRepository = new DrivingSchoolRepository(new SaturnDbContext());
+
+        }
+        public InstructorController(IInstructorRepository repository, IDrivingSchoolRepository drivingSchoolRepository)
+        {
+            this.repository = repository;
+            this.drivingSchoolRepository = drivingSchoolRepository;
+        }
+        
 
         public ActionResult Index()
         {
@@ -19,7 +34,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            var data = await unitOfWork.InstructorRepository.GetAllAsync();
+            var data = await repository.GetAllAsync();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -31,7 +46,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = await unitOfWork.InstructorRepository.FindAsync(p => p.Id == id);
+            Instructor instructor = await repository.FindAsync(p => p.Id == id);
             if (instructor == null)
             {
                 return HttpNotFound();
@@ -42,7 +57,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 
         public async Task<ActionResult> Create()
         {
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name");
 
             Instructor instructor = new Instructor();
             instructor.IsActive = true;
@@ -56,12 +71,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.InstructorRepository.InsertAsync(instructor);
-                await unitOfWork.SaveAsync();
+                repository.InsertAsync(instructor);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
             return View(instructor);
         }
 
@@ -72,12 +87,12 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = await unitOfWork.InstructorRepository.FindAsync(p => p.Id == id);
+            Instructor instructor = await repository.FindAsync(p => p.Id == id);
             if (instructor == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
             return View(instructor);
         }
 
@@ -87,11 +102,11 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (ModelState.IsValid)
             {
-                unitOfWork.InstructorRepository.UpdateAsync(instructor);
-                await unitOfWork.SaveAsync();
+                repository.UpdateAsync(instructor);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.DrivingSchoolId = new SelectList(await unitOfWork.DrivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
+            ViewBag.DrivingSchoolId = new SelectList(await drivingSchoolRepository.GetAllAsync(), "Id", "Name", instructor.DrivingSchoolId);
             return View(instructor);
         }
 
@@ -102,7 +117,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Instructor instructor = await unitOfWork.InstructorRepository.FindAsync(p => p.Id == id);
+            Instructor instructor = await repository.FindAsync(p => p.Id == id);
             if (instructor == null)
             {
                 return HttpNotFound();
@@ -114,9 +129,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Instructor instructor = await unitOfWork.InstructorRepository.FindAsync(p => p.Id == id);
-            unitOfWork.InstructorRepository.RemoveAsync(instructor);
-            await unitOfWork.SaveAsync();
+            Instructor instructor = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(instructor);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -125,7 +140,8 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             if (disposing)
             {
-                unitOfWork.Dispose();
+                repository.Dispose();
+                drivingSchoolRepository.Dispose();
             }
             base.Dispose(disposing);
         }
