@@ -16,19 +16,26 @@ namespace Saturn.Model.Codebooks
 
         public int Id { get; set; }
 
-        [Required]
-        [StringLength(50)]
+        [Display(Name = "Име")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string FirstName { get; set; }
 
-        [StringLength(50)]
+        [Display(Name = "Презиме")]
+        [Required(ErrorMessage = "Ова поле е задолжително.")]
+        [StringLength(50, ErrorMessage = "Вредноста не може да биде поголема од 50 катактери.")]
         public string LastName { get; set; }
 
+        [Display(Name = "Претседател")]
         public bool President { get; set; }
 
+        [Display(Name = "Пракса")]
         public bool Practice { get; set; }
 
+        [Display(Name = "Теорија")]
         public bool Theory { get; set; }
 
+        [Display(Name = "Активен")]
         public bool IsActive { get; set; }
 
         [NotMapped]
