@@ -37,7 +37,7 @@
     .Resizable(r => r.Columns(true))
     .DataSource(dataSource => dataSource
         .Ajax()
-        .PageSize(15)
+        .PageSize(10)
         .Read(read => read.Action("Read", "PriceList"))
     )
 )
