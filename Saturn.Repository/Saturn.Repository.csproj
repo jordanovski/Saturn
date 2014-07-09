@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CandidateRepository.cs" />
     <Compile Include="CityRepository.cs" />
     <Compile Include="ContactPersonRepository.cs" />
     <Compile Include="DrivingCategoryRepository.cs" />

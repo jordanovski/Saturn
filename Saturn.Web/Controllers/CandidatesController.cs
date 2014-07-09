@@ -1,6 +1,7 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model;
 using Saturn.Model.ViewModels;
 using Saturn.Repository;
@@ -16,9 +17,26 @@ namespace Saturn.Web.Controllers
     [Authorize]
     public class CandidatesController : Controller
     {
+        private readonly ICandidateRepository repository;
+        private readonly ICityRepository cityRepository;
+        private readonly IDrivingCategoryRepository drivingCategoryRepository;
         private readonly SaturnDbContext db = new SaturnDbContext();
         private readonly SaturnDbViewContext dbView = new SaturnDbViewContext();
         
+        public CandidatesController()
+        {
+            this.repository = new CandidateRepository(new SaturnDbContext());
+            this.cityRepository = new CityRepository(new SaturnDbContext());
+            this.drivingCategoryRepository = new DrivingCategoryRepository(new SaturnDbContext());
+
+        }
+        public CandidatesController(ICandidateRepository repository, ICityRepository cityRepository, IDrivingCategoryRepository drivingCategoryRepository)
+        {
+            this.repository = repository;
+            this.cityRepository = cityRepository;
+            this.drivingCategoryRepository = drivingCategoryRepository;
+        }
+
 
         public ActionResult Index()
         {
@@ -26,13 +44,7 @@ namespace Saturn.Web.Controllers
         }
         public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            var data = db.Candidate
-                .Include(c => c.City)
-                .Include(c => c.DrivingCategory)
-                .Include(c => c.ExistingDrivingCategory)
-                .OrderByDescending(o => o.Id)
-                .Select(CandidateViewModel.FromCandidates).ToList();
+            var data = await repository.GetAllAsync();
             
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
@@ -44,7 +56,7 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Candidate candidate = await db.Candidate.FindAsync(id);
+            Candidate candidate = await repository.FindAsync(f => f.Id == id);
             if (candidate == null)
             {
                 return HttpNotFound();
@@ -138,10 +150,10 @@ namespace Saturn.Web.Controllers
 
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name");
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category");
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name");
+            ViewBag.DrivingCategoryId = new SelectList(await drivingCategoryRepository.GetAllAsync(), "Id", "Category");
             return View();
         }
 
@@ -151,13 +163,13 @@ namespace Saturn.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Candidate.Add(candidate);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(candidate);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", candidate.CityId);
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", candidate.DrivingCategoryId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", candidate.CityId);
+            ViewBag.DrivingCategoryId = new SelectList(await drivingCategoryRepository.GetAllAsync(), "Id", "Category", candidate.DrivingCategoryId);
             return View(candidate);
         }
 
@@ -168,13 +180,13 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Candidate candidate = await db.Candidate.FindAsync(id);
+            Candidate candidate = await repository.FindAsync(p => p.Id == id);
             if (candidate == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", candidate.CityId);
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", candidate.DrivingCategoryId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", candidate.CityId);
+            ViewBag.DrivingCategoryId = new SelectList(await drivingCategoryRepository.GetAllAsync(), "Id", "Category", candidate.DrivingCategoryId);
             return View(candidate);
         }
 
@@ -184,12 +196,12 @@ namespace Saturn.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(candidate).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(candidate);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.CityId = new SelectList(db.City, "Id", "Name", candidate.CityId);
-            ViewBag.DrivingCategoryId = new SelectList(db.DrivingCategory, "Id", "Category", candidate.DrivingCategoryId);
+            ViewBag.CityId = new SelectList(await cityRepository.GetAllAsync(), "Id", "Name", candidate.CityId);
+            ViewBag.DrivingCategoryId = new SelectList(await drivingCategoryRepository.GetAllAsync(), "Id", "Category", candidate.DrivingCategoryId);
             return View(candidate);
         }
 
@@ -200,7 +212,7 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Candidate candidate = await db.Candidate.FindAsync(id);
+            Candidate candidate = await repository.FindAsync(p => p.Id == id);
             if (candidate == null)
             {
                 return HttpNotFound();
@@ -212,9 +224,9 @@ namespace Saturn.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Candidate candidate = await db.Candidate.FindAsync(id);
-            db.Candidate.Remove(candidate);
-            await db.SaveChangesAsync();
+            Candidate candidate = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(candidate);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -223,7 +235,9 @@ namespace Saturn.Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
+                cityRepository.Dispose();
+                drivingCategoryRepository.Dispose();
             }
             base.Dispose(disposing);
         }
