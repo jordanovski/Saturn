@@ -1,9 +1,9 @@
 ﻿using Kendo.Mvc.Extensions;
 using Kendo.Mvc.UI;
 using Saturn.Data;
+using Saturn.Interface.Repository;
 using Saturn.Model;
-using System;
-using System.Data.Entity;
+using Saturn.Repository;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
@@ -14,17 +14,36 @@ namespace Saturn.Web.Controllers
     [Authorize]
     public class ExaminationController : Controller
     {
-        private readonly SaturnDbContext db = new SaturnDbContext();
-        private readonly SaturnDbViewContext dbView = new SaturnDbViewContext();
+        private readonly IExaminationRepository repository;
+        private readonly IExamTypeRepository examTypeRepository;
+        private readonly IExaminerRepository examinerRepository;
+        private readonly IExamCentersRepository examCentersRepository;
+
+        public ExaminationController()
+        {
+            this.repository = new ExaminationRepository(new SaturnDbContext(), new SaturnDbViewContext());
+            this.examTypeRepository = new ExamTypeRepository(new SaturnDbContext());
+            this.examinerRepository = new ExaminerRepository(new SaturnDbContext());
+            this.examCentersRepository = new ExamCentersRepository(new SaturnDbContext());
+
+        }
+        public ExaminationController(IExaminationRepository repository, IExamTypeRepository examTypeRepository, IExaminerRepository examinerRepository, IExamCentersRepository examCentersRepository)
+        {
+            this.repository = repository;
+            this.examTypeRepository = examTypeRepository;
+            this.examinerRepository = examinerRepository;
+            this.examCentersRepository = examCentersRepository;
+        }
+
 
         public ActionResult Index()
         {
             return View();
         }
-        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
         {
-            dbView.Configuration.ProxyCreationEnabled = false;
-            var data = dbView.ViewExaminations.Where(w => w.ExamDate >= DateTime.Now).OrderBy(o => o.ExamDate).ThenBy(o => o.ExamTime).ToList();
+            var data = await repository.GetAllAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
@@ -32,50 +51,52 @@ namespace Saturn.Web.Controllers
         {
             return View();
         }
-        public ActionResult PassedExaminations_Read([DataSourceRequest] DataSourceRequest request)
+        public async Task<ActionResult> PassedExaminations_Read([DataSourceRequest] DataSourceRequest request)
         {
-            dbView.Configuration.ProxyCreationEnabled = false;
-            var data = dbView.ViewExaminations.Where(w => w.ExamDate < DateTime.Now).OrderByDescending(o => o.ExamDate).ThenByDescending(o => o.ExamTime).ToList();
+            var data = await repository.GetAllPassedAsync();
+
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }
 
-        public ActionResult CandidatesList(int id)
+        public async Task<ActionResult> CandidatesList(int id)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            dbView.Configuration.ProxyCreationEnabled = false;
+            var exam = await repository.FindAsync(p => p.Id == id);
+            var examCenters = await examCentersRepository.GetAllAsync();
+            var president = await examinerRepository.FindAsync(f => f.Id == exam.PresidentId);
+            var examiner = await examinerRepository.FindAsync(f => f.Id == exam.ExaminerId);
+            var member = await examinerRepository.FindAsync(f => f.Id == exam.MemberId);
 
-            var exam = db.Examination.Find(id);
 
             ViewBag.ExamId = id;
-            ViewBag.ExamLocation = db.ExamCenters.First(w => w.Id == exam.ExamCenterId).Name;
+            ViewBag.ExamLocation = examCenters.First(w => w.Id == exam.ExamCenterId).Name;
             ViewBag.ExamDate = exam.ExamDate.ToShortDateString();
             ViewBag.ExamTime = exam.ExamTime;
-            ViewBag.President = exam.PresidentId == null ? "" : db.Examiner.Find(exam.PresidentId).FullName;
-            ViewBag.Examiner = exam.ExaminerId == null ? "" : db.Examiner.Find(exam.ExaminerId).FullName;
-            ViewBag.Member = exam.MemberId == null ? "" : db.Examiner.Find(exam.MemberId).FullName;
+            ViewBag.President = exam.PresidentId == null ? "" : president.FullName;
+            ViewBag.Examiner = exam.ExaminerId == null ? "" : examiner.FullName;
+            ViewBag.Member = exam.MemberId == null ? "" : member.FullName;
 
 
-            var data = dbView.ViewExamCandidates.Where(w => w.ExamId == id).ToList();
+            var data = await repository.GetAllExamCandidatesAsync(w => w.ExamId == id);// dbView.ViewExamCandidates.Where(w => w.ExamId == id).ToList();
             return View(data);
         }
 
 
-        public ActionResult ExaminationResult(int id)
+        public async Task<ActionResult> ExaminationResult(int id)
         {
-            db.Configuration.ProxyCreationEnabled = false;
-            dbView.Configuration.ProxyCreationEnabled = false;
+            var exam = await repository.FindAsync(p => p.Id == id);
+            var examCenters = await examCentersRepository.GetAllAsync();
+            var president = await examinerRepository.FindAsync(f => f.Id == exam.PresidentId);
+            var examiner = await examinerRepository.FindAsync(f => f.Id == exam.ExaminerId);
+            var member = await examinerRepository.FindAsync(f => f.Id == exam.MemberId);
 
-            var exam = db.Examination.Find(id);
-
-            ViewBag.ExamId = id;
-            ViewBag.ExamLocation = db.ExamCenters.First(w => w.Id == exam.ExamCenterId).Name;
+            ViewBag.ExamLocation = examCenters.First(w => w.Id == exam.ExamCenterId).Name;
             ViewBag.ExamDate = exam.ExamDate.ToShortDateString();
             ViewBag.ExamTime = exam.ExamTime;
-            ViewBag.President = exam.PresidentId == null ? "" : db.Examiner.Find(exam.PresidentId).FullName;
-            ViewBag.Examiner = exam.ExaminerId == null ? "" : db.Examiner.Find(exam.ExaminerId).FullName;
-            ViewBag.Member = exam.MemberId == null ? "" : db.Examiner.Find(exam.MemberId).FullName;
+            ViewBag.President = exam.PresidentId == null ? "" : president.FullName;
+            ViewBag.Examiner = exam.ExaminerId == null ? "" : examiner.FullName;
+            ViewBag.Member = exam.MemberId == null ? "" : member.FullName;
 
-            var data = dbView.ViewExamCandidates.Where(w => w.ExamId == id).ToList();
+            var data = await repository.GetAllExamCandidatesAsync(w => w.ExamId == id);// dbView.ViewExamCandidates.Where(w => w.ExamId == id).ToList();
             return View(data);
         }
 
@@ -86,7 +107,7 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examination examination = await db.Examination.FindAsync(id);
+            Examination examination = await repository.FindAsync(p => p.Id == id);
             if (examination == null)
             {
                 return HttpNotFound();
@@ -95,13 +116,13 @@ namespace Saturn.Web.Controllers
         }
 
 
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type");
-            ViewBag.MemberId = new SelectList(db.Examiner, "Id", "FullName");
-            ViewBag.ExaminerId = new SelectList(db.Examiner, "Id", "FullName");
-            ViewBag.PresidentId = new SelectList(db.Examiner, "Id", "FullName");
-            ViewBag.ExamCenterId = new SelectList(db.ExamCenters, "Id", "Name");
+            ViewBag.ExamTypeId = new SelectList(await examTypeRepository.GetAllAsync(), "Id", "Type");
+            ViewBag.MemberId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName");
+            ViewBag.ExaminerId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName");
+            ViewBag.PresidentId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName");
+            ViewBag.ExamCenterId = new SelectList(await examCentersRepository.GetAllAsync(), "Id", "Name");
             return View();
         }
 
@@ -111,16 +132,16 @@ namespace Saturn.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Examination.Add(examination);
-                await db.SaveChangesAsync();
+                repository.InsertAsync(examination);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", examination.ExamTypeId);
-            ViewBag.MemberId = new SelectList(db.Examiner, "Id", "FullName", examination.MemberId);
-            ViewBag.ExaminerId = new SelectList(db.Examiner, "Id", "FullName", examination.ExaminerId);
-            ViewBag.PresidentId = new SelectList(db.Examiner, "Id", "FullName", examination.PresidentId);
-            ViewBag.ExamCenterId = new SelectList(db.ExamCenters, "Id", "Name", examination.ExamCenterId);
+            ViewBag.ExamTypeId = new SelectList(await examTypeRepository.GetAllAsync(), "Id", "Type", examination.ExamTypeId);
+            ViewBag.MemberId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.MemberId);
+            ViewBag.ExaminerId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.ExaminerId);
+            ViewBag.PresidentId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.PresidentId);
+            ViewBag.ExamCenterId = new SelectList(await examCentersRepository.GetAllAsync(), "Id", "Name", examination.ExamCenterId);
 
             return View(examination);
         }
@@ -132,17 +153,17 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examination examination = await db.Examination.FindAsync(id);
+            Examination examination = await repository.FindAsync(p => p.Id == id);
             if (examination == null)
             {
                 return HttpNotFound();
             }
 
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", examination.ExamTypeId);
-            ViewBag.MemberId = new SelectList(db.Examiner, "Id", "FullName", examination.MemberId);
-            ViewBag.ExaminerId = new SelectList(db.Examiner, "Id", "FullName", examination.ExaminerId);
-            ViewBag.PresidentId = new SelectList(db.Examiner, "Id", "FullName", examination.PresidentId);
-            ViewBag.ExamCenterId = new SelectList(db.ExamCenters, "Id", "Name", examination.ExamCenterId);
+            ViewBag.ExamTypeId = new SelectList(await examTypeRepository.GetAllAsync(), "Id", "Type", examination.ExamTypeId);
+            ViewBag.MemberId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.MemberId);
+            ViewBag.ExaminerId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.ExaminerId);
+            ViewBag.PresidentId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.PresidentId);
+            ViewBag.ExamCenterId = new SelectList(await examCentersRepository.GetAllAsync(), "Id", "Name", examination.ExamCenterId);
 
             return View(examination);
         }
@@ -153,16 +174,16 @@ namespace Saturn.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(examination).State = EntityState.Modified;
-                await db.SaveChangesAsync();
+                repository.UpdateAsync(examination);
+                await repository.SaveAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.ExamTypeId = new SelectList(db.ExamType, "Id", "Type", examination.ExamTypeId);
-            ViewBag.MemberId = new SelectList(db.Examiner, "Id", "FullName", examination.MemberId);
-            ViewBag.ExaminerId = new SelectList(db.Examiner, "Id", "FullName", examination.ExaminerId);
-            ViewBag.PresidentId = new SelectList(db.Examiner, "Id", "FullName", examination.PresidentId);
-            ViewBag.ExamCenterId = new SelectList(db.ExamCenters, "Id", "Name", examination.ExamCenterId);
+            ViewBag.ExamTypeId = new SelectList(await examTypeRepository.GetAllAsync(), "Id", "Type", examination.ExamTypeId);
+            ViewBag.MemberId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.MemberId);
+            ViewBag.ExaminerId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.ExaminerId);
+            ViewBag.PresidentId = new SelectList(await examinerRepository.GetAllAsync(), "Id", "FullName", examination.PresidentId);
+            ViewBag.ExamCenterId = new SelectList(await examCentersRepository.GetAllAsync(), "Id", "Name", examination.ExamCenterId);
             return View(examination);
         }
 
@@ -173,7 +194,7 @@ namespace Saturn.Web.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Examination examination = await db.Examination.FindAsync(id);
+            Examination examination = await repository.FindAsync(p => p.Id == id);
             if (examination == null)
             {
                 return HttpNotFound();
@@ -185,9 +206,9 @@ namespace Saturn.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(int id)
         {
-            Examination examination = await db.Examination.FindAsync(id);
-            db.Examination.Remove(examination);
-            await db.SaveChangesAsync();
+            Examination examination = await repository.FindAsync(p => p.Id == id);
+            repository.RemoveAsync(examination);
+            await repository.SaveAsync();
             return RedirectToAction("Index");
         }
 
@@ -196,7 +217,10 @@ namespace Saturn.Web.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                repository.Dispose();
+                examTypeRepository.Dispose();
+                examinerRepository.Dispose();
+                examCentersRepository.Dispose();
             }
             base.Dispose(disposing);
         }

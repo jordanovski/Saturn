@@ -10,7 +10,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
 {
     public class ExamWayOfTakingController : Controller
     {
-        private readonly IExamWayOfTakingRepository repository ;
+        private readonly IExamWayOfTakingRepository repository;
 
         public ExamWayOfTakingController()
         {

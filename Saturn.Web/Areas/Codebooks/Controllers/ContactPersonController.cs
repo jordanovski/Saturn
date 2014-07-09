@@ -14,6 +14,7 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
     {
         private readonly IContactPersonRepository repository;
         private readonly IContactTypeRepository contactTypeRepository;
+
         public ContactPersonController()
         {
             this.repository = new ContactPersonRepository(new SaturnDbContext());

@@ -4,14 +4,12 @@
     ViewBag.Title = "Терними";
 }
 
-<h3>Промени</h3>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
     
     <div class="form-horizontal">
-        <h5>Термин</h5>
+        <h3>Промени термин</h3>
         <hr />
         @Html.ValidationSummary(true)
         @Html.HiddenFor(model => model.Id)
@@ -25,7 +23,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери испитен центар")
                     .HtmlAttributes(new { style = "width:250px" }))
-                @Html.ValidationMessageFor(model => model.ExamCenterId)
+                @Html.ValidationMessageFor(model => model.ExamCenterId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -33,7 +31,7 @@
             @Html.LabelFor(model => model.ExamDate, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @(Html.Kendo().DatePickerFor(m => m.ExamDate).ParseFormats(new string[] { "dd.MM.yyyy" }).Format("dd/MM/yyyy"))
-                @Html.ValidationMessageFor(model => model.ExamDate)
+                @Html.ValidationMessageFor(model => model.ExamDate, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -41,7 +39,7 @@
             @Html.LabelFor(model => model.ExamTime, new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @(Html.Kendo().TimePickerFor(m => m.ExamTime).Format("HH:mm").Min("07:00 AM").Max("19:00 PM"))
-                @Html.ValidationMessageFor(model => model.ExamTime)
+                @Html.ValidationMessageFor(model => model.ExamTime, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -54,7 +52,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери тип на испит")
                     .HtmlAttributes(new { style = "width:250px" }))
-                @Html.ValidationMessageFor(model => model.ExamTypeId)
+                @Html.ValidationMessageFor(model => model.ExamTypeId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -67,7 +65,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери председател")
                     .HtmlAttributes(new { style = "width:250px" }))
-                @Html.ValidationMessageFor(model => model.PresidentId)
+                @Html.ValidationMessageFor(model => model.PresidentId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -80,7 +78,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери испитувач")
                     .HtmlAttributes(new { style = "width:250px" }))
-                @Html.ValidationMessageFor(model => model.ExaminerId)
+                @Html.ValidationMessageFor(model => model.ExaminerId, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -93,7 +91,7 @@
                     .DataTextField("Text")
                     .OptionLabel("Одбери член")
                     .HtmlAttributes(new { style = "width:250px" }))
-                @Html.ValidationMessageFor(model => model.MemberId)
+                @Html.ValidationMessageFor(model => model.MemberId, "", new { @class = "text-danger" })
             </div>
         </div>
 

@@ -47,6 +47,7 @@
     <Compile Include="Repository\IDrivingSchoolRepository.cs" />
     <Compile Include="Repository\IErrorTypeRepository.cs" />
     <Compile Include="Repository\IExamCentersRepository.cs" />
+    <Compile Include="Repository\IExaminationRepository.cs" />
     <Compile Include="Repository\IExaminerRepository.cs" />
     <Compile Include="Repository\IExamLanguageRepository.cs" />
     <Compile Include="Repository\IExamRegistrationStatusRepository.cs" />
