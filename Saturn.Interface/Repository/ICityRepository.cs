@@ -4,10 +4,12 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 
+
 namespace Saturn.Interface.Repository
 {
     public interface ICityRepository : IDisposable
     {
+        List<City> GetAll();
         Task<List<City>> GetAllAsync();
         Task<City> FindAsync(Expression<Func<City, bool>> match);
         Task<List<City>> FindAllAsync(Expression<Func<City, bool>> match);

@@ -1,0 +1,68 @@
+﻿@{
+    ViewBag.Title = "Финансиски преглед";
+}
+
+<h3>@ViewBag.Title</h3>
+<br />
+<table class="table .table-condensed" style="width:650px">
+    <tr>
+        <td>Тип на испит:</td>
+        <td>
+            @(Html.Kendo().DropDownList()
+                .Name("dropdownlistExamType")
+                .DataTextField("Text")
+                .DataValueField("Value")
+                .BindTo(new List<SelectListItem>()
+                {
+                    new SelectListItem() {Text = "Теориски дел", Value = "1"},
+                    new SelectListItem() {Text = "Прак. дел - Полигон", Value = "2"},
+                    new SelectListItem() {Text = "Прак. дел - Град", Value = "3"},
+                })
+                .OptionLabel("Одбери категорија")
+                    //.Events(e => { e.Select("select"); })
+            )
+        </td>
+        <td>Оператор:</td>
+        <td>
+            @(Html.Kendo().DropDownList()
+                .Name("dropdownlistOperator")
+                .BindTo(ViewBag.Operators)
+                .DataValueField("Value")
+                .DataTextField("Text")
+                .OptionLabel("Одбери оператор"))
+        </td>
+    </tr>
+    <tr>
+        <td>Од:</td>
+        <td>@(Html.Kendo().DatePicker().Name("from").Format("dd/MM/yyyy"))</td>
+        <td>До:</td>
+        <td>@(Html.Kendo().DatePicker().Name("to").Format("dd/MM/yyyy"))</td>
+    </tr>
+    <tr>
+        <td><input type="button" value="Преглед" id="GetExaminersStatistic" class="btn btn-default" /></td>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+</table>
+<table class="table .table-condensed" style="width:650px">
+    <tr>
+        <td><input type="button" value="Печати преглед" id="GetExaminersStatistic" class="btn btn-sm" /></td>
+        <td><input type="button" value="Печати сумарен преглед" id="GetExaminersStatistic" class="btn btn-sm" /></td>
+        <td><input type="button" value="Печати преглед без такса" id="GetExaminersStatistic" class="btn btn-sm" /></td>
+        <td><input type="button" value="Пачати сумарен преглед без такса" id="GetExaminersStatistic" class="btn btn-sm" /></td>
+    </tr>
+</table>
+
+
+
+Вкупно уплатени средства во назначениот период: <b>0</b> <br />
+Вкупно такса: <b>0</b> <br />
+Вкупно ДДВ: <b>0</b> <br />
+Вкупно - користење на возило од ИЦ: <b>0</b> <br />
+Вкупно - ДДВ од користење на возило од ИЦ: <b>0</b> <br /> 
+Вкупно - уплата за тест: <b>0</b> <br />
+Вкупно - ДДВ тест: <b>0</b> <br />
+
+
+

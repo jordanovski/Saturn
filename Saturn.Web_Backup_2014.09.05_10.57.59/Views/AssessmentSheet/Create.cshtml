@@ -1,0 +1,172 @@
+﻿@model Saturn.Model.ViewModels.AssessmentSheetViewModel
+
+@{
+    ViewBag.Title = "Оценувачки лист";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@switch (Model.ExamTypeId)
+{
+    case 1:
+        // Теорија
+        <div>
+            <div class="well">
+                <h4><strong>@ViewBag.Candidate.FirstName @ViewBag.Candidate.LastName</strong></h4>
+                <p>
+                    ЕМБГ: <strong>@ViewBag.Candidate.UniqueNumber</strong><br>
+                    Бр. досие: <strong>@ViewBag.Candidate.DossierNumber</strong><br>
+                    Категорија: <strong>@ViewBag.Candidate.DrivingCategory</strong>
+                </p>
+            </div>
+
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    @Html.ValidationSummary(true)
+                    @Html.HiddenFor(m => m.ExamTypeId)
+                    @Html.HiddenFor(m => m.ExamRegistrationId)
+                    @Html.HiddenFor(m => m.AllowedNegativePoints)
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.NotAppearOnTheExam, new { @class = "control-label col-md-2" })
+                        <div class="col-md-6">
+                            @Html.CheckBoxFor(model => model.NotAppearOnTheExam)
+                            @Html.ValidationMessageFor(model => model.NotAppearOnTheExam)
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Theory.NegativePoints, new { @class = "control-label col-md-2" })
+                        <div class="col-md-1">
+                            @Html.TextBoxFor(model => model.Theory.NegativePoints, new { @class = "form-control input-sm" })
+                            @Html.ValidationMessageFor(model => model.Theory.NegativePoints)
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top:35px;">
+                        <div class="col-md-offset-2">
+                            <input type="submit" value="Сними" class="btn btn-default" />
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+            break;
+
+    case 2:
+            //Полигон
+            <div>
+                <div class="well">
+                    <h4><strong>@ViewBag.Candidate.FirstName @ViewBag.Candidate.LastName</strong></h4>
+                    <p>
+                        ЕМБГ: <strong>@ViewBag.Candidate.UniqueNumber</strong><br>
+                        Бр. досие: <strong>@ViewBag.Candidate.DossierNumber</strong><br>
+                        Категорија: <strong>@ViewBag.Candidate.DrivingCategory</strong>
+                    </p>
+                </div>
+
+                @using (Html.BeginForm())
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div>
+                        @Html.ValidationSummary(true)
+                        @Html.HiddenFor(m => m.ExamTypeId)
+                        @Html.HiddenFor(m => m.ExamRegistrationId)
+                        @Html.HiddenFor(m => m.AllowedNegativePoints)
+
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.NotAppearOnTheExam, new { @class = "control-label col-md-2" })
+                            <div class="col-md-6">
+                                @Html.CheckBoxFor(model => model.NotAppearOnTheExam)
+                                @Html.ValidationMessageFor(model => model.NotAppearOnTheExam)
+                            </div>
+                        </div>
+
+                        @for (int i = 0; i < Model.Polygon.Count; i++)
+                    {
+                    @Html.HiddenFor(m => m.Polygon[i].questionId)
+                    @Html.HiddenFor(m => m.Polygon[i].PenaltyPoints)
+
+                    <div class="input-group">
+                        <span class="input-group-addon">
+                            @Html.CheckBoxFor(model => model.Polygon[i].isChecked)
+                        </span>
+                        @Html.TextBoxFor(model => model.Polygon[i].points, new { @class = "form-control" })
+                        <span class="input-group-addon input-group-addon1">
+                            <strong>@Html.DisplayTextFor(model => model.Polygon[i].questionNumber)</strong>
+                            @Html.DisplayTextFor(model => model.Polygon[i].question)
+                            <span style="color:red; font-weight:bold">@Html.DisplayTextFor(model => model.Polygon[i].PenaltyPointsString)</span>
+                        </span>
+                    </div>
+                    }
+
+                        <div class="form-group" style="margin-top:35px;">
+                            <div class="col-md-offset-11">
+                                <input type="submit" value="Сними" class="btn btn-default" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+                break;
+
+    case 3:
+                //Град
+                <div>
+                    <div class="well">
+                        <h4><strong>@ViewBag.Candidate.FirstName @ViewBag.Candidate.LastName</strong></h4>
+                        <p>
+                            ЕМБГ: <strong>@ViewBag.Candidate.UniqueNumber</strong><br>
+                            Бр. досие: <strong>@ViewBag.Candidate.DossierNumber</strong><br>
+                            Категорија: <strong>@ViewBag.Candidate.DrivingCategory</strong>
+                        </p>
+                    </div>
+                    @using (Html.BeginForm())
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true)
+                            @Html.HiddenFor(m => m.ExamTypeId)
+                            @Html.HiddenFor(m => m.ExamRegistrationId)
+                            @Html.HiddenFor(m => m.AllowedNegativePoints)
+
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.NotAppearOnTheExam, new { @class = "control-label col-md-2" })
+                                <div class="col-md-6">
+                                    @Html.CheckBoxFor(model => model.NotAppearOnTheExam)
+                                    @Html.ValidationMessageFor(model => model.NotAppearOnTheExam)
+                                </div>
+                            </div>
+
+                            @for (int i = 0; i < Model.City.Count; i++)
+                            {
+                                @Html.HiddenFor(m => m.City[i].questionId)
+                                @Html.HiddenFor(m => m.City[i].PenaltyPoints)
+
+                                <div class="input-group">
+                                    <span class="input-group-addon">
+                                        @Html.CheckBoxFor(model => model.City[i].isChecked)
+                                    </span>
+                                    @Html.TextBoxFor(model => model.City[i].points, new { @class = "form-control" })
+                                    <span class="input-group-addon input-group-addon1">
+                                        <strong>@Html.DisplayTextFor(model => model.City[i].questionNumber)</strong>
+                                        @Html.DisplayTextFor(model => model.City[i].question)
+                                        <span style="color:red; font-weight:bold">@Html.DisplayTextFor(model => model.City[i].PenaltyPointsString)</span>
+                                    </span>
+                                </div>
+                            }
+
+                            <div class="form-group" style="margin-top:35px;">
+                                <div class="col-md-offset-11">
+                                    <input type="submit" value="Сними" class="btn btn-default" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+                    break;
+}

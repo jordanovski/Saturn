@@ -1,0 +1,20 @@
+﻿@model Saturn.Model.Codebooks.ContactType
+
+@{
+    ViewBag.Title = "Типови на контакти";
+}
+
+
+
+<div>
+    <h3>Детали тип на контакт</h3>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.Type)</dt>
+        <dd>@Html.DisplayFor(model => model.Type)</dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

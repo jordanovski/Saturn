@@ -1,0 +1,293 @@
+﻿@model Saturn.Model.ExamRegistration
+
+@{
+    ViewBag.Title = "Нов испит";
+}
+
+<h3>Нов</h3>
+
+<div class="row">
+    <div class="col-md-4">
+        <div>Кандидат</div>
+        <dl class="dl-horizontal">
+            <dt>Име</dt>
+            <dd>@ViewBag.Candidate.FirstName</dd>
+
+            <dt>Презиме</dt>
+            <dd>@ViewBag.Candidate.LastName</dd>
+
+            <dt>Матичен бр.</dt>
+            <dd>@ViewBag.Candidate.UniqueNumber</dd>
+
+            <dt>Досие бр.</dt>
+            <dd>@ViewBag.Candidate.DossierNumber</dd>
+
+            <dt>Категорија</dt>
+            <dd>@ViewBag.Candidate.DrivingCategory</dd>
+        </dl>
+    </div>
+    <div class="col-md-4">
+        <div class="pull-left">Пријава</div>
+        <dl class="dl-horizontal">
+            <dt>Датум</dt>
+            <dd>@ViewBag.Registration.RegistrationDate.ToString("dd.MM.yyyy")</dd>
+
+            <dt>Место</dt>
+            <dd>@ViewBag.Registration.Place</dd>
+
+            <dt>Цена</dt>
+            <dd>@ViewBag.Registration.Price</dd>
+
+            <dt>Такса</dt>
+            <dd>@ViewBag.Registration.Tax</dd>
+
+            <dt>Статус</dt>
+            <dd>@ViewBag.Registration.RegistrationStatus</dd>
+
+            <dt>Авто школа</dt>
+            <dd>@ViewBag.Registration.DrivingSchoolName</dd>
+
+            <dt>Предавач</dt>
+            <dd>@ViewBag.Registration.InstructorTheoryName</dd>
+
+            <dt>Инструктор</dt>
+            <dd>@ViewBag.Registration.InstructorPracticeName</dd>
+        </dl>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div>Испит</div>
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true)
+                @Html.HiddenFor(m => m.StatusId)
+                @Html.HiddenFor(m => m.RegistrationId)
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ExamTypeId, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @(Html.Kendo().DropDownListFor(m => m.ExamTypeId)
+                            .OptionLabel("Тип на испит")
+                            .DataTextField("Type")
+                            .DataValueField("Id")
+                            .DataSource(source => { source.Read(read => { read.Action("GetExamTypes", "ExamRegistration"); }); })
+                            .Events(e => { e.Change("ExamType_Change"); }))
+                        @Html.ValidationMessageFor(model => model.ExamTypeId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ExamCenterId, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @(Html.Kendo().DropDownListFor(m => m.ExamCenterId)
+                            .OptionLabel("Локација")
+                            .DataTextField("Name")
+                            .DataValueField("Id")
+                            .DataSource(source => { source.Read(read => { read.Action("GetExamCenters", "ExamRegistration").Data("filterExamCenters"); }).ServerFiltering(true); })
+                            .Enable(false)
+                            .AutoBind(false)
+                            .CascadeFrom("ExamTypeId"))
+                        @Html.ValidationMessageFor(model => model.ExamCenterId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ExamId, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @(Html.Kendo().DropDownListFor(m => m.ExamId)
+                            .OptionLabel("Термин")
+                            .DataTextField("Date")
+                            .DataValueField("Id")
+                            .DataSource(source => { source.Read(read => { read.Action("GetExams", "ExamRegistration").Data("filterExams"); }).ServerFiltering(true); })
+                            .Enable(false)
+                            .AutoBind(false)
+                            .CascadeFrom("ExamCenterId"))
+                        @Html.ValidationMessageFor(model => model.ExamId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Place, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.Place, new { @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.Place)
+                    </div>
+                </div>
+
+                <div class="form-group" id="PriceDiv" style="display:none">
+                    @Html.LabelFor(model => model.Price, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.Price, new { @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.Price)
+                    </div>
+                </div>
+
+                <div class="form-group" id="TaxDiv" style="display:none">
+                    @Html.LabelFor(model => model.Tax, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.Tax, new { @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.Tax)
+                    </div>
+                </div>
+
+                <div class="form-group" id="UseVehicleDiv" style="display:none">
+                    @Html.LabelFor(model => model.UseVehicle, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.UseVehicle, new { @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.UseVehicle)
+                    </div>
+                </div>
+
+                <div class="form-group" id="MaterialCostsDiv" style="display:none">
+                    @Html.LabelFor(model => model.MaterialCosts, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @Html.TextBoxFor(model => model.MaterialCosts, new { @class = "form-control input-sm" })
+                        @Html.ValidationMessageFor(model => model.MaterialCosts)
+                    </div>
+                </div>
+
+                <div class="form-group" id="LanguageIdDiv" style="display:none">
+                    @Html.LabelFor(model => model.LanguageId, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @(Html.Kendo().DropDownListFor(m => m.LanguageId)
+                            .BindTo(ViewBag.LanguageId)
+                            .DataValueField("Value")
+                            .DataTextField("Text")
+                            .OptionLabel("Одбери јазик"))
+                        @Html.ValidationMessageFor(model => model.LanguageId)
+                    </div>
+                </div>
+
+                <div class="form-group" id="ExamWayOfTakingIdDiv" style="display:none">
+                    @Html.LabelFor(model => model.ExamWayOfTakingId, new { @class = "control-label col-md-2" })
+                    <div class="col-md-6">
+                        @(Html.Kendo().DropDownListFor(m => m.ExamWayOfTakingId)
+                            .BindTo(ViewBag.ExamWayOfTakingId)
+                            .DataValueField("Value")
+                            .DataTextField("Text")
+                            .OptionLabel("Одбери начин"))
+                        @Html.ValidationMessageFor(model => model.ExamWayOfTakingId)
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-7">
+                        <input type="submit" value="Сними" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+
+        <div class="widget-foot">
+            @Html.ActionLink("Назад на листата", "Index")
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    function ExamType_Change() {
+
+        var examCenter = $("#ExamCenterId").data("kendoDropDownList");
+        examCenter.select(0);
+
+        var examTypeId = $("#ExamTypeId").val();
+        switch (examTypeId) {
+            case '2':// Теорија
+                ShowTheoryDiv();
+                GetPrice(examTypeId);
+                break;
+            case '3':// Полигон
+                ShowPracticalDiv();
+                GetPrice(examTypeId);
+                break;
+            case '4':// Град
+                ShowPracticalDiv();
+                GetPrice(examTypeId);
+                break;
+
+            default:
+                ResetDiv();
+                ResetValue();
+        }
+    };
+
+    function filterExamCenters() {
+        return {
+            id: $("#ExamTypeId").val()
+        };
+    }
+
+    function filterExams() {
+        return {
+            idCenter: $("#ExamCenterId").val(),
+            idType: $("#ExamTypeId").val()
+        };
+    }
+
+    function ShowTheoryDiv() {
+        $("#LanguageIdDiv").show(100);
+        $("#ExamWayOfTakingIdDiv").show(100);
+        $('#MaterialCostsDiv').show(100);
+        $('#PriceDiv').show(100);
+        $('#TaxDiv').show(100);
+
+        $("#UseVehicleDiv").hide(100);
+    }
+    function ShowPracticalDiv() {
+        $("#LanguageIdDiv").hide(100);
+        $("#ExamWayOfTakingIdDiv").hide(100);
+        $('#MaterialCostsDiv').hide(100);
+        $('#PriceDiv').show(100);
+        $('#TaxDiv').show(100);
+
+        $("#UseVehicleDiv").show(100);
+    }
+
+    function ResetDiv() {
+        $("#LanguageIdDiv").hide(100);
+        $("#ExamWayOfTakingIdDiv").hide(100);
+        $('#MaterialCostsDiv').hide(100);
+        $('#PriceDiv').hide(100);
+        $('#TaxDiv').hide(100);
+        $("#UseVehicleDiv").hide(100);
+    }
+    function ResetValue() {
+        $('#Price').val(0);
+        $('#Tax').val(0);
+        $('#MaterialCosts').val(0);
+    }
+
+    function GetPrice(typeId) {
+        $.getJSON(
+             '/ExamRegistration/GetPrice/',
+             {
+                 id: $('#RegistrationId').val(),
+                 typeId: typeId
+             },
+             function (data) {
+                 switch (typeId) {
+                     case '2':
+                         $('#Price').val(data.Price);
+                         $('#Tax').val(data.Tax);
+                         $('#MaterialCosts').val(data.MaterialCosts);
+                         break;
+                     case '3':
+                         $('#Price').val(data.Price);
+                         $('#Tax').val(data.Tax);
+                         break;
+                     case '4':
+                         $('#Price').val(data.Price);
+                         $('#Tax').val(data.Tax);
+                         break;
+                 }
+             }
+          );
+    }
+</script>

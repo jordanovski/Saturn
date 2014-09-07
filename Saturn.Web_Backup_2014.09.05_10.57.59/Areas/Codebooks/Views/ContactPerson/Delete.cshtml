@@ -1,0 +1,46 @@
+﻿@model Saturn.Model.Codebooks.ContactPerson
+
+@{
+    ViewBag.Title = "Контакт особи";
+}
+
+<h3>Дали сте сигурни дека сакате да го избришете следново?</h3>
+<div>
+    <h5>Контакт особа</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContactType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ContactValue)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ContactValue)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index", new { Id = System.Web.HttpContext.Current.Session["DrivingSchoolId"] })
+        </div>
+    }
+</div>

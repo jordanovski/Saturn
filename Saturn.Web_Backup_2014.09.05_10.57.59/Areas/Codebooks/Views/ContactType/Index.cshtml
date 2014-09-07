@@ -1,0 +1,35 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.ContactType>
+
+@{
+    ViewBag.Title = "Типови на контакти";
+}
+
+<h3>@ViewBag.Title</h3>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Type);
+
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Edit", "ContactType") + "/#= Id #'" + ">Промени</a>").Width(100);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Delete", "ContactType") + "/#= Id #'" + ">Избриши</a>").Width(100);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <div class="toolbarCreate">
+                    @Html.ActionLink("Додади", "Create", null, new { @class = "btn btn-info" })
+                </div>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(15)
+        .Read(read => read.Action("Read", "ContactType"))
+    )
+)

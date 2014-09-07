@@ -73,9 +73,17 @@
     <Compile Include="UnitOfWork\IVehicleUnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Saturn.Domain\Saturn.Domain.csproj">
+      <Project>{297f3b83-441a-4c1e-8d0f-67f682c5bea0}</Project>
+      <Name>Saturn.Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Saturn.Model\Saturn.Model.csproj">
       <Project>{543eff59-f4d0-4f03-86e7-78b079a5428e}</Project>
       <Name>Saturn.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Saturn.Shared\Saturn.Shared.csproj">
+      <Project>{c485a6c1-7d75-4919-90ca-7206fc821603}</Project>
+      <Name>Saturn.Shared</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

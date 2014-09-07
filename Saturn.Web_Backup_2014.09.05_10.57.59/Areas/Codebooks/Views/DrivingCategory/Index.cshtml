@@ -1,0 +1,38 @@
+﻿@model IEnumerable<Saturn.Model.Codebooks.DrivingCategory>
+
+@{
+    ViewBag.Title = "Возачки категории";
+}
+
+<h2>@ViewBag.Title</h2>
+
+@(Html.Kendo().Grid(Model)
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.Category).Width(90);
+        columns.Bound(p => p.AllowedNegativeTheory).Width(100);
+        columns.Bound(p => p.AllowedNegativePolygon).Width(100);
+        columns.Bound(p => p.AllowedNegativePracticle).Width(110);
+        columns.Bound(p => p.DescriptionShort);
+
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Index", "ReqDocDrivingCategory") + "/Index/#= Id #'" + ">Документи</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-default btn-sm' href='" + Url.Action("Edit", "DrivingCategory") + "/#= Id #'" + "><span class='glyphicon glyphicon-pencil'></span></a>").Width(50);
+        columns.Template(@<text></text>).ClientTemplate("<a class='btn btn-danger btn-sm' href='" + Url.Action("Delete", "DrivingCategory") + "/#= Id #'" + "><span class='glyphicon glyphicon-remove'></span></a>").Width(50);
+    })
+    .ToolBar(toolbar =>
+    {
+        toolbar.Template(
+            @<text>
+                <a class="btn btn-info btn-sm" href="@Url.Action("Create", "DrivingCategory")"><span class='glyphicon glyphicon-plus'></span> Додади</a>
+            </text>);
+    })
+    .Pageable()
+    .Sortable()
+    .Filterable()
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(10)
+        .Read(read => read.Action("Read", "DrivingCategory"))
+    )
+)

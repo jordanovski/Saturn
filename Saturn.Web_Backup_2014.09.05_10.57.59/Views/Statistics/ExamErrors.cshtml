@@ -1,0 +1,74 @@
+﻿@{
+    ViewBag.Title = "Најчести грешки од пректичен дел од испит";
+}
+
+<h3>@ViewBag.Title</h3>
+
+Образец:
+@(Html.Kendo().DropDownList()
+    .Name("dropdownlist")
+    .DataTextField("Text")
+    .DataValueField("Value")
+    .BindTo(new List<SelectListItem>()
+    {
+        new SelectListItem() {Text = "бр1", Value = "1"},
+        new SelectListItem() {Text = "бр2", Value = "2"},
+    })
+    .Events(e =>
+    {
+        e.Select("select");
+    })
+)
+<br />
+<br />
+<div id="rData">
+</div>
+<script>
+    $(document).ready(function () {
+        $.get("/Statistics/GetErrorsStatistic", { type: "1" }, function (data) {
+            $("#rData").html(data);
+        });
+
+        
+    });
+    function select(e) {
+        var dataItem = this.dataItem(e.item.index());
+
+        $.get("/Statistics/GetErrorsStatistic", { type: dataItem.Value }, function (data) {
+            $("#rData").html(data);
+        });
+    };
+</script>
+      
+@*<div class="btn-group" data-toggle="buttons">
+    <label class="btn btn-primary">
+        <input type="radio" name="options" id="ob1"> Образец бр1
+    </label>
+    <label class="btn btn-primary">
+        <input type="radio" name="options" id="ob2"> Образец бр2
+    </label>
+</div>
+
+
+<div id="errors">
+
+</div>
+
+
+<script>
+    $(document).ready(function (e) {
+        $('#ob1').change(function () {
+            console.log('ob1');
+            var item = $('#errors');
+            item.empty();
+            item.load("/Statistics/ob1");
+        });
+
+        $('#ob2').change(function () {
+            console.log('ob2');
+            var item = $('#errors');
+            item.empty();
+            item.load("/Statistics/ob2");
+        });
+    });
+</script>*@

@@ -20,7 +20,10 @@ namespace Saturn.Repository
             this.dbContext.Configuration.ProxyCreationEnabled = false;
         }
 
-
+        public List<City> GetAll()
+        {
+            return dbContext.City.OrderBy(o => o.Name).ToList();
+        }
         public async Task<List<City>> GetAllAsync()
         {
             return await dbContext.City.OrderBy(o => o.Name).ToListAsync();

@@ -1,0 +1,33 @@
+﻿@model Saturn.Model.Codebooks.ExamCenters
+
+@{
+    ViewBag.Title = "Испитни центри";
+}
+
+<h3>Дали сте сигурни дека сакате да го избришете следново?</h3>
+<div>
+    <h5>Испитен центар</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.City.Name)</dt>
+        <dd>@Html.DisplayFor(model => model.City.Name)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Name)</dt>
+        <dd>@Html.DisplayFor(model => model.Name)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.TaxNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.TaxNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Address)</dt>
+        <dd>@Html.DisplayFor(model => model.Address)</dd>
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index")
+        </div>
+    }
+</div>

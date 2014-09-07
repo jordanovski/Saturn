@@ -1,0 +1,315 @@
+﻿@model Saturn.Model.Candidate
+
+@{
+    ViewBag.Title = "Кандидати";
+}
+
+<h3>Досие</h3>
+
+<div>
+    <h5>Кандидат</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.FirstName)</dt>
+        <dd>@Html.DisplayFor(model => model.FirstName)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.LastName)</dt>
+        <dd>@Html.DisplayFor(model => model.LastName)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.FatherName)</dt>
+        <dd>@Html.DisplayFor(model => model.FatherName)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.UniqueNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.UniqueNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.DrivingCategory.Category)</dt>
+        <dd>@Html.DisplayFor(model => model.DrivingCategory.Category)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.DossierNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.DossierNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.BirthDate)</dt>
+        <dd>@Html.DisplayFor(model => model.BirthDate, "ShortDateTime")</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.BirthPlace)</dt>
+        <dd>@Html.DisplayFor(model => model.BirthPlace)</dd>
+
+        <dt>Град</dt>
+        <dd>@Html.DisplayFor(model => model.City.Name)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Address)</dt>
+        <dd>@Html.DisplayFor(model => model.Address)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.PersonalCardNumber)</dt>
+        <dd>@Html.DisplayFor(model => model.PersonalCardNumber)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.IssuedBy)</dt>
+        <dd>@Html.DisplayFor(model => model.IssuedBy)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Profession)</dt>
+        <dd>@Html.DisplayFor(model => model.Profession)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.ExistingDrivingCategory)</dt>
+        <dd>@Html.DisplayFor(model => model.ExistingDrivingCategory)</dd>
+
+        <dt>@Html.DisplayNameFor(model => model.Note)</dt>
+        <dd>@Html.DisplayFor(model => model.Note)</dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>
+
+<p>Листа на пријави</p>
+@(Html.Kendo().Grid<Saturn.Model.Views.ViewRegistrations>()
+    .Name("grid")
+    .Columns(columns =>
+    {
+        columns.Bound(e => e.RegistrationId).Title("Бр. пријава").Width(120);
+        columns.Bound(e => e.RegistrationDate).Format("{0:dd.MM.yyyy}").Title("Датум").Width(100);
+        columns.Bound(e => e.Place).Title("Место").Width(120);
+        columns.Bound(e => e.RegistrationStatus).Title("Статус").Width(180);
+        columns.Bound(e => e.Price).Title("Цена").Width(100);
+        columns.Bound(e => e.Tax).Title("Такса").Width(100);
+
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Печати", "Candidates") + "/#= RegistrationId #'" + ">Промени</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Закажување", "Candidates") + "/#= RegistrationId #'" + ">Избриши</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Смени", "Candidates") + "/#= RegistrationId #'" + ">Избриши</a>").Width(70);
+        columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("Избриши", "Candidates") + "/#= RegistrationId #'" + ">Избриши</a>").Width(70);
+    })
+    .Sortable()
+    .Pageable()
+    .Scrollable()
+    .ClientDetailTemplateId("ExamRegistrations")
+    .HtmlAttributes(new { style = "height:630px;" })
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .PageSize(5)
+        .Read(read => read.Action("Registration_Read", "Candidates"))
+    )
+)
+<script id="ExamRegistrations" type="text/kendo-tmpl">
+    <p>Историја на полагање</p>
+    @(Html.Kendo().Grid<Saturn.Model.Views.ViewExamRegistration>()
+        .Name("grid_#=RegistrationId#")
+        .Columns(columns =>
+        {
+            //columns.Bound(o => o.ExamRegistrationId).Title("Бр. закаж.").Width(80);
+            //columns.Bound(o => o.ExamId).Title("Бр. термин").Width(80);
+            columns.Bound(o => o.ExamType).Title("Тип").Width(160);
+            columns.Bound(p => p.ExamDateTime).Format("{0:dd.MM.yyyy}").Title("Датум").Width(100);
+            columns.Bound(p => p.ExamDateTime).Format("{0:HH:mm}").Title("Време").Width(70);
+            columns.Bound(e => e.PresidentName).Title("Претседател");
+            columns.Bound(e => e.ExaminerName).Title("Испитувач");
+            columns.Bound(e => e.MemberName).Title("Член");
+            columns.Bound(e => e.ExamRegistrationStatus).Title("Статус").Width(100);
+            columns.Bound(e => e.ExamRegistrationResult).Title("Негативни поени").Width(100);
+        })
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(5)
+            .Read(read => read.Action("ExamRegistrations_Read", "Candidates", new { registrationId = "#=RegistrationId#" }))
+        )
+        .Pageable()
+        .Sortable()
+                .ClientDetailTemplateId("ExamRegistrationsErrors")
+        .ToClientTemplate())
+</script>
+<script id="ExamRegistrationsErrors" type="text/kendo-tmpl">
+    <p>Грешки од полагање на практичен дел од испитите</p>
+    @(Html.Kendo().Grid<Saturn.Model.Views.ViewExamRegistrationError>()
+        .Name("grid1_#=ExamRegistrationId#")
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.Form).Title("Образец").Width(80);
+            columns.Bound(o => o.Question).Title("Број на прашање").Width(110);
+            columns.Bound(o => o.Description).Title("Опис");
+            columns.Bound(o => o.PenaltyPoints).Title("Негативни поени").Width(100);
+            columns.Bound(o => o.Quantity).Title("Колку пати").Width(100);
+        })
+        .DataSource(dataSource => dataSource
+            .Ajax()
+            .PageSize(5)
+            .Read(read => read.Action("ExamRegistrationError_Read", "Candidates", new { examRegistrationId = "#=ExamRegistrationId#" }))
+        )
+        .Pageable()
+        .Sortable()
+        .ToClientTemplate())
+</script>
+
+
+
+<hr />
+
+<p>Приложени документи - критериуми за полагање</p>
+@(Html.Kendo().Grid<Saturn.Model.ViewModels.ReqDocCandidateViewModel>()
+    .Name("gridReqDocCandidate")
+    .Columns(columns =>
+    {
+        columns.Bound(p => p.ReqDocument);
+        columns.Bound(p => p.DocumentNumber).Width(150);
+        columns.Bound(p => p.IssueDate).Format("{0:dd.MM.yyyy}").EditorTemplateName("DateTime").Width(150);
+        columns.Bound(p => p.ValidTo).Format("{0:dd.MM.yyyy}").EditorTemplateName("DateTime").Width(150);
+        columns.Command(command => { command.Edit().Text("Промени"); });
+    })
+    .Editable(editable => editable.Mode(GridEditMode.InLine))
+    .DataSource(dataSource => dataSource
+        .Ajax()
+        .Batch(true)
+        .Model(model =>
+        {
+            model.Id(p => p.Id);
+            model.Field(p => p.ReqDocument).Editable(false);
+            model.Field(p => p.DocumentNumber);
+            model.Field(p => p.IssueDate);
+            model.Field(p => p.ValidTo);
+        })
+        .Read(read => read.Action("ReqDod_Read", "Candidates"))
+        .Update(update => update.Action("ReqDoc_Update", "Candidates"))
+    )
+)
+
+
+
+
+
+@*<table class="table table-bordered table-condensed">
+    <tr>
+        <th>Бр. пријава</th>
+        <th>Датум</th>
+        <th>Место</th>
+        <th>Статус</th>
+        <th>Цена</th>
+        <th>Такса</th>
+
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in ViewBag.Registrations)
+    {
+        <tr>
+            <td>@item.RegistrationId</td>
+            <td>@item.RegistrationDate.ToString("dd.MM.yyyy")</td>
+            <td>@item.Place</td>
+            <td>@item.RegistrationStatus</td>
+            <td>@item.Price</td>
+            <td>@item.Tax</td>
+
+            <td>@Html.ActionLink("Печати", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("Закажување", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("Смени", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("Избриши", "Edit", new { id = item.CandidateId })</td>
+        </tr>
+    }
+</table>
+<hr />
+
+<p>Историја на закажани испити</p>
+<table class="table table-bordered table-condensed">
+    <tr>
+        <th>Бр. закаж.</th>
+        <th>Бр. пријава</th>
+        <th>Бр. термин</th>
+        <th>Датум</th>
+        <th>Време</th>
+        <th>Претседател</th>
+        <th>Испитувач</th>
+        <th>Член</th>
+
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in @ViewBag.ExamRegistrations)
+    {
+        <tr>
+            <td>@item.ExamRegistrationId</td>
+            <td>@item.RegistrationId</td>
+            <td>@item.ExamId</td>
+            <td>@item.ExamDateTime.ToString("dd.MM.yyyy")</td>
+            <td>@item.ExamDateTime.ToString("HH:mm")</td>
+            <td>@item.PresidentFullName</td>
+            <td>@item.ExaminerFullName</td>
+            <td>@item.MemberFullName</td>
+
+            <td>@Html.ActionLink("ОЛ", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ1", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ1-А", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("ОЛ2", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("Одложи", "Edit", new { id = item.CandidateId })</td>
+            <td>@Html.ActionLink("Бришење", "Edit", new { id = item.CandidateId })</td>
+        </tr>
+    }
+</table>
+<hr />
+
+<p>Историја на полагање</p>
+<table class="table table-bordered table-condensed">
+    <tr>
+        <th>Бр. пријава</th>
+        <th>Бр. закаж.</th>
+        <th>Датум пријава</th>
+        <th>Тип полагање</th>
+        <th>Место</th>
+        <th>Датум</th>
+        <th>Време</th>
+        <th>Статус</th>
+        <th>Негативни поени</th>
+    </tr>
+
+    @foreach (var item in @ViewBag.ExamRegistrationsHistory)
+    {
+        <tr>
+            <td>@item.ExamId</td>
+            <td>@item.ExamRegistrationId</td>
+            <td>@item.ExamRegistrationDate.ToString("dd.MM.yyyy")</td>
+            <td>@item.ExamType</td>
+            <td>@item.ExamRegistrationPlace</td>
+            <td>@item.ExamDate.ToString("dd.MM.yyyy")</td>
+            <td>@item.ExamDateTime.ToString("HH:mm")</td>
+            <td>@item.ExamRegistrationStatus</td>
+            <td>@item.ExamRegistrationResult</td>
+        </tr>
+    }
+</table>
+<hr />
+
+<p>Грешки од полагање на практичен дел од испитите</p>
+<table class="table table-bordered table-condensed">
+    <tr>
+        <th>Пријава бр.	</th>
+        <th>Бр. закаж.</th>
+        <th>Тип на полагање</th>
+        <th>Образец</th>
+        <th>Број на прашање</th>
+        <th>Опис</th>
+        <th>Негативни поени</th>
+        <th>Колку пати</th>
+    </tr>
+
+    @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.ExamId)</td>
+                <td>@Html.DisplayFor(modelItem => item.ExamType)</td>
+                <td>@Html.DisplayFor(modelItem => item.ExamRegistrationId)</td>
+                <td>@Html.DisplayFor(modelItem => item.RegistrationId)</td>
+                <td>@Html.DisplayFor(modelItem => item.DossierNumber)</td>
+                <td>@Html.DisplayFor(modelItem => item.FirstName)</td>
+                <td>@Html.DisplayFor(modelItem => item.LastName)</td>
+                <td>@Html.DisplayFor(modelItem => item.Category)</td>
+                <td>@Html.DisplayFor(modelItem => item.NegativePoints)</td>
+                <td>@Html.DisplayFor(modelItem => item.Status)</td>
+            </tr>
+        }
+</table>
+<hr />*@

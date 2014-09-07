@@ -30,9 +30,9 @@ namespace Saturn.Web.Areas.Codebooks.Controllers
         {
             return View();
         }
-        public async Task<ActionResult> Read([DataSourceRequest] DataSourceRequest request)
+        public ActionResult Read([DataSourceRequest] DataSourceRequest request)
         {
-            var data = await repository.GetAllAsync();
+            var data = repository.GetAll();
 
             return Json(data.ToDataSourceResult(request), JsonRequestBehavior.AllowGet);
         }

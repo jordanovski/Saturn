@@ -1,0 +1,18 @@
+﻿@model Saturn.Model.Codebooks.VehicleType
+
+@{
+    ViewBag.Title = "Типови на возила";
+}
+
+<div>
+    <h4>Тип на возила детали</h4>
+	<hr />
+    <dl class="dl-horizontal">
+        <dt>@Html.DisplayNameFor(model => model.Type)</dt>
+        <dd>@Html.DisplayFor(model => model.Type)</dd>
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Промени", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Вратисе назад", "Index")
+</p>

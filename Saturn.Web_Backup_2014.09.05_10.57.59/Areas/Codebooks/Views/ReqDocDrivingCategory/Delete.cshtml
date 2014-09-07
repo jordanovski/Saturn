@@ -1,0 +1,30 @@
+﻿@model Saturn.Model.Codebooks.ReqDocDrivingCategory
+
+@{
+    ViewBag.Title = "Докименти за категорија " + Session["Category"];
+}
+
+<h3>Дали сте сигурни дека сакате да го избришете следново?</h3>
+<div>
+    <h5>Документ за катедорија @Session["Category"]</h5>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.RequiredDocument.ReqDocument)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RequiredDocument.ReqDocument)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Избриши" class="btn btn-default" /> |
+            @Html.ActionLink("Вратисе назад", "Index", new { Id = System.Web.HttpContext.Current.Session["DrivingCategoryId"] })
+        </div>
+    }
+</div>
