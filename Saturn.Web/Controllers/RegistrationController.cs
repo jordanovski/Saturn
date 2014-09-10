@@ -168,7 +168,7 @@ namespace Saturn.Web.Controllers
         
         private void ViewBagDropDown(Registration registration)
         {
-            var vehicles = dbView.ViewVehicles.Where(w => (bool)w.VehicleIsActive);
+            var vehicles = dbView.ViewVehicles.Where(w => (bool)w.VehicleIsActive).ToList();
             var drivingSchools = db.DrivingSchool.Where(w => w.IsActive).OrderBy(o => o.Name);
             var instructorTheory = db.Instructor.Where(w => w.IsActive).OrderBy(o => o.LastName);
             var auxiliaryVehicles = dbView.ViewVehicles.Where(w => (bool)w.VehicleIsActive);
@@ -176,20 +176,20 @@ namespace Saturn.Web.Controllers
 
             if (registration == null)
             {
-                ViewBag.VehicleId = new SelectList(vehicles, "Id", "FullName");
+                ViewBag.VehicleId = new SelectList(vehicles, "VehicleId", "FullName");
                 //ViewBag.VehicleFrom = new SelectList(vehicleFrom, "Id", "Name");
                 ViewBag.DrivingSchoolId = new SelectList(drivingSchools, "Id", "Name");
                 ViewBag.InstructorTheoryId = new SelectList(instructorTheory, "Id", "FullName");
-                ViewBag.AuxiliaryVehicleId = new SelectList(auxiliaryVehicles, "Id", "FullName");
+                ViewBag.AuxiliaryVehicleId = new SelectList(auxiliaryVehicles, "VehicleId", "FullName");
                 ViewBag.InstructorPracticeId = new SelectList(instructorPractice, "Id", "FullName");
             }
             else
             {
-                ViewBag.VehicleId = new SelectList(vehicles, "Id", "FullName", registration.VehicleId);
+                ViewBag.VehicleId = new SelectList(vehicles, "VehicleId", "FullName", registration.VehicleId);
                 //ViewBag.VehicleFrom = new SelectList(vehicleFrom, "Id", "Name", registration.VehicleFrom);
                 ViewBag.DrivingSchoolId = new SelectList(drivingSchools, "Id", "Name", registration.DrivingSchoolId);
                 ViewBag.InstructorTheoryId = new SelectList(instructorTheory, "Id", "FirstName", registration.InstructorTheoryId);
-                ViewBag.AuxiliaryVehicleId = new SelectList(auxiliaryVehicles, "Id", "FullName", registration.AuxiliaryVehicleId);
+                ViewBag.AuxiliaryVehicleId = new SelectList(auxiliaryVehicles, "VehicleId", "FullName", registration.AuxiliaryVehicleId);
                 ViewBag.InstructorPracticeId = new SelectList(instructorPractice, "Id", "FirstName", registration.InstructorPracticeId);
             }
         }

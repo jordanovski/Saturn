@@ -43,6 +43,12 @@ namespace Saturn.Model.Codebooks
         [Display(Name = "Активен")]
         public bool IsActive { get; set; }
 
+        [NotMapped]
+        public string FullName
+        {
+            get { return LastName + " " + FirstName; }
+            private set { }
+        }
        
 
         public virtual DrivingSchool DrivingSchool { get; set; }

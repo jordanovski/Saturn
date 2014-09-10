@@ -30,6 +30,13 @@ namespace Saturn.Model.Codebooks
         [Display(Name = "Активно")]
         public bool IsActive { get; set; }
 
+        [NotMapped]
+        public string FullName
+        {
+            get { return VehicleBrand.Brand + " " + CommercialMark; }
+            private set { }
+        }
+
         public virtual VehicleBrand VehicleBrand { get; set; }
 
         public virtual VehicleType VehicleType { get; set; }
