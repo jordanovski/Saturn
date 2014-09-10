@@ -106,7 +106,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.BirthDate, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @(Html.Kendo().DatePickerFor(m => m.BirthDate).Format("dd/MM/yyyy"))
+                @(Html.Kendo().DatePickerFor(m => m.BirthDate).Format("MM/dd/yyyy"))
                 @Html.ValidationMessageFor(model => model.BirthDate, "", new { @class = "text-danger" })
             </div>
         </div>

@@ -13,7 +13,7 @@
         columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("CandidatesList", "Examination") + "/#= ExaminationId #'" + ">Кандидати</a>").Width(90);
         columns.Template(@<text></text>).ClientTemplate("<a href='" + Url.Action("ExaminationResult", "Examination") + "/#= ExaminationId #'" + ">Резултати</a>").Width(90);
     
-        columns.Bound(p => p.ExamDateTime).Format("{0:dd.MM.yyyy}").Title("Датум").Width(100);
+        columns.Bound(p => p.ExamDateTime).Format("{0:MM.dd.yyyy}").Title("Датум").Width(100);
         columns.Bound(p => p.ExamDateTime).Format("{0:HH:mm}").Title("Време").Width(70);
         columns.Bound(p => p.ExamType);
         columns.Bound(p => p.ExamCenter).Width(100);

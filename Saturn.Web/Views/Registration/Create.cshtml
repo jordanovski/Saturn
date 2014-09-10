@@ -19,7 +19,7 @@
         <div class="form-group">
             @Html.LabelFor(model => model.RegistrationDate, new { @class = "control-label col-md-2" })
             <div class="col-md-6">
-                @(Html.Kendo().DatePickerFor(m => m.RegistrationDate).Value(DateTime.Now).ParseFormats(new string[] { "dd.MM.yyyy" }).Format("dd/MM/yyyy"))
+                @(Html.Kendo().DatePickerFor(m => m.RegistrationDate).Value(DateTime.Now).ParseFormats(new string[] { "MM.dd.yyyy" }).Format("dd/MM/yyyy"))
                 @Html.ValidationMessageFor(model => model.RegistrationDate)
             </div>
         </div>
