@@ -64,49 +64,49 @@ namespace Saturn.Account.Utilities
             return await GetVerifiedUserIdAsync() != null;
         }
 
-        public async Task<SignInStatus> TwoFactorSignIn(string provider, string code, bool isPersistent, bool rememberBrowser)
+        public async Task<Saturn.Account.Model.SignInStatus> TwoFactorSignIn(string provider, string code, bool isPersistent, bool rememberBrowser)
         {
             var userId = await GetVerifiedUserIdAsync();
             if (userId == null)
             {
-                return SignInStatus.Failure;
+                return Saturn.Account.Model.SignInStatus.Failure;
             }
             var user = await UserManager.FindByIdAsync(userId);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return Saturn.Account.Model.SignInStatus.Failure;
             }
             if (await UserManager.IsLockedOutAsync(user.Id))
             {
-                return SignInStatus.LockedOut;
+                return Saturn.Account.Model.SignInStatus.LockedOut;
             }
             if (await UserManager.VerifyTwoFactorTokenAsync(user.Id, provider, code))
             {
                 // When token is verified correctly, clear the access failed count used for lockout
                 await UserManager.ResetAccessFailedCountAsync(user.Id);
                 await SignInAsync(user, isPersistent, rememberBrowser);
-                return SignInStatus.Success;
+                return Saturn.Account.Model.SignInStatus.Success;
             }
             // If the token is incorrect, record the failure which also may cause the user to be locked out
             await UserManager.AccessFailedAsync(user.Id);
-            return SignInStatus.Failure;
+            return Saturn.Account.Model.SignInStatus.Failure;
         }
 
-        public async Task<SignInStatus> ExternalSignIn(ExternalLoginInfo loginInfo, bool isPersistent)
+        public async Task<Saturn.Account.Model.SignInStatus> ExternalSignIn(ExternalLoginInfo loginInfo, bool isPersistent)
         {
             var user = await UserManager.FindAsync(loginInfo.Login);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return Saturn.Account.Model.SignInStatus.Failure;
             }
             if (await UserManager.IsLockedOutAsync(user.Id))
             {
-                return SignInStatus.LockedOut;
+                return Saturn.Account.Model.SignInStatus.LockedOut;
             }
             return await SignInOrTwoFactor(user, isPersistent);
         }
 
-        private async Task<SignInStatus> SignInOrTwoFactor(ApplicationUser user, bool isPersistent)
+        private async Task<Saturn.Account.Model.SignInStatus> SignInOrTwoFactor(ApplicationUser user, bool isPersistent)
         {
             if (await UserManager.GetTwoFactorEnabledAsync(user.Id) &&
                 !await AuthenticationManager.TwoFactorBrowserRememberedAsync(user.Id))
@@ -114,23 +114,23 @@ namespace Saturn.Account.Utilities
                 var identity = new ClaimsIdentity(DefaultAuthenticationTypes.TwoFactorCookie);
                 identity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id));
                 AuthenticationManager.SignIn(identity);
-                return SignInStatus.RequiresTwoFactorAuthentication;
+                return Saturn.Account.Model.SignInStatus.RequiresTwoFactorAuthentication;
             }
             await SignInAsync(user, isPersistent, false);
-            return SignInStatus.Success;
+            return Saturn.Account.Model.SignInStatus.Success;
 
         }
 
-        public async Task<SignInStatus> PasswordSignIn(string userName, string password, bool isPersistent, bool shouldLockout)
+        public async Task<Saturn.Account.Model.SignInStatus> PasswordSignIn(string userName, string password, bool isPersistent, bool shouldLockout)
         {
             var user = await UserManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return SignInStatus.Failure;
+                return Saturn.Account.Model.SignInStatus.Failure;
             }
             if (await UserManager.IsLockedOutAsync(user.Id))
             {
-                return SignInStatus.LockedOut;
+                return Saturn.Account.Model.SignInStatus.LockedOut;
             }
             if (await UserManager.CheckPasswordAsync(user, password))
             {
@@ -142,10 +142,10 @@ namespace Saturn.Account.Utilities
                 await UserManager.AccessFailedAsync(user.Id);
                 if (await UserManager.IsLockedOutAsync(user.Id))
                 {
-                    return SignInStatus.LockedOut;
+                    return Saturn.Account.Model.SignInStatus.LockedOut;
                 }
             }
-            return SignInStatus.Failure;
+            return Saturn.Account.Model.SignInStatus.Failure;
         }
     }
 }

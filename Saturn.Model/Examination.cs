@@ -1,11 +1,11 @@
+using Saturn.Model.Codebooks;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace Saturn.Model
 {
-    using Saturn.Model.Codebooks;
-    using System;
-    using System.Collections.Generic;
-    using System.ComponentModel.DataAnnotations;
-    using System.ComponentModel.DataAnnotations.Schema;
-
     [Table("Examination")]
     public partial class Examination
     {

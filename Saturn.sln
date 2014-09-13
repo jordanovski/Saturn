@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Web", "Saturn.Web\Sa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Account", "Saturn.Account\Saturn.Account.csproj", "{A25277CF-ACED-461F-AF23-5F320A4EB328}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Public", "Saturn.Public\Saturn.Public.csproj", "{85B0BC4B-5D82-4163-88B4-0BF8A237764F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.WebPublic", "Saturn.Public\Saturn.WebPublic.csproj", "{85B0BC4B-5D82-4163-88B4-0BF8A237764F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Saturn.Repository", "Saturn.Repository\Saturn.Repository.csproj", "{A4ECE361-6051-4239-B0A1-4BBD89D82F4D}"
 EndProject

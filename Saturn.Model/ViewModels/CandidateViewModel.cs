@@ -41,7 +41,7 @@ namespace Saturn.Model.ViewModels
 
 
         [Display(Name = "Датум досие")]
-        public Nullable<System.DateTime> DossierDate { get; set; }
+        public DateTime? DossierDate { get; set; }
 
 
         [Display(Name = "Име презиме")]

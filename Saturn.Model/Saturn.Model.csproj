@@ -96,6 +96,8 @@
     <Compile Include="ViewModels\DrivingSchoolViewModel.cs" />
     <Compile Include="ViewModels\ErrorTypeViewModel.cs" />
     <Compile Include="ViewModels\ExamCenterViewModel.cs" />
+    <Compile Include="ViewModels\ExamResultsViewModel.cs" />
+    <Compile Include="ViewModels\ExamViewModel.cs" />
     <Compile Include="ViewModels\InstructorViewModel.cs" />
     <Compile Include="ViewModels\OperatorViewModel.cs" />
     <Compile Include="ViewModels\PriceListViewModel.cs" />
